@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+trash/
+prefitted/
+..Rcheck
+src-x64
+src-i386
+src/boost
+doc
+Meta
+RoBTT.Rcheck
+.Rhistory

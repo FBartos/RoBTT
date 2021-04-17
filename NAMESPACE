@@ -1,0 +1,2 @@
+import(Rcpp)
+useDynLib(RoBTT, .registration = TRUE)
