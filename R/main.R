@@ -309,7 +309,7 @@ RoBTT <- function(
   mm_r  <- sapply(models, function(m)!.is_parameter_null(m$priors, "r"))
   mm_nu <- sapply(models, function(m)!.is_parameter_null(m$priors, "nu"))
 
-  parameters <- c("d", "r", "nu")[c(sum(mm_d), sum(mm_r), sum(mm_nu))]
+  parameters <- c("d", "r", "nu")[c(sum(mm_d), sum(mm_r), sum(mm_nu)) > 0]
   
   # extract model weights
   prior_weights_all  <- sapply(models, function(m)m$prior_odds)
@@ -367,7 +367,7 @@ RoBTT <- function(
   for(par in c("mu", "sigma")){
     samples$averaged[[par]]    <- .mix_samples2(models, weights_all, converged, par, n_samples, seed)
   }
-  for(par in c("mu", "sigma")){
+  for(par in c("mu", "sigma")[c("d", "r") %in% parameters]){
     samples$conditional[[par]] <- .mix_samples2(models, weights_list[[if(par == "mu") "d" else if(par == "sigma") "r"]], converged, par, n_samples, seed)
   }
 
@@ -941,72 +941,6 @@ RoBTT <- function(
   constant <- all(constant)
 
   return(constant)
-}
-.get_omega_mapping <- function(models, cuts_only = FALSE){
-
-  # extract cuts and types
-  p_cuts <- sapply(models, function(m)rev(m$priors$omega$parameters$steps), simplify = FALSE)
-  p_type <- sapply(models, function(m)m$priors$omega$distribution)
-
-  # remove point distributions, PET, and PEESE
-  if(all( (p_type == "point" | grepl("PET", p_type) | grepl("PEESE", p_type) ) ))return(NULL)
-
-  # get new cutpoint appropriate cut-points
-  p_cuts_new <- p_cuts
-  if(any(p_type == "one.sided")){
-
-    # translate two.sided into one.sided
-    for(p in 1:length(p_type)){
-      if(p_type[p] == "two.sided")p_cuts_new[[p]] <- c(p_cuts[[p]]/2, 1 - rev(p_cuts[[p]])/2)
-    }
-
-  }
-
-  # combine the steps
-  all_cuts <- c(0, sort(unique(unlist(p_cuts_new))), 1)
-
-  # return the naming for summary function if only asked for labels
-  if(cuts_only){
-    return(all_cuts)
-  }
-
-
-  # get lower and upper bounds + indicies
-  omega_ind <- list()
-  p_bound   <- list()
-  for(p in 1:length(p_type)){
-    if(!is.null(p_cuts_new[[p]])){
-
-      p_bound[[p]] <- list(
-        l = c(0, p_cuts_new[[p]]),
-        u = c(p_cuts_new[[p]], 1))
-
-      if(any(p_type == "one.sided")){
-
-        if(p_type[p] == "two.sided"){
-          omega_ind[[p]] <- rev(c( (length(p_cuts[[p]]) + 1):2, 1:(length(p_cuts[[p]]) + 1) ))
-        }else if(p_type[p] == "one.sided"){
-          omega_ind[[p]] <- rev(1:(length(p_cuts[[p]]) + 1))
-        }
-
-      }else{
-        omega_ind[[p]] <- rev(1:(length(p_cuts[[p]]) + 1))
-      }
-    }
-  }
-
-  # create maping to weights
-  omega_mapping <- list()
-  for(p in 1:length(p_type)){
-    if(!(p_type[p] == "point" | grepl("PET", p_type[p]) | grepl("PEESE", p_type[p]) )){
-      omega_mapping[[p]] <- sapply(1:(length(all_cuts)-1), function(i)
-        omega_ind[[p]][all_cuts[i] >= p_bound[[p]]$l & all_cuts[i+1] <= p_bound[[p]]$u]
-      )
-    }
-  }
-
-
-  return(omega_mapping)
 }
 .get_no_support    <- function(models, par){
 
