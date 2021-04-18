@@ -43,35 +43,35 @@ data {
 }
 parameters{
   real mu;
-  real<lower = 0> scale;
+  real<lower = 0> sigma;
   real<lower = coefs_lb(bounds_type_d[1],  bounds_d[1]),  upper = coefs_ub(bounds_type_d[2],  bounds_d[2])>  d[is_d];
   real<lower = coefs_lb(bounds_type_r[1],  bounds_r[1]),  upper = coefs_ub(bounds_type_r[2],  bounds_r[2])>  r[is_r];
-  real<lower = coefs_lb(bounds_type_nu[1], bounds_nu[1]), upper = coefs_ub(bounds_type_nu[2], bounds_nu[2])> nu[is_nu];
+  real<lower = coefs_lb(bounds_type_nu[1], bounds_nu[1]), upper = coefs_ub(bounds_type_nu[2], bounds_nu[2])> nu_p[is_nu];
 }
 transformed parameters {
   real pooled_sigma;
   real sigma_i[2];
   real scale_i[2];
   real mu_i[2];
-  real nu_t;
+  real nu;
   
   
   // compute means and sigmas for each group
   if(is_nu == 1){
-    nu_t = nu[1] + 2;
+    nu = nu_p[1] + 2;
   }else{
-    nu_t = fixed_nu[1];
+    nu = fixed_nu[1];
   }
   if(is_r == 1){
-    scale_i[1]   = 2 * scale * r[1];
-    scale_i[2]   = 2 * scale * (1 - r[1]);
+    sigma_i[1]   = 2 * sigma * r[1];
+    sigma_i[2]   = 2 * sigma * (1 - r[1]);
   }else{
-    scale_i[1]   = 2 * scale * fixed_r[1];
-    scale_i[2]   = 2 * scale * (1 - fixed_r[1]);
+    sigma_i[1]   = 2 * sigma * fixed_r[1];
+    sigma_i[2]   = 2 * sigma * (1 - fixed_r[1]);
   }
   
-  sigma_i[1] = scale_i[1] * sqrt(nu_t / (nu_t - 2.0));
-  sigma_i[2] = scale_i[2] * sqrt(nu_t / (nu_t - 2.0));
+  scale_i[1] = sigma_i[1] / sqrt(nu / (nu - 2.0));
+  scale_i[2] = sigma_i[2] / sqrt(nu / (nu - 2.0));
   pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   
   if(is_d == 1){
@@ -83,9 +83,9 @@ transformed parameters {
   }
 }
 model {
-  // default Jeffrey's priors for mu and scale
+  // default Jeffrey's priors for mu and sigma
   target += Jeffreys_mu_lpdf(mu);
-  target += Jeffreys_sigma_lpdf(scale);
+  target += Jeffreys_sigma_lpdf(sigma);
 
   // priors on d and r
   if(is_d == 1){
@@ -95,13 +95,13 @@ model {
     target += set_prior(r[1], prior_type_r, prior_parameters_r, bounds_type_r, bounds_r);
   }
   if(is_nu == 1){
-    target += set_prior(nu[1], prior_type_nu, prior_parameters_nu, bounds_type_nu, bounds_nu);
+    target += set_prior(nu_p[1], prior_type_nu, prior_parameters_nu, bounds_type_nu, bounds_nu);
   }
 
   // likelihood of the data
   if(is_ss == 0){
-    target += student_t_lpdf(x1 | nu_t, mu_i[1], scale_i[1]);
-    target += student_t_lpdf(x2 | nu_t, mu_i[2], scale_i[2]);
+    target += student_t_lpdf(x1 | nu, mu_i[1], scale_i[1]);
+    target += student_t_lpdf(x2 | nu, mu_i[2], scale_i[2]);
   }else{
     reject("Fitting models with t likelihood and summary statistics is not possible :(.");
   }
