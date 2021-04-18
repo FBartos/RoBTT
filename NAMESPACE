@@ -2,6 +2,9 @@ import(Rcpp)
 useDynLib(RoBTT, .registration = TRUE)
 
 export(RoBTT)
+export(prior)
+export(summary.RoBTT)
+
 S3method(plot, RoBTT)
 S3method(plot, RoBTT.prior)
 S3method(print, RoBTT)
