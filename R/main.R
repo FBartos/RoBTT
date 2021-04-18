@@ -424,7 +424,7 @@ RoBTT <- function(
     }else{
       model_samples <- rstan::extract(models[[i]]$fit)
       ind           <- sample(nrow(model_samples[[parameter]]), round(n_samples * weights[i]), replace = TRUE)
-      samples       <- c(samples, model_samples[[parameter]][ind, 1])
+      samples       <- c(samples, if(parameter == "nu") model_samples[[parameter]][ind] else model_samples[[parameter]][ind, 1])
     }
   }
   
