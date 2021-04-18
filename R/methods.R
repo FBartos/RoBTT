@@ -90,6 +90,12 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
     parameters <- list()
     estimates  <- list()
 
+    mm_d  <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "d"))
+    mm_r  <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "r"))
+    mm_nu <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "nu"))
+    
+    pars <- c("d", "r", "nu")[c(sum(mm_d), sum(mm_r), sum(mm_nu))]
+    
     # compute quantiles
     if(!is.null(probs)){
       if(length(probs) != 0){
@@ -100,7 +106,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
         # quantiles
         for(type in c("averaged", "conditional")){
           
-          parameters[[type]] <- data.frame(do.call(rbind, lapply(object$RoBTT$samples[[type]][c("d", "r", "nu")], stats::quantile, probs = probs)))
+          parameters[[type]] <- data.frame(do.call(rbind, lapply(object$RoBTT$samples[[type]][pars], stats::quantile, probs = probs)))
           estimates[[type]]  <- data.frame(do.call(rbind, lapply(object$RoBTT$samples[[type]][c("mu", "sigma")],  function(x){
             t(apply(x, 2, stats::quantile, probs = probs))
           })))
@@ -114,7 +120,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
 
     # point estimates
     for(type in c("averaged", "conditional")){
-      parameters[[type]] <- cbind(do.call(rbind, lapply(object$RoBTT$samples[[type]][c("d", "r", "nu")], function(x)c("Mean" = mean(x), "Median" = stats::median(x)))), parameters[[type]])
+      parameters[[type]] <- cbind(do.call(rbind, lapply(object$RoBTT$samples[[type]][pars], function(x)c("Mean" = mean(x), "Median" = stats::median(x)))), parameters[[type]])
       estimates[[type]]  <- cbind(do.call(rbind, lapply(object$RoBTT$samples[[type]][c("mu", "sigma")],  function(x){
         t(apply(x, 2, function(xi)c("Mean" = mean(xi), "Median" = stats::median(xi))))
       })), estimates[[type]])
@@ -127,7 +133,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
 
 
     ### model types overview
-    parameters_models         <- sapply(c("d", "r", "nu"), function(par){
+    parameters_models         <- sapply(pars, function(par){
       sum(sapply(object$models, function(m)!.is_parameter_null(m$priors, par)))
     })
     parameters_prior_prob     <- unlist(object$RoBTT$prior_prob[c("effect", "heterogeneity", "outliers")])

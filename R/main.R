@@ -309,6 +309,8 @@ RoBTT <- function(
   mm_r  <- sapply(models, function(m)!.is_parameter_null(m$priors, "r"))
   mm_nu <- sapply(models, function(m)!.is_parameter_null(m$priors, "nu"))
 
+  parameters <- c("d", "r", "nu")[c(sum(mm_d), sum(mm_r), sum(mm_nu))]
+  
   # extract model weights
   prior_weights_all  <- sapply(models, function(m)m$prior_odds)
   prior_weights_d    <- ifelse(mm_d,  prior_weights_all, 0)
@@ -356,10 +358,10 @@ RoBTT <- function(
   ### sample and mix the individual posteriors
   if(!is.null(seed))set.seed(seed)
   samples <- list()
-  for(par in c("d", "r", "nu")){
+  for(par in parameters){
     samples$averaged[[par]]    <- .mix_samples(models, weights_all, converged, par, n_samples, seed)
   }
-  for(par in c("d", "r", "nu")){
+  for(par in parameters){
     samples$conditional[[par]] <- .mix_samples(models, weights_list[[par]], converged, par, n_samples, seed)
   }
   for(par in c("mu", "sigma")){
