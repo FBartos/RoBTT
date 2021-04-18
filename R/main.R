@@ -175,23 +175,10 @@ RoBTT <- function(
   fit_data <- .fit_data(object$data, priors, model$likelihood)
   
   # fit the model
-  fit      <- .fit_model_RoBTT_wrap(fit_data, model$likelihood, control)
+  fit_out  <- .fit_model_RoBTT_wrap(fit_data, model$likelihood, control)
   
-  
-  # forward error if it's unfixable
-  if(all(class(fit) %in% c("simpleError", "error", "condition"))){
-    refit_info <- fit$message
-  }
-  
-
-  # add the fit and summary to the main object
-  model$fit      <- fit
-  model$metadata <- list(
-    i          = i,
-    refit_info = refit_info)
-  if(!is.null(fit) & !any(class(fit) %in% c("simpleError", "error", "condition"))){
-    model$fit_summary <- .stan.summary(fit)
-  }
+  model <- c(model, fit_out)
+  model$metadata$i <- i
 
   return(model)
 }
@@ -217,6 +204,9 @@ RoBTT <- function(
 .fit_model_RoBTT       <- function(fit_data, likelihood, control){
   requireNamespace("RoBTT")
   
+  metadata    <- list()
+  fit_summary <- NULL
+  
   model_call <- list(
     object          = stanmodels[[likelihood]],
     data            = fit_data,
@@ -233,8 +223,42 @@ RoBTT <- function(
   }
   
   fit <- tryCatch(do.call(rstan::sampling, model_call), error = function(e)e)
+  
+  if(all(class(fit) %in% c("simpleError", "error", "condition"))){
+    metadata$refit_info <- fit$message
+  }
+  
+  if(!is.null(fit) & !any(class(fit) %in% c("simpleError", "error", "condition"))){
+    fit_summary <- .stan.summary(fit)
+  }
+  
+  
+  if(!is.null(control$seed))set.seed(control$seed)
+  marg_lik <- tryCatch(suppressWarnings(bridgesampling::bridge_sampler(
+    samples   = fit,
+    maxiter   = control$bridge_max_iter,
+    silent    = TRUE)),
+    error = function(e)return(e))
+  
+  # handle errors
+  if(any(class(marg_lik) %in% c("simpleError", "error"))){
+    
+    metadata$marg_lik <- marg_lik$message
+    marg_lik <- .marglik_fail()
+    
+  }else if(is.na(marg_lik$logml)){
+    
+    metadata$marg_lik <- "not enough iterations"
+    marg_lik <- .marglik_fail()
+    
+  }
 
-  return(fit)
+  return(list(
+    fit         = fit,
+    marg_lik    = marg_lik,
+    fit_summary = fit_summary,
+    metadata    = metadata
+  ))
 }
 .marglik_RoBTT         <- function(object, i){
 
