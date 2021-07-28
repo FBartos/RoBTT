@@ -2,13 +2,13 @@
   real Jeffreys_mu_lpdf(real mu){
     return 0;
   }
-  real Jeffreys_sigma_lpdf(real sigma){
-    return log(1/sigma);
+  real Jeffreys_sigma_lpdf(real sigma2){
+    return log(1/sigma2);
   }
 
   // function for computation of pooled standard deviation
   real pool_sigma(real sigma1, real sigma2, real N1, real N2){
-    return sqrt( (pow(sigma1, 2) * (N1 - 1) + pow(sigma2, 2) * (N2 - 1)) / (N1 + N2 - 2) );
+    return sqrt( (pow(sigma1, 2) * N1 + pow(sigma2, 2) * N2) / (N1 + N2) );
   }
 
   // function for setting parameter bounds
