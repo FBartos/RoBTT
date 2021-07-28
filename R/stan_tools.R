@@ -93,8 +93,8 @@
 
 .stan_data_individual <- function(x1, x2){
   list(
-    x1     = x1,
-    x2     = x2,
+    x1     = as.array(x1),
+    x2     = as.array(x2),
     N1     = length(x1),
     N2     = length(x2),
     is_ss  = 0,

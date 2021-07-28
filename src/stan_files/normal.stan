@@ -37,7 +37,7 @@ data {
 }
 parameters{
   real mu;
-  real<lower = 0> sigma;
+  real<lower = 0> sigma2;
   real<lower = coefs_lb(bounds_type_d[1], bounds_d[1]), upper = coefs_ub(bounds_type_d[2], bounds_d[2])> d[is_d];
   real<lower = coefs_lb(bounds_type_r[1], bounds_r[1]), upper = coefs_ub(bounds_type_r[2], bounds_r[2])> r[is_r];
 }
@@ -48,12 +48,12 @@ transformed parameters {
 
   // compute means and sigmas for each group
   if(is_r == 1){
-    sigma_i[1]   = 2 * sigma * r[1];
-    sigma_i[2]   = 2 * sigma * (1 - r[1]);
+    sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * r[1]       ) );
+    sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - r[1]) ) );
     pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   }else{
-    sigma_i[1]   = 2 * sigma * fixed_r[1];
-    sigma_i[2]   = 2 * sigma * (1 - fixed_r[1]);
+    sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * fixed_r[1]       ) );
+    sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - fixed_r[1]) ) );
     pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   }
   if(is_d == 1){
@@ -67,7 +67,7 @@ transformed parameters {
 model {
   // default Jeffrey's priors for mu and sigma
   target += Jeffreys_mu_lpdf(mu);
-  target += Jeffreys_sigma_lpdf(sigma);
+  target += Jeffreys_sigma_lpdf(sigma2);
 
   // priors on d and r
   if(is_d == 1){
@@ -82,9 +82,7 @@ model {
     target += normal_lpdf(x1 | mu_i[1], sigma_i[1]);
     target += normal_lpdf(x2 | mu_i[2], sigma_i[2]);
   }else{
-    target += normal_lpdf(mean_i[1] | mu_i[1], sigma_i[1] / sqrt(N1));
-    target += normal_lpdf(mean_i[2] | mu_i[2], sigma_i[2] / sqrt(N2));
-    target += gamma_lpdf((N1 - 1) * pow(sd_i[1], 2) | 0.5 * (N1 - 1), 1 / (2 * pow(sigma_i[1], 2)));
-    target += gamma_lpdf((N2 - 1) * pow(sd_i[2], 2) | 0.5 * (N2 - 1), 1 / (2 * pow(sigma_i[2], 2)));
+    target += -N1 / 2.0 * log(2 * pi() * pow(sigma_i[1], 2)) - 1 / (2 * pow(sigma_i[1], 2)) * ((N1 - 1) * pow(sd_i[1], 2) + N1 * (mean_i[1] - mu_i[1])^2);
+    target += -N2 / 2.0 * log(2 * pi() * pow(sigma_i[2], 2)) - 1 / (2 * pow(sigma_i[2], 2)) * ((N2 - 1) * pow(sd_i[2], 2) + N2 * (mean_i[2] - mu_i[2])^2);
   }
 }

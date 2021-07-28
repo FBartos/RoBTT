@@ -2,8 +2,8 @@
   real Jeffreys_mu_lpdf(real mu){
     return 0;
   }
-  real Jeffreys_sigma_lpdf(real sigma){
-    return log(1/sigma);
+  real Jeffreys_sigma_lpdf(real sigma2){
+    return log(1/sigma2);
   }
 
   // function for computation of pooled standard deviation

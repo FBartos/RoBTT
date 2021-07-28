@@ -43,7 +43,7 @@ data {
 }
 parameters{
   real mu;
-  real<lower = 0> sigma;
+  real<lower = 0> sigma2;
   real<lower = coefs_lb(bounds_type_d[1],  bounds_d[1]),  upper = coefs_ub(bounds_type_d[2],  bounds_d[2])>  d[is_d];
   real<lower = coefs_lb(bounds_type_r[1],  bounds_r[1]),  upper = coefs_ub(bounds_type_r[2],  bounds_r[2])>  r[is_r];
   real<lower = coefs_lb(bounds_type_nu[1], bounds_nu[1]), upper = coefs_ub(bounds_type_nu[2], bounds_nu[2])> nu_p[is_nu];
@@ -63,11 +63,13 @@ transformed parameters {
     nu = fixed_nu[1];
   }
   if(is_r == 1){
-    sigma_i[1]   = 2 * sigma * r[1];
-    sigma_i[2]   = 2 * sigma * (1 - r[1]);
+    sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * r[1]       ) );
+    sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - r[1]) ) );
+    pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   }else{
-    sigma_i[1]   = 2 * sigma * fixed_r[1];
-    sigma_i[2]   = 2 * sigma * (1 - fixed_r[1]);
+    sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * fixed_r[1]       ) );
+    sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - fixed_r[1]) ) );
+    pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   }
   
   scale_i[1] = sigma_i[1] / sqrt(nu / (nu - 2.0));
@@ -85,7 +87,7 @@ transformed parameters {
 model {
   // default Jeffrey's priors for mu and sigma
   target += Jeffreys_mu_lpdf(mu);
-  target += Jeffreys_sigma_lpdf(sigma);
+  target += Jeffreys_sigma_lpdf(sigma2);
 
   // priors on d and r
   if(is_d == 1){
