@@ -87,11 +87,11 @@ RoBTT <- function(
   
   prior_d  = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
   prior_r  = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
-  prior_nu = if(!is.null(x1) & !is.null(x2)) prior(distribution = "exp", parameters = list(rate = 1)),
+  prior_nu = prior(distribution = "exp",     parameters = list(rate = 1)),
   prior_d_null  = prior(distribution = "spike",  parameters = list(location = 0)),
   prior_r_null  = prior(distribution = "spike",  parameters = list(location = 0.5)),
-  prior_nu_null = prior(distribution = "spike",  parameters = list(location = Inf)),
-  
+  prior_nu_null = NULL,
+  likelihood = c("normal", if(!is.null(prior_nu)) "t"),
   chains  = 4, iter = 10000, warmup = 5000, thin = 1, parallel = FALSE,
   control = NULL, seed = NULL){
   
@@ -101,7 +101,7 @@ RoBTT <- function(
 
   ### prepare and check the settings
   object$priors   <- .set_priors(prior_d, prior_r, prior_nu, prior_d_null, prior_r_null, prior_nu_null)
-  object$models   <- .get_models(object$priors)
+  object$models   <- .get_models(object$priors, likelihood)
   object$control  <- .set_control(control, chains, iter, warmup, thin, seed, parallel)
   object$add_info$warnings <- c()
 
@@ -216,6 +216,15 @@ RoBTT <- function(
     thin            = control$thin,
     cores           = control$cores
   )
+  
+  if(likelihood == "beta"){
+    model_call$init <- lapply(1:control$chains, function(i) {
+      list(
+        mu      = 0.5,
+        sigma2  = 1/12
+      )
+    })
+  }
   
   if(!is.null(control$seed)){
     set.seed(control$seed)
@@ -440,8 +449,10 @@ RoBTT <- function(
   samples <- NULL
   
   for(i in c(1:length(models))[converged]){
-    
-    if(round(n_samples * weights[i]) == 0)next
+
+    # skip for missing nu parameter for all but t-distributions    
+    if(round(n_samples * weights[i]) == 0 || is.null(models[[i]]$priors[[parameter]]))
+      next
     
     if(models[[i]]$priors[[parameter]]$distribution == "point"){
       samples       <- c(samples, rep(models[[i]]$priors[[parameter]]$parameters$location, round(n_samples * weights[i])))
@@ -810,40 +821,38 @@ RoBTT <- function(
 
   return(priors)
 }
-.get_models             <- function(priors, likelihood){
+.get_models             <- function(priors, likelihoods){
 
   # create models according to the set priors
   models <- NULL
   for(d in priors$d){
     for(r in priors$r){
-      for(nu in priors$nu){
-        models <- c(
-          models,
-          list(.create_model(d, r, nu, d$prior_odds * r$prior_odds * nu$prior_odds))
-        )
+      for(likelihood in likelihoods){
+        if(likelihood == "t"){
+          for(nu in priors$nu){
+            models <- c(models, list(.create_model(d, r, nu, likelihood, d$prior_odds * r$prior_odds * nu$prior_odds)))
+          }
+        }else{
+          models <- c(models, list(.create_model(d, r, NULL, likelihood, d$prior_odds * r$prior_odds)))
+        } 
       }
     }
   }
-
+  
 
   return(models)
 }
-.create_model           <- function(prior_d, prior_r, prior_nu, prior_odds){
+.create_model           <- function(prior_d, prior_r, prior_nu, likelihood, prior_odds){
 
   priors <- list()
-
+  
   priors$d  <- prior_d
   priors$r  <- prior_r
   priors$nu <- prior_nu
 
-  if(prior_nu$distribution == "point"){
-    if(prior_nu$parameters$location == Inf){
-      likelihood <- "normal"
-    }else{
-      likelihood <- "t"
-    }
-  }else{
-    likelihood <- "t"
+  # possibly simplify t to normal
+  if(likelihood == "t" && prior_nu$distribution == "point" && prior_nu$parameters$location == Inf){
+    likelihood <- "normal"
   }
   
   model <- list(
@@ -951,7 +960,7 @@ RoBTT <- function(
 
 # general helper functions
 .is_parameter_null <- function(priors, par){
-  return(priors[[par]]$is_null)
+  return(if(is.null(priors[[par]])) TRUE else priors[[par]]$is_null)
 }
 .is_model_constant <- function(priors){
 

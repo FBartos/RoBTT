@@ -173,9 +173,10 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
   }else if(substr(type,1,1) == "m"){
 
 
+    likelihood <- sapply(1:length(object$models), function(i)switch(object$models[[i]]$likelihood, "normal" = "Normal", "t" = "Student-t", "gamma" = "Gamma", "lognormal" = "Log-Normal", "beta" = "Beta"))
     priors_d   <- sapply(1:length(object$models), function(i)print(object$models[[i]]$priors[["d"]],  silent = TRUE))
     priors_r   <- sapply(1:length(object$models), function(i)print(object$models[[i]]$priors[["r"]],  silent = TRUE))
-    priors_nu  <- sapply(1:length(object$models), function(i)print(object$models[[i]]$priors[["nu"]], silent = TRUE))
+    priors_nu  <- sapply(1:length(object$models), function(i)if(is.null(object$models[[i]]$priors[["nu"]])) "" else print(object$models[[i]]$priors[["nu"]], silent = TRUE))
 
 
     prior_odds     <- sapply(1:length(object$models), function(i)object$models[[i]]$prior_odds)
@@ -199,6 +200,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
     }
 
     overview_tab <- data.frame(
+      likelihood,
       priors_d,
       priors_r,
       priors_nu,
@@ -209,7 +211,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
       stringsAsFactors = FALSE
     )
     rownames(overview_tab) <- NULL
-    colnames(overview_tab) <- c("Prior d", "Prior r", "Prior nu", "Prior prob.", "Post. prob.", "log(MargLik)",
+    colnames(overview_tab) <- c("Likelihood", "Prior d", "Prior r", "Prior nu", "Prior prob.", "Post. prob.", "log(MargLik)",
                                 paste0("Incl. ", if(logBF)"log(",if(BF01)"1/","BF",if(logBF)")"))
 
     # add the summary model diagnostics
