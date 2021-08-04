@@ -93,21 +93,24 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
     mm_d  <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "d"))
     mm_r  <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "r"))
     mm_nu <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "nu"))
+    mm_p  <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "p"))
     
-    pars <- c("d", "r", "nu")[c(sum(mm_d), sum(mm_r), sum(mm_nu)) > 0]
+    pars <- c("d", "r", "nu", "p")[c(sum(mm_d), sum(mm_r), sum(mm_nu), sum(mm_p)) > 0]
     
     # compute quantiles
     if(!is.null(probs)){
       if(length(probs) != 0){
 
-        if(!is.numeric(probs) | !is.vector(probs))stop("The passed probabilities 'probs' must be a numeric vector.")
-        if(!(all(probs > 0) & all(probs < 1)))stop("The passed probabilities 'probs' must be higher than 0 and lower than 1.")
+        if(!is.numeric(probs) | !is.vector(probs))
+          stop("The passed probabilities 'probs' must be a numeric vector.")
+        if(!(all(probs > 0) & all(probs < 1)))
+          stop("The passed probabilities 'probs' must be higher than 0 and lower than 1.")
 
         # quantiles
         for(type in c("averaged", "conditional")){
           
           parameters[[type]] <- data.frame(do.call(rbind, lapply(object$RoBTT$samples[[type]][pars], stats::quantile, probs = probs)))
-          estimates[[type]]  <- data.frame(do.call(rbind, lapply(object$RoBTT$samples[[type]][if(type == "averaged") c("mu", "sigma") else c("mu", "sigma")[c("d", "r") %in% pars]],  function(x){
+          estimates[[type]]  <- data.frame(do.call(rbind, lapply(object$RoBTT$samples[[type]][if(type == "averaged") c("mu", "sigma") else c("mu", "sigma", "prop")[c("d", "r", "p") %in% pars]],  function(x){
             t(apply(x, 2, stats::quantile, probs = probs))
           })))
           
@@ -121,7 +124,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
     # point estimates
     for(type in c("averaged", "conditional")){
       parameters[[type]] <- cbind(do.call(rbind, lapply(object$RoBTT$samples[[type]][pars], function(x)c("Mean" = mean(x), "Median" = stats::median(x)))), parameters[[type]])
-      estimates[[type]]  <- cbind(do.call(rbind, lapply(object$RoBTT$samples[[type]][if(type == "averaged") c("mu", "sigma") else c("mu", "sigma")[c("d", "r") %in% pars]],  function(x){
+      estimates[[type]]  <- cbind(do.call(rbind, lapply(object$RoBTT$samples[[type]][if(type == "averaged") c("mu", "sigma") else c("mu", "sigma", "prop")[c("d", "r", "p") %in% pars]],  function(x){
         t(apply(x, 2, function(xi)c("Mean" = mean(xi), "Median" = stats::median(xi))))
       })), estimates[[type]])
     }
@@ -129,16 +132,16 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
 
     ### fixing naming
     rownames(estimates$averaged)    <- c("mu[1]", "mu[2]", "sigma[1]", "sigma[2]")
-    rownames(estimates$conditional) <- c("mu[1]", "mu[2]", "sigma[1]", "sigma[2]")[c("d", "d", "r", "r") %in% pars]
+    rownames(estimates$conditional) <- c("mu[1]", "mu[2]", "sigma[1]", "sigma[2]", "pi[1]", "pi[2]")[c("d", "d", "r", "r", "p", "p") %in% pars]
 
 
     ### model types overview
     parameters_models         <- sapply(pars, function(par){
       sum(sapply(object$models, function(m)!.is_parameter_null(m$priors, par)))
     })
-    parameters_prior_prob     <- unlist(object$RoBTT$prior_prob[c("effect", "heterogeneity", "outliers")])[c("d", "r", "nu") %in% pars]
-    parameters_posterior_prob <- unlist(object$RoBTT$posterior_prob[c("effect", "heterogeneity", "outliers")])[c("d", "r", "nu") %in% pars]
-    parameters_BF             <- unlist(object$RoBTT$BF[c("effect", "heterogeneity", "outliers")])[c("d", "r", "nu") %in% pars]
+    parameters_prior_prob     <- unlist(object$RoBTT$prior_prob[c("effect", "heterogeneity", "outliers", "proportion")])[c("d", "r", "nu", "p") %in% pars]
+    parameters_posterior_prob <- unlist(object$RoBTT$posterior_prob[c("effect", "heterogeneity", "outliers", "proportion")])[c("d", "r", "nu", "p") %in% pars]
+    parameters_BF             <- unlist(object$RoBTT$BF[c("effect", "heterogeneity", "outliers", "proportion")])[c("d", "r", "nu", "p") %in% pars]
     parameters_BF             <- .BF_format(parameters_BF, BF01, logBF)
     overview_tab              <- data.frame(parameters_models, parameters_prior_prob, parameters_posterior_prob, parameters_BF)
     colnames(overview_tab) <- c(
@@ -147,7 +150,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
       "Post. prob.",
       paste0("Incl. ", if(logBF)"log(",if(BF01)"1/","BF",if(logBF)")")
     )
-    rownames(overview_tab) <- c("Effect", "Heterogeneity", "Outliers")[c("d", "r", "nu") %in% pars]
+    rownames(overview_tab) <- c("Effect", "Heterogeneity", "Outliers", "Proportion")[c("d", "r", "nu", "p") %in% pars]
     
     if(!conditional){
       parameters[["conditional"]] <- NULL
@@ -173,10 +176,11 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
   }else if(substr(type,1,1) == "m"){
 
 
-    likelihood <- sapply(1:length(object$models), function(i)switch(object$models[[i]]$likelihood, "normal" = "Normal", "t" = "Student-t", "gamma" = "Gamma", "lognormal" = "Log-Normal", "beta" = "Beta"))
+    likelihood <- sapply(1:length(object$models), function(i)switch(object$models[[i]]$likelihood, "normal" = "Normal", "t" = "Student-t", "gamma" = "Gamma", "lognormal" = "Log-Normal", "beta" = "Beta", "gamma0"= "Gamma + 0", "lognormal0" = "Log-Normal + 0"))
     priors_d   <- sapply(1:length(object$models), function(i)print(object$models[[i]]$priors[["d"]],  silent = TRUE))
     priors_r   <- sapply(1:length(object$models), function(i)print(object$models[[i]]$priors[["r"]],  silent = TRUE))
     priors_nu  <- sapply(1:length(object$models), function(i)if(is.null(object$models[[i]]$priors[["nu"]])) "" else print(object$models[[i]]$priors[["nu"]], silent = TRUE))
+    priors_p   <- sapply(1:length(object$models), function(i)if(is.null(object$models[[i]]$priors[["p"]])) "" else print(object$models[[i]]$priors[["p"]], silent = TRUE))
 
 
     prior_odds     <- sapply(1:length(object$models), function(i)object$models[[i]]$prior_odds)
@@ -204,6 +208,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
       priors_d,
       priors_r,
       priors_nu,
+      priors_p,
       prior_prob,
       posterior_prob,
       marg_lik,
@@ -211,7 +216,7 @@ summary.RoBTT       <- function(object, type = if(diagnostics) "models" else "en
       stringsAsFactors = FALSE
     )
     rownames(overview_tab) <- NULL
-    colnames(overview_tab) <- c("Likelihood", "Prior d", "Prior r", "Prior nu", "Prior prob.", "Post. prob.", "log(MargLik)",
+    colnames(overview_tab) <- c("Likelihood", "Prior d", "Prior r", "Prior nu", "Prior psi", "Prior prob.", "Post. prob.", "log(MargLik)",
                                 paste0("Incl. ", if(logBF)"log(",if(BF01)"1/","BF",if(logBF)")"))
 
     # add the summary model diagnostics

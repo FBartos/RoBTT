@@ -85,12 +85,14 @@ RoBTT <- function(
   x1 = NULL, x2 = NULL,
   mean1 = NULL, mean2 = NULL, sd1 = NULL, sd2 = NULL, N1 = NULL, N2 = NULL,
   
-  prior_d  = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
-  prior_r  = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
-  prior_nu = prior(distribution = "exp",     parameters = list(rate = 1)),
-  prior_d_null  = prior(distribution = "spike",  parameters = list(location = 0)),
-  prior_r_null  = prior(distribution = "spike",  parameters = list(location = 0.5)),
-  prior_nu_null = NULL,
+  prior_d   = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
+  prior_r   = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
+  prior_nu  = prior(distribution = "exp",     parameters = list(rate = 1)),
+  prior_p = prior(distribution = "normal",  parameters = list(mean = 0, sd = 1)),
+  prior_d_null   = prior(distribution = "spike",  parameters = list(location = 0)),
+  prior_r_null   = prior(distribution = "spike",  parameters = list(location = 0.5)),
+  prior_nu_null  = NULL,
+  prior_p_null   = prior(distribution = "spike",  parameters = list(location = 0)),
   likelihood = c("normal", if(!is.null(prior_nu)) "t"),
   chains  = 4, iter = 10000, warmup = 5000, thin = 1, parallel = FALSE,
   control = NULL, seed = NULL){
@@ -100,7 +102,7 @@ RoBTT <- function(
   object$data  <- list(x1 = x1, x2 = x2, mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2)
 
   ### prepare and check the settings
-  object$priors   <- .set_priors(prior_d, prior_r, prior_nu, prior_d_null, prior_r_null, prior_nu_null)
+  object$priors   <- .set_priors(prior_d, prior_r, prior_nu, prior_p, prior_d_null, prior_r_null, prior_nu_null, prior_p_null)
   object$models   <- .get_models(object$priors, likelihood)
   object$control  <- .set_control(control, chains, iter, warmup, thin, seed, parallel)
   object$add_info$warnings <- c()
@@ -307,6 +309,9 @@ RoBTT <- function(
   if(likelihood == "t"){
     data <- c(data, .stan_distribution("nu", priors[["nu"]]))
   }
+  if(likelihood %in% c("gamma0", "lognormal0")){
+    data <- c(data, .stan_distribution("p", priors[["p"]]))
+  }
   
   return(data)
 }
@@ -328,12 +333,13 @@ RoBTT <- function(
 ### model inference functions
 .model_inference            <- function(object, n_samples = 10000){
 
-  models    <- object$models
-  data      <- object$data
-  add_info  <- object$add_info
-  converged <- object$add_info$converged
-  seed      <- object$control$seed
-
+  models      <- object$models
+  data        <- object$data
+  add_info    <- object$add_info
+  converged   <- object$add_info$converged
+  seed        <- object$control$seed
+  likelihoods <- sapply(models, function(m) m$likelihood)
+  
   # extract marginal likelihoods
   marg_liks <- sapply(models, function(x)x$marg_lik$logml)
 
@@ -341,20 +347,23 @@ RoBTT <- function(
   mm_d  <- sapply(models, function(m)!.is_parameter_null(m$priors, "d"))
   mm_r  <- sapply(models, function(m)!.is_parameter_null(m$priors, "r"))
   mm_nu <- sapply(models, function(m)!.is_parameter_null(m$priors, "nu"))
+  mm_p  <- sapply(models, function(m)!.is_parameter_null(m$priors, "p"))
 
-  parameters <- c("d", "r", "nu")[c(sum(mm_d), sum(mm_r), sum(mm_nu)) > 0]
+  parameters <- c("d", "r", "nu", "p")[c(sum(mm_d), sum(mm_r), sum(mm_nu), sum(mm_p)) > 0]
   
   # extract model weights
   prior_weights_all  <- sapply(models, function(m)m$prior_odds)
   prior_weights_d    <- ifelse(mm_d,  prior_weights_all, 0)
   prior_weights_r    <- ifelse(mm_r,  prior_weights_all, 0)
   prior_weights_nu   <- ifelse(mm_nu, prior_weights_all, 0)
+  prior_weights_p    <- ifelse(mm_p,  prior_weights_all, 0)
   
   # standardize model weights
   prior_weights_all  <- prior_weights_all  / sum(prior_weights_all)
   prior_weights_d    <- prior_weights_d    / sum(prior_weights_d)
   prior_weights_r    <- prior_weights_r    / sum(prior_weights_r)
   prior_weights_nu   <- prior_weights_nu   / sum(prior_weights_nu)
+  prior_weights_p    <- prior_weights_p    / sum(prior_weights_p)
 
 
   ### compute model weights
@@ -375,10 +384,16 @@ RoBTT <- function(
   }else{
     weights_nu <- NULL
   }
+  if(any(mm_p) & all(!is.nan(prior_weights_p))){
+    weights_p  <- bridgesampling::post_prob(marg_liks, prior_prob = prior_weights_p)
+  }else{
+    weights_p <- NULL
+  }
   weights_list <- list(
     d  = weights_d,
     r  = weights_r,
-    nu = weights_nu
+    nu = weights_nu,
+    p  = weights_p
   )
   
   
@@ -386,6 +401,7 @@ RoBTT <- function(
   BF_effect        <- .inclusion_BF(prior_weights_all, weights_all, mm_d)
   BF_heterogeneity <- .inclusion_BF(prior_weights_all, weights_all, mm_r)
   BF_outliers      <- .inclusion_BF(prior_weights_all, weights_all, mm_nu)
+  BF_proportion    <- .inclusion_BF(prior_weights_all, weights_all, mm_p)
 
   
   ### sample and mix the individual posteriors
@@ -403,17 +419,23 @@ RoBTT <- function(
   for(par in c("mu", "sigma")[c("d", "r") %in% parameters]){
     samples$conditional[[par]] <- .mix_samples2(models, weights_list[[if(par == "mu") "d" else if(par == "sigma") "r"]], converged, par, n_samples, seed)
   }
+  if(any(likelihoods %in% c("gamma0", "lognormal0"))){
+    samples$averaged[["prop"]]    <- .mix_samples2(models, weights_all, converged, "prop", n_samples, seed)
+    samples$conditional[["prop"]] <- .mix_samples2(models, weights_list[["p"]], converged, "prop", n_samples, seed)
+  }
 
 
   prior_prob_all            <- prior_weights_all
   prior_prob_effect         <- sum(prior_weights_all[mm_d])
   prior_prob_heterogeneity  <- sum(prior_weights_all[mm_r])
   prior_prob_outliers       <- sum(prior_weights_all[mm_nu])
+  prior_prob_proportion     <- sum(prior_weights_all[mm_p])
   
   posterior_prob_all            <- weights_all
   posterior_prob_effect         <- sum(weights_all[mm_d])
   posterior_prob_heterogeneity  <- sum(weights_all[mm_r])
   posterior_prob_outliers       <- sum(weights_all[mm_nu])
+  posterior_prob_proportion     <- sum(weights_all[mm_p])
   
   
   # return the results
@@ -422,19 +444,22 @@ RoBTT <- function(
     BF             = list(
       effect           = BF_effect,
       heterogeneity    = BF_heterogeneity,
-      outliers         = BF_outliers
+      outliers         = BF_outliers,
+      proportion       = BF_proportion
     ),
     prior_prob     = list(
       all             = prior_prob_all,
       effect          = prior_prob_effect,
       heterogeneity   = prior_prob_heterogeneity,
-      outliers        = prior_prob_outliers
+      outliers        = prior_prob_outliers,
+      proportion      = prior_prob_proportion
     ),
     posterior_prob = list(
       all             = posterior_prob_all,
       effect          = posterior_prob_effect,
       heterogeneity   = posterior_prob_heterogeneity,
-      outliers        = posterior_prob_outliers
+      outliers        = posterior_prob_outliers,
+      proportion      = posterior_prob_proportion
     )
   )
   return(output)
@@ -705,19 +730,21 @@ RoBTT <- function(
 }
 
 ### helper functions for settings
-.set_priors             <- function(prior_d, prior_r, prior_nu, prior_d_null, prior_r_null, prior_nu_null){
+.set_priors             <- function(prior_d, prior_r, prior_nu, prior_p, prior_d_null, prior_r_null, prior_nu_null, prior_p_null){
 
-  priors    <- list()
-  priors$d  <- .set_parameter_priors(prior_d_null,  prior_d,  "d")
-  priors$r  <- .set_parameter_priors(prior_r_null,  prior_r,  "r")
-  priors$nu <- .set_parameter_priors(prior_nu_null, prior_nu, "nu")
+  priors     <- list()
+  priors$d   <- .set_parameter_priors(prior_d_null,   prior_d,   "d")
+  priors$r   <- .set_parameter_priors(prior_r_null,   prior_r,   "r")
+  priors$nu  <- .set_parameter_priors(prior_nu_null,  prior_nu,  "nu")
+  priors$p <- .set_parameter_priors(prior_p_null, prior_p, "p")
 
   return(priors)
 }
 .set_parameter_priors   <- function(priors_null, priors_alt, parameter){
 
   # check that at least one prior is specified (either null or alternative)
-  if(is.null(priors_null) & is.null(priors_alt))stop(paste0("At least one prior needs to be specified for the ", parameter," parameter (either null or alternative)."))
+  if(is.null(priors_null) & is.null(priors_alt))
+    stop(paste0("At least one prior needs to be specified for the ", parameter," parameter (either null or alternative)."))
 
   # create an empty list if user didn't specified priors
   if(is.null(priors_null)){
@@ -753,12 +780,13 @@ RoBTT <- function(
 
   ### check that the specified prior distributions are valid
 
-  if(parameter == "d"){
+  if(parameter %in% c("d", "p")){
 
     # check that the passed priors are supported for the parameter
     if(length(priors) > 0){
       for(i in 1:length(priors)){
-        if(!priors[[i]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))stop(paste0(priors[[i]]$distribution," prior distribution is not supported for the mu parameter. See '?prior' for further information."))
+        if(!priors[[i]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
+          stop(paste0(priors[[i]]$distribution," prior distribution is not supported for the ", parameter," parameter. See '?prior' for further information."))
       }
     }
 
@@ -830,10 +858,14 @@ RoBTT <- function(
       for(likelihood in likelihoods){
         if(likelihood == "t"){
           for(nu in priors$nu){
-            models <- c(models, list(.create_model(d, r, nu, likelihood, d$prior_odds * r$prior_odds * nu$prior_odds)))
+            models <- c(models, list(.create_model(d, r, nu, NULL, likelihood, d$prior_odds * r$prior_odds * nu$prior_odds)))
+          }
+        }else if(likelihood %in% c("gamma0", "lognormal0")){
+          for(p in priors$p){
+            models <- c(models, list(.create_model(d, r, NULL, p, likelihood, d$prior_odds * r$prior_odds * p$prior_odds)))
           }
         }else{
-          models <- c(models, list(.create_model(d, r, NULL, likelihood, d$prior_odds * r$prior_odds)))
+          models <- c(models, list(.create_model(d, r, NULL, NULL, likelihood, d$prior_odds * r$prior_odds)))
         } 
       }
     }
@@ -842,13 +874,14 @@ RoBTT <- function(
 
   return(models)
 }
-.create_model           <- function(prior_d, prior_r, prior_nu, likelihood, prior_odds){
+.create_model           <- function(prior_d, prior_r, prior_nu, prior_p, likelihood, prior_odds){
 
   priors <- list()
   
-  priors$d  <- prior_d
-  priors$r  <- prior_r
-  priors$nu <- prior_nu
+  priors$d   <- prior_d
+  priors$r   <- prior_r
+  priors$nu  <- prior_nu
+  priors$p <- prior_p
 
   # possibly simplify t to normal
   if(likelihood == "t" && prior_nu$distribution == "point" && prior_nu$parameters$location == Inf){
@@ -965,7 +998,7 @@ RoBTT <- function(
 .is_model_constant <- function(priors){
 
   constant <- NULL
-  for(par in c("mu", "tau", "omega", "sigma")){
+  for(par in c("mu", "tau", "omega", "sigma", "p")){
     if(!is.null(priors[[par]])){
       constant <- c(constant, priors[[par]]$distribution == "point")
     }
