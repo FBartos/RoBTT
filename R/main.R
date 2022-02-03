@@ -219,7 +219,7 @@ RoBTT <- function(
     cores           = control$cores
   )
   
-  if(likelihood == "beta"){
+  if(likelihood %in% c("beta", "beta01")){
     model_call$init <- lapply(1:control$chains, function(i) {
       list(
         mu      = 0.5,
