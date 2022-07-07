@@ -1,23 +1,41 @@
 Package: RoBTT
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
-Depends: 
-    Rcpp (>= 0.12.19)
-Imports:
-    rstan (>= 2.18.1)
+Title: Robust Bayesian T-Test
+Version: 1.0.0
+Maintainer: František Bartoš <f.bartos96@gmail.com>
+Authors@R: c( 
+    person("František", "Bartoš",     role = c("aut", "cre"),
+    email   = "f.bartos96@gmail.com", comment = c(ORCID = "0000-0002-0018-5573")),
+    person("Maximilian", "Maier",     role = "aut",
+    email   = "maximilianmaier0401@gmail.com", comment = c(ORCID = "0000-0002-9873-6096"))
+    )
+Description: TODO
+URL: https://fbartos.github.io/RoBTT/
+BugReports: https://github.com/FBartos/RoBTT/issues
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+NeedsCompilation: yes
 LinkingTo: 
     BH (>= 1.66.0-1),
     Rcpp (>= 0.12.19),
     RcppEigen (>= 0.3.3.4.0),
     rstan (>= 2.18.1),
     StanHeaders (>= 2.18.0)
-Encoding: UTF-8
-LazyData: true
-NeedsCompilation: yes
-SystemRequirements: GNU make
+Depends: 
+    R (>= 4.0.0),
+    Rcpp (>= 0.12.19)
+Imports:
+    rstan (>= 2.18.1),
+    BayesTools (>= 0.2.12),
+    callr,
+    Rdpack
+Suggests:
+    vdiffr,
+    knitr,
+    rmarkdown,
+    covr
+RdMacros: Rdpack
+VignetteBuilder: knitr
+

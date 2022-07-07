@@ -44,8 +44,8 @@ data {
 parameters{
   real mu;
   real<lower = 0> sigma2;
-  real<lower = coefs_lb(bounds_type_d[1],  bounds_d[1]),  upper = coefs_ub(bounds_type_d[2],  bounds_d[2])>  d[is_d];
-  real<lower = coefs_lb(bounds_type_r[1],  bounds_r[1]),  upper = coefs_ub(bounds_type_r[2],  bounds_r[2])>  r[is_r];
+  real<lower = coefs_lb(bounds_type_d[1],  bounds_d[1]),  upper = coefs_ub(bounds_type_d[2],  bounds_d[2])>  delta[is_d];
+  real<lower = coefs_lb(bounds_type_r[1],  bounds_r[1]),  upper = coefs_ub(bounds_type_r[2],  bounds_r[2])>  rho[is_r];
   real<lower = coefs_lb(bounds_type_nu[1], bounds_nu[1]), upper = coefs_ub(bounds_type_nu[2], bounds_nu[2])> nu_p[is_nu];
 }
 transformed parameters {
@@ -63,8 +63,8 @@ transformed parameters {
     nu = fixed_nu[1];
   }
   if(is_r == 1){
-    sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * r[1]       ) );
-    sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - r[1]) ) );
+    sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * rho[1]       ) );
+    sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - rho[1]) ) );
     pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   }else{
     sigma_i[1]   = sqrt( 1 / (2 * 1/sigma2 * fixed_r[1]       ) );
@@ -77,8 +77,8 @@ transformed parameters {
   pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   
   if(is_d == 1){
-    mu_i[1] = mu - 0.5 * d[1] * pooled_sigma;
-    mu_i[2] = mu + 0.5 * d[1] * pooled_sigma;
+    mu_i[1] = mu - 0.5 * delta[1] * pooled_sigma;
+    mu_i[2] = mu + 0.5 * delta[1] * pooled_sigma;
   }else{
     mu_i[1] = mu - 0.5 * fixed_d[1] * pooled_sigma;
     mu_i[2] = mu + 0.5 * fixed_d[1] * pooled_sigma;
@@ -91,10 +91,10 @@ model {
 
   // priors on d and r
   if(is_d == 1){
-    target += set_prior(d[1], prior_type_d, prior_parameters_d, bounds_type_d, bounds_d);
+    target += set_prior(delta[1], prior_type_d, prior_parameters_d, bounds_type_d, bounds_d);
   }
   if(is_r == 1){
-    target += set_prior(r[1], prior_type_r, prior_parameters_r, bounds_type_r, bounds_r);
+    target += set_prior(rho[1], prior_type_r, prior_parameters_r, bounds_type_r, bounds_r);
   }
   if(is_nu == 1){
     target += set_prior(nu_p[1], prior_type_nu, prior_parameters_nu, bounds_type_nu, bounds_nu);
