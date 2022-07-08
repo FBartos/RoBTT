@@ -82,11 +82,11 @@
     converged   <- TRUE 
     
     if(any(fit_summary[,"ESS"] < convergence_checks[["min_ESS"]])){
-      warnings  <- c(warnings, "Minimum effective sample size was low (",  round(min(fit_summary[,"ESS"])), ").")
+      warnings  <- c(warnings, paste0("Minimum effective sample size was low (",  round(min(fit_summary[,"ESS"])), ")."))
     }
     
     if(any(fit_summary[,"R_hat"] > convergence_checks[["max_Rhat"]])){
-      warnings  <- c(warnings, "Maximum R-hat was large (",  round(max(fit_summary[,"R_hat"]), 2), ").")
+      warnings  <- c(warnings, paste0("Maximum R-hat was large (",  round(max(fit_summary[,"R_hat"]), 2), ")."))
     }
   }
   

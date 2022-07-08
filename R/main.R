@@ -62,6 +62,7 @@
 #' @param silent whether all print messages regarding the fitting process
 #' should be suppressed. Defaults to \code{TRUE}. Note that \code{parallel = TRUE}
 #' also suppresses all messages.
+#' @param ... additional arguments.
 #'
 #' @details Add more details
 #'

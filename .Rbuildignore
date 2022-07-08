@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^trash$
-^prefitted$
+^do-not-share$
+^models$
 ^tests/figs/.*$
 ^tests/results/.*$
 ^..Rcheck
@@ -9,5 +9,7 @@
 ^docs$
 ^doc$
 ^Meta$
-^RoBTT.Rcheck$
+^RoBMA.Rcheck$
 README.Rmd
+^\.github$
+^codecov\.yml$

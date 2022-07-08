@@ -116,6 +116,8 @@ to \code{NULL} - no seed is set.}
 \item{silent}{whether all print messages regarding the fitting process
 should be suppressed. Defaults to \code{TRUE}. Note that \code{parallel = TRUE}
 also suppresses all messages.}
+
+\item{...}{additional arguments.}
 }
 \value{
 \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.

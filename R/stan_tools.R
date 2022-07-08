@@ -89,7 +89,7 @@
   prior_parameters <- rep(999, 3)
   
   if(prior[["distribution"]] == "normal"){
-    prior_parameters[1] <- prior$parameters[["distribution"]]
+    prior_parameters[1] <- prior$parameters[["mean"]]
     prior_parameters[2] <- prior$parameters[["sd"]]
   }else if(prior[["distribution"]] == "lognormal"){
     prior_parameters[1] <- prior$parameters[["meanlog"]]

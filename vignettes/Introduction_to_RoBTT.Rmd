@@ -1,31 +1,113 @@
 ---
 title: "Introduction to RoBTT"
 author: "Maximilian Maier & František Bartoš"
-date: "08/03/2022"
-output: html_document
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    self_contained: yes
+bibliography: ../inst/REFERENCES.bib
+csl: ../inst/apa.csl
+vignette: >
+  %\VignetteIndexEntry{Introduction to RoBTT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-print_conditional <- function(fit, coef = "d"){
+is_check <- ("CheckExEnv" %in% search()) ||
+              any(c("_R_CHECK_TIMINGS_", "_R_CHECK_LICENSE_") %in% names(Sys.getenv())) ||
+              !file.exists("../models/ReproducingBMA/BMA_PowerPoseTest.RDS")
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  eval      = !is_check,
+  dev      = "png")
+if(.Platform$OS.type == "windows"){
+  knitr::opts_chunk$set(dev.args = list(type = "cairo"))
+}
+print_conditional <- function(fit, coef = "delta"){
   with(fit, 
        sprintf("%1$s, 95%% CI [%2$s, %3$s]",
-               format(round(mean(RoBTT$samples$conditional[[coef]]), 2), nsmall = 3),
-               format(round(quantile(RoBTT$samples$conditional[[coef]], 0.025), 2), nsmall = 2),
-               format(round(quantile(RoBTT$samples$conditional[[coef]], 0.975), 2), nsmall = 2)
+               format(round(mean(RoBTT$posterior[[coef]]), 2), nsmall = 3),
+               format(round(quantile(RoBTT$posterior[[coef]], 0.025), 2), nsmall = 2),
+               format(round(quantile(RoBTT$posterior[[coef]], 0.975), 2), nsmall = 2)
        ))
 } 
 ```
 
+```{r include = FALSE, eval = FALSE}
+# pre-fit all models (easier to update the code on package update)
+library(RoBTT)
+
+data("fertilization", package = "RoBTT")
+
+fit_01 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = NULL, #this indicates no prior on the variance allocation factor -> equal variance test
+  likelihood  = "normal",
+  seed        = 0
+)
+fit_10 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta    = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho      = prior("beta",   list(3, 3)), #prior on variance allocation
+  prior_rho_null = NULL, #remove models assuming equal variance
+  likelihood     = "normal",
+  seed           = 0
+)
+fit_2 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  prior_nu    = prior("exp",    list(1)), # prior on degrees of freedom
+  likelihood  = c("normal", "t"), #use both normal and t-likelihoods
+  seed        = 2
+)
+fit_3 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
+  prior_rho        = prior("beta",   list(3, 3)),
+  prior_nu         = prior("exp",    list(1)),
+  prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)), #prior distribution and truncation
+  likelihood       = c("normal", "t"),
+  seed             = 3
+)
+
+saveRDS(fit_01, file = "../models/Introduction/fit_01.RDS")
+saveRDS(fit_10, file = "../models/Introduction/fit_10.RDS")
+saveRDS(fit_2,  file = "../models/Introduction/fit_2.RDS")
+saveRDS(fit_3,  file = "../models/Introduction/fit_3.RDS")
+```
+
+```{r include = FALSE}
+# pre-load the fitted models to save time on compilation
+library(RoBTT)
+
+fit_01 <- readRDS(file = "../models/Introduction/fit_01.RDS")
+fit_10 <- readRDS(file = "../models/Introduction/fit_10.RDS")
+fit_2  <- readRDS(file = "../models/Introduction/fit_2.RDS")
+fit_3  <- readRDS(file = "../models/Introduction/fit_3.RDS")
+```
+
 ## Introduction and Example
 
-This vignette introduces the basic functionality of the RoBTT package using a classic example from Ronald Fishers Design of Experiments (Fisher, 1937). Fisher illustrates the Student's $t$-test on an example of self fertilized and cross fertilized plants as coded by Darwin. In other words, one group of plants was fertilized by gametes (sex-cells) from the same individual (self), while the other group of plants was fertilized by gametes from the same species (cross). Darwin himself concludes: 
+This vignette introduces the basic functionality of the RoBTT package using a classic example from Ronald Fishers Design of Experiments [@fisher1937design]. Fisher illustrates the Student's $t$-test on an example of self fertilized and cross fertilized plants as coded by Darwin. In other words, one group of plants was fertilized by gametes (sex-cells) from the same individual (self), while the other group of plants was fertilized by gametes from the same species (cross). Darwin himself concludes: 
 
-*I may premise that if we took by chance a dozen men belonging to two nations and measured them, it would I presume be very rash to form any judgment from such small number on their average heights. But the case is somewhat different with crossed and self-fertilized plants, as they were exactly the same age, were subjected from first to last to the same conditions, and were descended from the same parents.* (Fisher, 1937, p.28). 
+*I may premise that if we took by chance a dozen men belonging to two nations and measured them, it would I presume be very rash to form any judgment from such small number on their average heights. But the case is somewhat different with crossed and self-fertilized plants, as they were exactly the same age, were subjected from first to last to the same conditions, and were descended from the same parents.* p. 28 [@fisher1937design]. 
 
 Not knowing much about statistics he gives his data to Francis Galton, who proceeds to order the plants by height as a method of statistical analysis and concludes:
 
-*The observations as I received them [...] certainly have no prima facie appearance of regularity. But as soon as we arrange them in the order of their magnitudes [...] the case is materially altered. We now see, with few exceptions, that the largest plant on the crossed side in each pot exceeds the largest plant on the self-fertilised side, that the second exceeds the second, the third the third, and so on. \parencite[p. 29]{fisher1937design}.* (Fisher, 1937, p.29). 
+*The observations as I received them [...] certainly have no prima facie appearance of regularity. But as soon as we arrange them in the order of their magnitudes [...] the case is materially altered. We now see, with few exceptions, that the largest plant on the crossed side in each pot exceeds the largest plant on the self-fertilised side, that the second exceeds the second, the third the third, and so on. \parencite[p. 29]{fisher1937design}.* p. 29 [@fisher1937design]. 
 
 Galton then forwarded the data to Fisher, who later analyzed it with a frequentist Student's $t$-test and states:
 
@@ -36,6 +118,7 @@ We can load the included data with the code below
 ```{r}
 library(RoBTT)
 data("fertilization", package = "RoBTT")
+head(fertilization)
 ```
 
 
@@ -44,8 +127,7 @@ data("fertilization", package = "RoBTT")
 We reanalyze the data using a Bayesian equal variance $t$-test as follows. 
 
 
-
-```{r}
+```r
 ## fit equal variance t-test
 fit_01 <- RoBTT(
   x1       = fertilization$Self,
@@ -78,7 +160,7 @@ print_conditional(fit_01)
 
 We can also analyze the example using an unequal variance $t$-test as follows. 
 
-```{r}
+```r
 ## fit equal unvariance t-test
 
 fit_10 <- RoBTT(
@@ -108,7 +190,7 @@ summary(fit_10, "models")
 
 The benefit of RoBTT in comparison to other commonly used $t$-tests is that it does not require us to rely on a single model but instead allows researchers to take different models into account at the same time. In other words, RoBTT uses Bayesian model-averaging to allow the data to guide the inference to be based most strongly on those models that predicted the data best. We can fit a $t$-test that model-averages over equal and unequal variances with the code provided below. 
 
-```{r}
+```r
 # fit t-test model averaging over equal and unequal variances
 fit_1 <- RoBTT(
   x1       = fertilization$Self,
@@ -134,7 +216,7 @@ summary(fit_1, "models")
 
 A common problem for t-tests that assume the normality of residuals are outliers. When outliers are present, the estimates of these methods can be driven overly strongly by those outliers. A common way to accomodate outliers is by also model-averaging over robust $t$-likelihoods. The t-distribution has thicker tails than the normal distribution; therefore, the estimate under the $t$-likelihood will be affected less due to outliers than the estimate using a normal likelihood. We can fit RoBTT that also model-averages over $t$-likelihoods as follows. 
 
-```{r}
+```r
 fit_2 <- RoBTT(
   x1       = fertilization$Self,
   x2       = fertilization$Crossed,
@@ -157,7 +239,7 @@ summary(fit_2, "models")
 It is sometimes argued that point null hypotheses are not meaningful to test as evidence for the alternative could already be provided by deviations from the null that would be considered small or uninteresting. RoBTT addresses this concern by allowing researchers to specify perinull hypotheses (i.e., a prior distribution with small sd instead of the point null).
 
 
-```{r}
+```r
 fit_3 <- RoBTT(
   x1       = fertilization$Self,
   x2       = fertilization$Crossed,
@@ -183,4 +265,4 @@ summary(fit_3, "models")
 This vignette showcased the applications of the RoBTT R package. For methodological background see the corresponding preprint (ref to preprint TBA). 
 
 
-
+### References
