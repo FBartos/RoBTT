@@ -54,9 +54,6 @@ be omitted from the summary. Defaults to \code{FALSE}.}
 \code{summary.RoBTT} creates summary tables for a
 RoBTT object.
 }
-\note{
-See \code{\link[=diagnostics]{diagnostics()}} for visual convergence checks of the individual models.
-}
 \examples{
 \dontrun{
 # using the example data from Anderson et al. 2010 and fitting the default model
@@ -80,7 +77,8 @@ summary(fit, type = "diagnostics")
 summary(fit, type = "individual")
 }
 
+
 }
 \seealso{
-\code{\link[=RoBTT]{RoBTT()}}, \code{\link[=diagnostics]{diagnostics()}}, \code{\link[=check_RoBTT]{check_RoBTT()}}
+\code{\link[=RoBTT]{RoBTT()}}
 }

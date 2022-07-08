@@ -91,6 +91,10 @@ Defaults to \code{5000}.}
 \item{thin}{a thinning of the chains of the MCMC algorithm. Defaults to
 \code{1}.}
 
+\item{parallel}{whether the individual models should be fitted in parallel.
+Defaults to \code{FALSE}. The implementation is not completely stable
+and might cause a connection error.}
+
 \item{control}{allows to pass control settings with the
 \code{\link[=set_control]{set_control()}} function. See \code{?set_control} for
 options and default settings.}
@@ -126,9 +130,7 @@ the \code{"normal"} likelihood is used).
 Add more details
 
 Generic \code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=print.RoBTT]{print.RoBTT()}}, and \code{\link[=plot.RoBTT]{plot.RoBTT()}} functions are
-provided to facilitate manipulation with the ensemble. A visual check of the
-individual model diagnostics can be obtained using the \code{\link[=diagnostics]{diagnostics()}} function.
-The fitted model can be further updated or modified by \code{\link[=update.RoBTT]{update.RoBTT()}} function.
+provided to facilitate manipulation with the ensemble.
 }
 \examples{
 \dontrun{
@@ -140,5 +142,5 @@ The fitted model can be further updated or modified by \code{\link[=update.RoBTT
 \insertAllCited{}
 }
 \seealso{
-\code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=update.RoBTT]{update.RoBTT()}}, \code{\link[=prior]{prior()}}, \code{\link[=check_setup]{check_setup()}}
+\code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=prior]{prior()}}
 }

@@ -30,6 +30,7 @@ Imports:
     rstan (>= 2.18.1),
     BayesTools (>= 0.2.12),
     callr,
+    methods,
     Rdpack
 Suggests:
     vdiffr,

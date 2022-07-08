@@ -63,12 +63,10 @@ print.RoBTT <- function(x, ...){
 #' summary(fit, type = "individual")
 #' }
 #'
-#' @note See [diagnostics()] for visual convergence checks of the individual models.
-#'
 #'
 #' @return \code{summary.RoBTT} returns a list of tables of class 'BayesTools_table'.
 #'
-#' @seealso [RoBTT()], [diagnostics()], [check_RoBTT()]
+#' @seealso [RoBTT()]
 #' @export
 summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
                                 group_estimates = FALSE, probs = c(.025, .975), logBF = FALSE, BF01 = FALSE,

@@ -42,6 +42,9 @@
 #' Defaults to \code{5000}.
 #' @param thin a thinning of the chains of the MCMC algorithm. Defaults to
 #' \code{1}.
+#' @param parallel whether the individual models should be fitted in parallel.
+#' Defaults to \code{FALSE}. The implementation is not completely stable
+#' and might cause a connection error.
 #' @param control allows to pass control settings with the
 #' [set_control()] function. See \code{?set_control} for
 #' options and default settings.
@@ -63,9 +66,7 @@
 #' @details Add more details
 #'
 #' Generic [summary.RoBTT()], [print.RoBTT()], and [plot.RoBTT()] functions are
-#' provided to facilitate manipulation with the ensemble. A visual check of the
-#' individual model diagnostics can be obtained using the [diagnostics()] function.
-#' The fitted model can be further updated or modified by [update.RoBTT()] function.
+#' provided to facilitate manipulation with the ensemble.
 #'
 #' @return \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
 #'
@@ -76,7 +77,7 @@
 #' @references
 #' \insertAllCited{}
 #' @export RoBTT
-#' @seealso [summary.RoBTT()], [update.RoBTT()], [prior()], [check_setup()]
+#' @seealso [summary.RoBTT()], [prior()]
 RoBTT <- function(
   x1 = NULL, x2 = NULL,
   mean1 = NULL, mean2 = NULL, sd1 = NULL, sd2 = NULL, N1 = NULL, N2 = NULL,
