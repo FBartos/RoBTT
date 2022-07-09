@@ -2,8 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-trash/
-prefitted/
 ..Rcheck
 src-x64
 src-i386

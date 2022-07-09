@@ -1,8 +1,5 @@
-functions{
-  
 #include /chunks/common_functions.stan
 
-}
 data {
   // data
   // are individual observation or summary statistics used

@@ -1,5 +1,5 @@
-# Part of the rstanarm package for estimating model parameters
-# Copyright (C) 2015, 2016, 2017 Trustees of Columbia University
+# Part of the LERSIL package for estimating model parameters
+# Copyright (C) 2015, 2016, 2017, 2018 Trustees of Columbia University
 # 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,8 +29,8 @@ stanmodels <- lapply(stan_files, function(f) {
   stanfit$model_cpp <- list(model_cppname = stanfit$model_name, 
                             model_cppcode = stanfit$cppcode)
   return(do.call(methods::new, args = c(stanfit[-(1:3)], Class = "stanmodel", 
-                 mk_cppmodule = function(x) get(paste0("model_", model_cppname)))))
-  }
+                                        mk_cppmodule = function(x) get(paste0("model_", model_cppname)))))
+}
 )
 names(stanmodels) <- sub("\\.stan$", "", basename(stan_files))
 rm(MODELS_HOME)
