@@ -70,7 +70,7 @@
     model_call$seed <- control[["seed"]]
   }
   
-  fit <- tryCatch(do.call(suppressWarnings(rstan::sampling, model_call)), error = function(e)e)
+  fit <- tryCatch(suppressWarnings(do.call(rstan::sampling, model_call)), error = function(e)e)
   
   # for BayesTools formatting
   attr(fit, "prior_list") <- priors

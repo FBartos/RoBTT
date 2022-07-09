@@ -118,6 +118,8 @@
 }
 .get_models             <- function(priors, likelihoods){
   
+  BayesTools::check_char(likelihoods, "likelihoods", check_length = 0, allow_values = c("normal", "t"))
+  
   # create models according to the set priors
   models <- NULL
   for(delta in priors[["delta"]]){

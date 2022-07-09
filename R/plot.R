@@ -56,12 +56,7 @@ plot.RoBTT  <- function(x, parameter = "mu",
   BayesTools::check_bool(conditional, "conditional")
   BayesTools::check_char(plot_type, "plot_type", allow_values = c("base", "ggplot"))
   BayesTools::check_bool(prior, "prior")
-  
-  
-  # deal with bad parameter names
-  if(!parameter %in% c("delta", "rho", "nu")){
-    stop("The passed parameter is not supported for plotting. See '?plot.RoBTT' for more details.")
-  }
+  BayesTools::check_char(parameter, "plot_type", allow_values = c("delta", "rho", "nu"))
   
   # choose the samples
   if(conditional){
@@ -84,6 +79,23 @@ plot.RoBTT  <- function(x, parameter = "mu",
       "rho"   = stop("The ensemble does not contain any posterior samples model-averaged across the heterogeneity. Please, verify that you specified at least one model for the heterogeneity."),
       "nu"    = stop("The ensemble does not contain any posterior samples model-averaged across outliers. Please, verify that you specified at least one model for outliers.")
     )
+  }
+  
+  # pretend that infinite degrees of freedom are 0 to make plotting possible for nu
+  if(parameter == "nu"){
+    
+    if(prior)
+      stop("Prior and posterior plots are not implemented for the degrees of freedom parameter.")
+    # the prior needs to be "shifted by two to the right"
+    
+    samples[["nu"]][is.infinite(samples[["nu"]])] <- 0
+    
+    for(i in seq_along(x[["models"]])){
+      if(x[["models"]][[i]][["likelihood"]] == "normal"){
+        attr(samples[["nu"]], "prior_list")[[i]] <- prior("spike", list("location" = 0))
+      }
+    }
+    
   }
   
   dots       <- .set_dots_plot(...)

@@ -174,6 +174,13 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       remove_spike_0 = remove_spike_0
     )
     
+    summary <- BayesTools::add_column(
+      summary,
+      column_title    = "Distribution",
+      column_values   = sapply(object[["models"]], function(m) m[["likelihood"]]),
+      column_position = 2,
+      column_type     = "string")
+    
     output <- list(
       call       = object[["call"]],
       title      = "Robust Bayesian t-test",
@@ -199,6 +206,13 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       short_name     = short_name,
       remove_spike_0 = remove_spike_0
     )
+    
+    diagnostics <- BayesTools::add_column(
+      diagnostics,
+      column_title    = "Distribution",
+      column_values   = sapply(object[["models"]], function(m) m[["likelihood"]]),
+      column_position = 2,
+      column_type     = "string")
     
     output <- list(
       call        = object[["call"]],
@@ -356,10 +370,10 @@ interpret           <- function(object){
     ),
     list(
       inference           = "Heterogeneity",
-      samples             = "tau",
+      samples             = "rho",
       inference_name      = "heterogeneity",
       inference_BF_name   = "BF^rho",
-      samples_name        = "tau"
+      samples_name        = "rho"
     ),
     list(
       inference           = "Outliers",

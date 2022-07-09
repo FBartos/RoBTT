@@ -1,5 +1,12 @@
 .ensemble_inference  <- function(object){
   
+  # modify the default null prior distribution to be spike at Inf
+  for(i in seq_along(object[["models"]])){
+    if(object[["models"]][[i]]$likelihood == "normal"){
+      attr(object[["models"]][[i]][["fit"]], "prior_list")$nu <- prior("spike", parameters = list(location = Inf))
+    }
+  }
+  
   # use only converged models with prior weights > 0 for inference about parameters
   prior_weights <- sapply(object[["models"]], function(model) model[["prior_weights"]])
   models        <- object[["models"]][.get_model_convergence(object) & prior_weights > 0]
@@ -15,8 +22,7 @@
   components      <- c("Effect", "Heterogeneity", "Outliers")[components_present]
   parameters      <- c("delta", "rho", "nu")[components_present]
   components_null <- list("Effect" = !effect, "Heterogeneity" = !heterogeneity, "Outliers" = !outliers)[components_present]
-  parameters_null <- list("mu"     = !effect, "tau"           = !heterogeneity, "nu"       = outliers)[components_present]
-  
+  parameters_null <- list("mu"     = !effect, "tau"           = !heterogeneity, "nu"       = !outliers)[components_present]
   
   ### get models inference
   inference <- BayesTools::ensemble_inference(
