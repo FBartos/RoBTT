@@ -3,7 +3,7 @@ skip_on_cran()
 skip_on_covr()
 
 # test objects
-saved_files <- paste0("fit_", 1:13, ".RDS")
+saved_files <- paste0("fit_", 1:3, ".RDS")
 saved_fits  <- list()
 for(i in seq_along(saved_files)){
   saved_fits[[i]] <- readRDS(file = file.path("../results/fits", saved_files[i]))

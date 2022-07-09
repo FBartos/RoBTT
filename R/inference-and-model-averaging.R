@@ -49,7 +49,7 @@
     model_list   = models,
     parameters   = parameters,
     is_null_list = parameters_null,
-    seed         = object$add_info[["seed"]],
+    seed         = object$control[["seed"]],
     conditional  = FALSE
   )
   # deal with the possibility of only null models models
@@ -60,7 +60,7 @@
       model_list   = models,
       parameters   = parameters[!sapply(parameters_null, all)],
       is_null_list = parameters_null[!sapply(parameters_null, all)],
-      seed         = object$add_info[["seed"]],
+      seed         = object$control[["seed"]],
       conditional  = TRUE
     )
   }
@@ -82,7 +82,7 @@
     model_list   = models,
     parameters   = parameters_est,
     is_null_list = parameters_est_null,
-    seed         = object$add_info[["seed"]],
+    seed         = object$control[["seed"]],
     conditional  = FALSE
   )
   
