@@ -1,0 +1,6 @@
+"Robust Bayesian t-test found weak evidence against the effect, BF_10 = 0.493, wi
+th mean model-averaged estimate delta = 0.098, 95% CI [-0.326,  1.017]. Robust B
+ayesian t-test found weak evidence against the heterogeneity, BF^rho = 0.595, wi
+th mean model-averaged estimate rho = 0.517, 95% CI [0.230, 0.834]. Robust Bayes
+ian t-test found weak evidence in favor of the outliers, BF^nu = 1.21, with mean
+ model-averaged estimate nu = Inf, 95% CI [2.052,   Inf]."

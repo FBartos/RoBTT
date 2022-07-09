@@ -1,0 +1,7 @@
+"Call:"
+"RoBTT(mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, "
+"    N2 = N2, likelihood = \"normal\", parallel = FALSE, seed = 1)"
+""
+"Estimates:"
+"      delta         rho "
+"-0.05173969  0.53082082 "

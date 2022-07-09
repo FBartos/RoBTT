@@ -1,0 +1,6 @@
+"Call:"
+"RoBTT(x1 = x1, x2 = x2, parallel = FALSE, seed = 1)"
+""
+"Estimates:"
+"     delta        rho "
+"0.09759339 0.51729938 "
