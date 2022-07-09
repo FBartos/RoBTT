@@ -44,24 +44,24 @@ test_that("Summary functions work", {
       ""                                                               ,
       "Model-averaged estimates:"                                      ,
       "       Mean Median   0.1   0.5   0.9"                           ,
-      "delta 0.090  0.000 0.000 0.000 0.457"                           ,
-      "rho   0.518  0.500 0.410 0.500 0.695"                           ,
-      "nu      Inf  4.471 2.226 4.471   Inf"                           ,
+      "delta 0.088  0.000 0.000 0.000 0.470"                           ,
+      "rho   0.517  0.500 0.417 0.500 0.686"                           ,
+      "nu      Inf  4.505 2.214 4.505   Inf"                           ,
       "\033[0;31mModel (7): There were 1 divergent transitions.\033[0m",
       ""                                                               ,
       "Model-averaged group parameter estimates:"                      ,
       "          Mean Median   0.1   0.5   0.9"                        ,
-      "mu[1]    1.695  1.666 0.271 1.666 3.190"                        ,
-      "mu[2]    2.032  1.926 0.569 1.926 3.681"                        ,
-      "sigma[1] 4.953  3.832 2.464 3.832 7.968"                        ,
-      "sigma[2] 5.149  3.978 2.603 3.978 8.255"                        ,
+      "mu[1]    1.690  1.660 0.260 1.660 3.171"                        ,
+      "mu[2]    2.017  1.920 0.579 1.920 3.638"                        ,
+      "sigma[1] 5.188  3.831 2.462 3.831 8.207"                        ,
+      "sigma[2] 5.375  3.965 2.589 3.965 8.479"                        ,
       "\033[0;31mModel (7): There were 1 divergent transitions.\033[0m",
       ""                                                               ,
       "Conditional estimates:"                                         ,
       "       Mean Median    0.1   0.5   0.9"                          ,
-      "delta 0.271  0.227 -0.260 0.227 0.866"                          ,
-      "rho   0.550  0.560  0.278 0.560 0.806"                          ,
-      "nu    3.029  2.734  2.123 2.734 4.304"                          ,
+      "delta 0.279  0.235 -0.275 0.235 0.890"                          ,
+      "rho   0.547  0.557  0.272 0.557 0.805"                          ,
+      "nu    3.035  2.722  2.116 2.722 4.391"                          ,
       "\033[0;31mModel (7): There were 1 divergent transitions.\033[0m"
   ))
 })
@@ -92,7 +92,7 @@ test_that("Models summary functions work", {
       "     6            t  C(0, 0.71)    S(0.5)     E(1)       0.125       -25.02       0.094        0.726",
       "     7       normal  C(0, 0.71)   B(1, 1)                0.125       -25.42       0.063        0.471",
       "     8            t  C(0, 0.71)   B(1, 1)     E(1)       0.125       -25.50       0.058        0.433",
-      "\033[0;31mModel (7): There were 1 divergent transitions.\033[0m"            
+      "\033[0;31mModel (7): There were 1 divergent transitions.\033[0m"    
     ))
 
 })

@@ -82,7 +82,7 @@
   
   if(!is.null(fit) & !any(class(fit) %in% c("simpleError", "error", "condition"))){
     
-    fit_summary <- BayesTools::stan_estimates_summary(fit)
+    fit_summary <- BayesTools::stan_estimates_table(fit)
     converged   <- TRUE 
     
     if(any(fit_summary[,"ESS"] < convergence_checks[["min_ESS"]])){

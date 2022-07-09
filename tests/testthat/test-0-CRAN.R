@@ -18,7 +18,8 @@ test_that("Basic functionality works", {
       ""                                                                ,
       "Estimates:"                                                      ,
       "     delta        rho "                                          ,
-      "-0.2011495  0.5052745 "  )
+      "-0.1988558  0.5066339 " 
+    )
   )
 
   expect_equal(
@@ -36,9 +37,9 @@ test_that("Basic functionality works", {
       ""                                                                                            ,
       "Model-averaged estimates:"                                                                   ,
       "        Mean Median  0.025 0.975"                                                            ,
-      "delta -0.201  0.000 -1.539 0.335"                                                            ,
-      "rho    0.505  0.500  0.191 0.862"                                                            ,
-      "nu       Inf    Inf  2.088   Inf"                                                            ,
+      "delta -0.199  0.000 -1.543 0.366"                                                            ,
+      "rho    0.507  0.500  0.191 0.862"                                                            ,
+      "nu       Inf    Inf  2.085   Inf"                                                            ,
       "\033[0;31mModel (1): Minimum effective sample size was low (23).\033[0m"                     ,
       "\033[0;31mModel (1): Maximum R-hat was large (1.18).\033[0m"                                 ,
       "\033[0;31mModel (2): Minimum effective sample size was low (9).\033[0m"                      ,
