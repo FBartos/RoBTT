@@ -1,0 +1,55 @@
+---
+title:        "README"
+bibliography: inst/REFERENCES.bib
+csl:          inst/apa.csl
+output:       github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+```{r include = FALSE, eval = FALSE}
+
+```
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.path = "man/figures/README-",
+  dev      = "png"
+)
+if(.Platform$OS.type == "windows"){
+  knitr::opts_chunk$set(dev.args = list(type = "cairo"))
+}
+```
+
+<!-- badges: start -->
+[![R-CRAN-check](https://github.com/FBartos/RoBTT/workflows/R-CMD-check/badge.svg)](https://github.com/FBartos/RoBTT/actions)
+[![R-tests](https://github.com/FBartos/RoBTT/workflows/R-CMD-tests/badge.svg)](https://github.com/FBartos/RoBTT/actions)
+[![Codecov test coverage](https://codecov.io/gh/FBartos/RoBTT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/FBartos/RoBTT?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/RoBTT)](https://CRAN.R-project.org/package=RoBTT)
+<!-- badges: end -->
+
+# Robust Bayesian T-Test (RoBTT)
+
+This package provides an implementation of Bayesian model-averaged t-test that allows users to draw inference about the presence vs absence of the effect, heterogeneity of variances, and outliers. The RoBTT packages estimates model ensembles of models created as a combination of the competing hypotheses and uses Bayesian model-averaging to combine the models using posterior model probabilities. Users can obtain the model-averaged posterior distributions and inclusion Bayes factors which account for the uncertainty in the data generating process. User can define a wide range of informative priors for all parameters of interest. The package provides convenient functions for summary, visualizations, and fit diagnostics.
+
+See our pre-print @maier2022bayesian (https://doi.org/XXX) introducing the method.
+
+We also prepared a vignette that illustrate functionality of the package:
+
+ - [Introduction to RoBTT](https://fbartos.github.io/RoBTT/articles/Introduction_to_RoBTT.html)
+
+
+## Installation
+
+The release version can be installed from CRAN:
+``` r
+install.packages("RoBTT")
+```
+and the development version of the package can be installed from GitHub:
+
+``` r
+devtools::install_github("fbartos/RoBTT")
+```
+
+
+### References
