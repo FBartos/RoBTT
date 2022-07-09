@@ -1,3 +1,20 @@
+#' @title Check fitted RoBTT object for errors and warnings
+#'
+#' @description Checks fitted RoBTT object
+#' for warnings and errors and prints them to the
+#' console.
+#'
+#' @param fit a fitted RoBTT object.
+#'
+#'
+#' @return \code{check_RoBTT} returns a vector of error and
+#' warning messages.
+#'
+#' @export
+check_RoBTT <- function(fit){
+  .print_errors_and_warnings(fit, max_print = Inf)
+}
+
 .remove_model_posteriors   <- function(object){
   for(i in seq_along(object[["models"]])){
     if(inherits(object$models[[i]][["fit"]], "stanfit")){
@@ -32,7 +49,7 @@
   }else if(length(warnings) <= n_warnings){
     return(warnings)
   }else{
-    return(c(warnings[1:n_warnings], paste0("There were another ", length(warnings) - n_warnings - 1, " warnings. To see all warnings call 'check_RoBMA(fit)'.")))
+    return(c(warnings[1:n_warnings], paste0("There were another ", length(warnings) - n_warnings - 1, " warnings. To see all warnings call 'check_RoBTT(fit)'.")))
   }
 }
 .shorten_errors      <- function(errors, n_errors = 5){
@@ -41,7 +58,7 @@
   }else if(length(errors) <= n_errors){
     return(errors)
   }else{
-    return(c(errors[1:n_errors], paste0("There were another ", length(errors) - n_errors - 1, " errors. To see all errors call 'check_RoBMA(fit)'.")))
+    return(c(errors[1:n_errors], paste0("There were another ", length(errors) - n_errors - 1, " errors. To see all errors call 'check_RoBTT(fit)'.")))
   }
 }
 .convergence_warning <- function(object){
