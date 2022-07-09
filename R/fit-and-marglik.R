@@ -43,13 +43,17 @@
   warnings    <- NULL
   
   model_call <- list(
-    object          = stanmodels[[likelihood]],
-    data            = fit_data,
-    chains          = control[["chains"]],
-    warmup          = control[["warmup"]],
-    iter            = control[["iter"]],
-    thin            = control[["thin"]],
-    cores           = control[["cores"]]
+    object    = stanmodels[[likelihood]],
+    data      = fit_data,
+    chains    = control[["chains"]],
+    warmup    = control[["warmup"]],
+    iter      = control[["iter"]],
+    thin      = control[["thin"]],
+    cores     = control[["cores"]],
+    control   = list(
+      adapt_delta   = control[["adapt_delta"]],
+      max_treedepth = control[["max_treedepth"]]
+    )
   )
   
   if(likelihood == "beta"){
@@ -88,6 +92,11 @@
     if(any(fit_summary[,"R_hat"] > convergence_checks[["max_Rhat"]])){
       warnings  <- c(warnings, paste0("Maximum R-hat was large (",  round(max(fit_summary[,"R_hat"]), 2), ")."))
     }
+    
+    if(any(rstan::get_divergent_iterations(fit))){
+      warnings  <- c(warnings, paste0("There were ", sum(rstan::get_divergent_iterations(fit)), " divergent transitions."))
+    }
+    rstan::check_divergences(fit)
   }
   
   
