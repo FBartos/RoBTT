@@ -45,9 +45,10 @@ Imports:
     BayesTools (>= 0.2.12),
     bridgesampling,
     callr,
-    methods,
     Rdpack
 Suggests:
+    parallel,
+    testthat,
     vdiffr,
     knitr,
     rmarkdown,
