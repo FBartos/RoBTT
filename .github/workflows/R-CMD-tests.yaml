@@ -71,9 +71,9 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          install.packages("devtools")
-          install.packages("testthat")
-          install.packages("vdiffr")
+          install.packages("devtools", repos = "http://cran.us.r-project.org")
+          install.packages("testthat", repos = "http://cran.us.r-project.org")
+          install.packages("vdiffr", repos = "http://cran.us.r-project.org")
           devtools::install()
           library(vdiffr)
           library(testthat)
