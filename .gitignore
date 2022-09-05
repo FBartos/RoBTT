@@ -32,3 +32,5 @@ vignettes/*.pdf
 *.dll
 src/stan_files/*.hpp
 src/stan_files/*.o
+/doc/
+/Meta/
