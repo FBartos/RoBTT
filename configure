@@ -16,3 +16,4 @@ if [[ "${CI}" == "true" ]]; then
         sed -i 's|CXX_STD = CXX14||' src/Makevars
     fi
 fi
+
