@@ -1,3 +1,5 @@
+functions {
+  
  // default Jeffrey priors for sigma and mu
   real Jeffreys_mu_lpdf(real mu){
     return 0;
@@ -143,3 +145,4 @@
 
     return ll;
   }
+}

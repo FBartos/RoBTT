@@ -1,0 +1,11 @@
+citHeader("To cite the RoBTT package in publications use:")
+
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "misc",
+         title = "RoBTT: An R Package for Robust Bayesian T-Test",
+         author = c(person("František",  "Bartoš"),
+                    person("Maximilian", "Maier")),
+         year = 2022,
+         note = note,
+         url = "https://CRAN.R-project.org/package=RoBTT")

@@ -1,23 +1,58 @@
 Package: RoBTT
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
-Depends: 
-    Rcpp (>= 0.12.19)
-Imports:
-    rstan (>= 2.18.1)
-LinkingTo: 
-    BH (>= 1.66.0-1),
-    Rcpp (>= 0.12.19),
-    RcppEigen (>= 0.3.3.4.0),
-    rstan (>= 2.18.1),
-    StanHeaders (>= 2.18.0)
+Title: Robust Bayesian T-Test
+Version: 1.0.0
+Maintainer: František Bartoš <f.bartos96@gmail.com>
+Authors@R: c( 
+    person("František", "Bartoš",     role = c("aut", "cre"),
+    email   = "f.bartos96@gmail.com", comment = c(ORCID = "0000-0002-0018-5573")),
+    person("Maximilian", "Maier",     role = "aut",
+    email   = "maximilianmaier0401@gmail.com", comment = c(ORCID = "0000-0002-9873-6096"))
+    )
+Description: An implementation of Bayesian model-averaged t-test that allows 
+    users to draw inference about the presence vs absence of the effect, 
+    heterogeneity of variances, and outliers. The RoBTT packages estimates model 
+    ensembles of models created as a combination of the competing hypotheses and uses 
+    Bayesian model-averaging to combine the models using posterior model probabilities. 
+    Users can obtain the model-averaged posterior distributions and inclusion Bayes 
+    factors which account for the uncertainty in the data generating process 
+    (Maier et al. forthcomming).
+    Users can define a wide range of informative priors for all parameters 
+    of interest. The package provides convenient functions for summary, visualizations, 
+    and fit diagnostics.
+URL: https://fbartos.github.io/RoBTT/
+BugReports: https://github.com/FBartos/RoBTT/issues
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-NeedsCompilation: yes
 SystemRequirements: GNU make
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+NeedsCompilation: yes
+ByteCompile: true
+LinkingTo: 
+    StanHeaders (>= 2.18.1),
+    rstan (>= 2.21.2),
+    BH (>= 1.69.0),
+    Rcpp (>= 0.12.15),
+    RcppEigen (>= 0.3.3.4.0),
+    RcppParallel (>= 5.0.1)
+Depends: 
+    R (>= 4.0.0),
+    Rcpp (>= 0.12.19)
+Imports:
+    rstan(>= 2.21.2),
+    rstantools(>= 1.5.0),
+    RcppParallel (>= 5.0.1),
+    BayesTools (>= 0.2.12),
+    bridgesampling,
+    methods,
+    Rdpack
+Suggests:
+    parallel,
+    testthat,
+    vdiffr,
+    knitr,
+    rmarkdown,
+    covr
+RdMacros: Rdpack
+VignetteBuilder: knitr

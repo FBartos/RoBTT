@@ -1,0 +1,280 @@
+---
+title: "Introduction to RoBTT"
+author: "Maximilian Maier & František Bartoš"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    self_contained: yes
+bibliography: ../inst/REFERENCES.bib
+csl: ../inst/apa.csl
+vignette: >
+  %\VignetteIndexEntry{Introduction to RoBTT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
+---
+
+```{r setup, include=FALSE}
+is_check <- ("CheckExEnv" %in% search()) ||
+              any(c("_R_CHECK_TIMINGS_", "_R_CHECK_LICENSE_") %in% names(Sys.getenv())) ||
+              !file.exists("../models/Introduction/fit_3.RDS")
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  eval      = !is_check,
+  dev      = "png")
+if(.Platform$OS.type == "windows"){
+  knitr::opts_chunk$set(dev.args = list(type = "cairo"))
+}
+print_conditional <- function(fit, coef = "delta"){
+  with(fit, 
+       sprintf("%1$s, 95%% CI [%2$s, %3$s]",
+               format(round(mean(RoBTT$posterior[[coef]]), 2), nsmall = 3),
+               format(round(quantile(RoBTT$posterior[[coef]], 0.025), 2), nsmall = 2),
+               format(round(quantile(RoBTT$posterior[[coef]], 0.975), 2), nsmall = 2)
+       ))
+} 
+```
+
+```{r include = FALSE, eval = FALSE}
+# pre-fit all models (easier to update the code on package update)
+library(RoBTT)
+
+data("fertilization", package = "RoBTT")
+
+fit_01 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = NULL, #this indicates no prior on the variance allocation factor -> equal variance test
+  likelihood  = "normal",
+  seed        = 0
+)
+fit_10 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta    = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho      = prior("beta",   list(3, 3)), #prior on variance allocation
+  prior_rho_null = NULL, #remove models assuming equal variance
+  likelihood     = "normal",
+  seed           = 0
+)
+fit_1 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  likelihood  = "normal",
+  seed        = 1,
+  control     = set_control(adapt_delta = 0.95)
+)
+fit_2 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  prior_nu    = prior("exp",    list(1)), # prior on degrees of freedom
+  likelihood  = c("normal", "t"), #use both normal and t-likelihoods
+  seed        = 2
+)
+fit_3 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
+  prior_rho        = prior("beta",   list(3, 3)),
+  prior_nu         = prior("exp",    list(1)),
+  prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)), #prior distribution and truncation
+  likelihood       = c("normal", "t"),
+  seed             = 3
+)
+
+saveRDS(fit_01, file = "../models/Introduction/fit_01.RDS")
+saveRDS(fit_10, file = "../models/Introduction/fit_10.RDS")
+saveRDS(fit_1,  file = "../models/Introduction/fit_1.RDS")
+saveRDS(fit_2,  file = "../models/Introduction/fit_2.RDS")
+saveRDS(fit_3,  file = "../models/Introduction/fit_3.RDS")
+```
+
+```{r include = FALSE}
+# pre-load the fitted models to save time on compilation
+library(RoBTT)
+
+fit_01 <- readRDS(file = "../models/Introduction/fit_01.RDS")
+fit_10 <- readRDS(file = "../models/Introduction/fit_10.RDS")
+fit_1  <- readRDS(file = "../models/Introduction/fit_1.RDS")
+fit_2  <- readRDS(file = "../models/Introduction/fit_2.RDS")
+fit_3  <- readRDS(file = "../models/Introduction/fit_3.RDS")
+```
+
+## Introduction and Example
+
+This vignette introduces the basic functionality of the RoBTT package using a classic example from Ronald Fishers Design of Experiments [@fisher1937design]. Fisher illustrates the Student's $t$-test on an example of self fertilized and cross fertilized plants as coded by Darwin. In other words, one group of plants was fertilized by gametes (sex-cells) from the same individual (self), while the other group of plants was fertilized by gametes from the same species (cross). Darwin himself concludes: 
+
+*I may premise that if we took by chance a dozen men belonging to two nations and measured them, it would I presume be very rash to form any judgment from such small number on their average heights. But the case is somewhat different with crossed and self-fertilized plants, as they were exactly the same age, were subjected from first to last to the same conditions, and were descended from the same parents.* p. 28 [@fisher1937design]. 
+
+Not knowing much about statistics he gives his data to Francis Galton, who proceeds to order the plants by height as a method of statistical analysis and concludes:
+
+*The observations as I received them [...] certainly have no prima facie appearance of regularity. But as soon as we arrange them in the order of their magnitudes [...] the case is materially altered. We now see, with few exceptions, that the largest plant on the crossed side in each pot exceeds the largest plant on the self-fertilised side, that the second exceeds the second, the third the third, and so on. \parencite[p. 29]{fisher1937design}.* p. 29 [@fisher1937design]. 
+
+Galton then forwarded the data to Fisher, who later analyzed it with a frequentist Student's $t$-test and states:
+
+*The observed value of $t$, 2.148, thus just exceeds the 5 per cent point, and the experimental result may be judged significant, though barely so. \parencite[p. 38]{fisher1937design}.\footnote{Note that although different plants were self and cross fertilized Fisher used a within-subjects $t$-test. When analyzing the data with a between-subject $t$-test we find $t$(22.164) = 2.437, $p$ = 0.023.}*
+
+We can load the included data with the code below
+
+```{r}
+library(RoBTT)
+data("fertilization", package = "RoBTT")
+head(fertilization)
+```
+
+
+## Equal Variance t-test
+
+We reanalyze the data using a Bayesian equal variance $t$-test as follows. 
+
+```r
+## fit equal variance t-test
+fit_01 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = NULL, # this indicates no prior on the precision proportion -> equal variance test
+  likelihood  = "normal",
+  seed        = 0
+)
+```
+
+We can retrieve a summary of the estimates with the code below. This function gives us the posterior mean and median estimate for the effect in terms of Cohen's $d$ and 95\% central credible interval. In addition, it shows the estimates for mean and variance in each of the groups. 
+
+```{r}
+# get overall summary
+summary(fit_01)
+```
+We can also look at the estimates for the individual models and retrieve their prior distributions. The Bayesian equal variance $t$-test uses two models: One assuming absence of an effect (as indicated by prior $\delta = \text{Spike}(0)$) assuming presence of an effect (as indicated by prior $\delta = \text{Cauchy}(0, 0.71)$). Both models assume equal variances. The inclusion Bayes factor shows the evidence for the inclusion of the individual models. In this case the Bayes factor for model 2 (assuming the difference in mean) is equivalent to the Bayes factor for the presence of an effect. 
+```{r}
+# get individual model summaries
+summary(fit_01, type = "models")
+```
+Finally, we can use the `conditional = TRUE` argument to retrieve the estimates only for the models assuming an effect (i.e., without the spike).
+```{r}
+summary(fit_01, conditional = TRUE)
+```
+
+
+## Unequal Variance t-test
+
+We can also analyze the example using an unequal variance $t$-test as follows. 
+
+```r
+## fit equal unvariance t-test
+
+fit_10 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta    = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho      = prior("beta",   list(3, 3)), # prior on precision proportion
+  prior_rho_null = NULL, # remove models assuming equal variance
+  likelihood     = "normal",
+  seed           = 0
+)
+```
+We again retrieve the summary; however, this time we also get a Bayes factor for unequal variances (heterogeneity) and an estimate for $\rho$ (the precision proportion).
+
+```{r}
+summary(fit_10)
+```
+
+We can again receive the individual model estimates. The `Prior rho` column now contains a beta distribution rather than spike at zero. This indicates that we used the models assuming differences in variances. 
+```{r}
+summary(fit_10, type = "models")
+```
+
+
+## Model-Averaging Over Equal and Unequal Variances 
+
+The benefit of RoBTT in comparison to other commonly used $t$-tests is that it does not require us to rely on a single model but instead allows researchers to take different models into account at the same time. In other words, RoBTT uses Bayesian model-averaging to allow the data to guide the inference to be based most strongly on those models that predicted the data best. We can fit a $t$-test that model-averages over equal and unequal variances with the code provided below. 
+
+```r
+# fit t-test model averaging over equal and unequal variances
+fit_1 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  likelihood  = "normal",
+  seed        = 1
+)
+```
+We retrieve the overall estimates as before using the summary function.
+
+```{r}
+summary(fit_1)
+```
+
+When looking at the individual models, we see that four models (instead of two) are incorporated. These are the two equal variance models (from the first test in this vignette) and the two unequal variance models (from the second test in this vignette). The inclusion Bayes factors tell us the evidence for each of these individual models. We see that the model assuming an effect and unequal variances has the highest predictive accuracy. 
+```{r}
+summary(fit_1, type = "models")
+```
+## Model-Averaging Over Robust t-likelihoods
+
+A common problem for t-tests that assume the normality of residuals is outliers. When outliers are present, the estimates of these methods can be driven overly strongly by those outliers. A common way to accomodate outliers is by also model-averaging over robust $t$-likelihoods. The t-distribution has thicker tails than the normal distribution; therefore, the estimate under the $t$-likelihood will be affected less due to outliers than the estimate using a normal likelihood. We can fit RoBTT that also model-averages over $t$-likelihoods as follows. 
+
+```r
+fit_2 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  prior_nu    = prior("exp",    list(1)), # prior on degrees of freedom + 2
+  likelihood  = c("normal", "t"), # use both normal and t-likelihoods
+  seed        = 2
+)
+```
+
+When looking at the individual model estimates incorporating $t$-likelihoods, we find that the four models from the previous t-test are incorporated a second time, however, with t-likelihood in the likelihood column. In other words, we now use eight models overall. 
+```{r}
+summary(fit_2, type = "models")
+```
+
+## Perinull testing
+
+It is sometimes argued that point null hypotheses are not meaningful to test as evidence for the alternative could already be provided by deviations from the null that would be considered small or uninteresting. RoBTT addresses this concern by allowing researchers to specify perinull hypotheses (i.e., a prior distribution with small sd instead of the point null).
+
+
+```r
+fit_3 <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  parallel = TRUE,
+  prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
+  prior_rho        = prior("beta",   list(3, 3)),
+  prior_nu         = prior("exp",    list(1)),
+  prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)), # prior distribution and truncation
+  likelihood       = c("normal", "t"),
+  seed             = 3
+)
+
+```
+
+When looking at the individual models we see that the models that previously had Spike(0.5) are now using normal(0, 0.15) prior from 0 to infinity. This indicates the shift from point null to perinull testing. 
+
+```{r}
+summary(fit_3, type = "models")
+```
+
+## Conclusions
+
+This vignette showcased the applications of the RoBTT R package. For methodological background see the corresponding preprint (ref to preprint TBA). 
+
+
+### References
