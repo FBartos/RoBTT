@@ -108,6 +108,3 @@
     "rho"   = if(length(RoBTT$posteriors[["rho"]])   != 0)  mean(RoBTT$posteriors[["rho"]])
   ))
 }
-
-
-

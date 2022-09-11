@@ -64,16 +64,29 @@
 #' also suppresses all messages.
 #' @param ... additional arguments.
 #'
-#' @details Add more details
+#' @details See \insertCite{maier2022bayesian;textual}{RoBTT} for more details 
+#' regarding the methodology.
 #'
 #' Generic [summary.RoBTT()], [print.RoBTT()], and [plot.RoBTT()] functions are
 #' provided to facilitate manipulation with the ensemble.
 #'
 #' @return \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
 #'
-#' @examples \dontrun{
-#' # using the example data from XXX
-#' }
+#' @examples
+#' # using the example data from Anderson et al. 2010 and fitting the default model
+#' data("fertilization", package = "RoBTT")
+#' fit <- RoBTT(
+#'   x1       = fertilization$Self,
+#'   x2       = fertilization$Crossed,
+#'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+#'   prior_rho   = prior("beta",   list(3, 3)),
+#'   likelihood  = "normal",
+#'   seed        = 1,
+#'   control     = set_control(adapt_delta = 0.95)
+#' )
+#'
+#' # summary can provide many details about the model
+#' summary(fit)
 #'
 #' @references
 #' \insertAllCited{}

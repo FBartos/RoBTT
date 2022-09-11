@@ -10,27 +10,13 @@
   fit_data <- .fit_data(object[["data"]], priors, model[["likelihood"]])
   
   # fit the model
-  if(control[["silent"]]){
-    fit <- callr::r(
-      .fit_model_and_marglik_RoBTT,
-      args = list(
-        priors             = priors,
-        fit_data           = fit_data,
-        likelihood         = model[["likelihood"]],
-        control            = control,
-        convergence_checks = convergence_checks
-      ),
-      package = TRUE
-    )
-  }else{
-    fit <- .fit_model_and_marglik_RoBTT(
-      priors             = priors,
-      fit_data           = fit_data,
-      likelihood         = model[["likelihood"]],
-      control            = control,
-      convergence_checks = convergence_checks
-    )
-  }
+  fit <- .fit_model_and_marglik_RoBTT(
+    priors             = priors,
+    fit_data           = fit_data,
+    likelihood         = model[["likelihood"]],
+    control            = control,
+    convergence_checks = convergence_checks
+  )
   
   model <- c(model, fit)
   
@@ -55,6 +41,12 @@
       max_treedepth = control[["max_treedepth"]]
     )
   )
+  
+  if(control[["silent"]]){
+    model_call$refresh <- -1
+    model_call$open_progress <- FALSE
+    model_call$show_messages <- FALSE
+  }
   
   if(likelihood == "beta"){
     model_call$init <- lapply(1:control[["chains"]], function(i) {

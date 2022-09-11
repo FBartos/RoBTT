@@ -1,6 +1,6 @@
 Package: RoBTT
 Title: Robust Bayesian T-Test
-Version: 0.0.999
+Version: 1.0.0
 Maintainer: František Bartoš <f.bartos96@gmail.com>
 Authors@R: c( 
     person("František", "Bartoš",     role = c("aut", "cre"),
@@ -15,7 +15,7 @@ Description: An implementation of Bayesian model-averaged t-test that allows
     Bayesian model-averaging to combine the models using posterior model probabilities. 
     Users can obtain the model-averaged posterior distributions and inclusion Bayes 
     factors which account for the uncertainty in the data generating process 
-    (Maier et al. 2022, <doi:XXX>).
+    (Maier et al. forthcomming).
     Users can define a wide range of informative priors for all parameters 
     of interest. The package provides convenient functions for summary, visualizations, 
     and fit diagnostics.
@@ -45,7 +45,7 @@ Imports:
     RcppParallel (>= 5.0.1),
     BayesTools (>= 0.2.12),
     bridgesampling,
-    callr,
+    methods,
     Rdpack
 Suggests:
     parallel,

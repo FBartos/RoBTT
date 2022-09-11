@@ -41,9 +41,18 @@ print.RoBTT <- function(x, ...){
 #' be omitted from the summary. Defaults to \code{FALSE}.
 #' @param ... additional arguments
 #'
-#' @examples \dontrun{
+#' @examples
 #' # using the example data from Anderson et al. 2010 and fitting the default model
-#' # (note that the model can take a while to fit)
+#' data("fertilization", package = "RoBTT")
+#' fit <- RoBTT(
+#'   x1       = fertilization$Self,
+#'   x2       = fertilization$Crossed,
+#'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+#'   prior_rho   = prior("beta",   list(3, 3)),
+#'   likelihood  = "normal",
+#'   seed        = 1,
+#'   control     = set_control(adapt_delta = 0.95)
+#' )
 #'
 #' # summary can provide many details about the model
 #' summary(fit)
@@ -344,7 +353,6 @@ print.summary.RoBTT <- function(x, ...){
 is.RoBTT            <- function(x){
   inherits(x, "RoBTT")
 }
-
 
 
 #' @title Interprets results of a RoBTT model.
