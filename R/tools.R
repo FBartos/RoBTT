@@ -1,10 +1,10 @@
-#' @title Check fitted RoBTT object for errors and warnings
+#' @title Check fitted 'RoBTT' object for errors and warnings
 #'
-#' @description Checks fitted RoBTT object
+#' @description Checks fitted 'RoBTT' object
 #' for warnings and errors and prints them to the
 #' console.
 #'
-#' @param fit a fitted RoBTT object.
+#' @param fit a fitted 'RoBTT' object.
 #'
 #'
 #' @return \code{check_RoBTT} returns a vector of error and

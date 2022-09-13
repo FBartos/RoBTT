@@ -3,7 +3,6 @@
 ##' RoBTT: Bayesian model-averaged t-test extends the Bayesian t-test by 
 ##' incorporating inference about heterogeneity of variances and outliers.
 ##'
-##'
 ##' @name RoBTT-package
 ##' @author František Bartoš \email{f.bartos96@@gmail.com}
 ##' @keywords package

@@ -4,7 +4,7 @@
 \alias{RoBTT_options}
 \alias{RoBTT.options}
 \alias{RoBTT.get_option}
-\title{Options for the RoBTT package}
+\title{Options for the 'RoBTT' package}
 \usage{
 RoBTT.options(...)
 
@@ -18,10 +18,10 @@ details below.}
 available options, see details below.}
 }
 \value{
-The current value of all available RoBTT options (after applying any
+The current value of all available 'RoBTT' options (after applying any
 changes specified) is returned invisibly as a named list.
 }
 \description{
-A placeholder object and functions for the RoBTT package.
+A placeholder object and functions for the 'RoBTT' package.
 (adapted from the runjags R package).
 }

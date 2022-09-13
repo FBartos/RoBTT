@@ -1,6 +1,6 @@
-#' @title Options for the RoBTT package
+#' @title Options for the 'RoBTT' package
 #'
-#' @description A placeholder object and functions for the RoBTT package.
+#' @description A placeholder object and functions for the 'RoBTT' package.
 #' (adapted from the runjags R package).
 #'
 #' @param name the name of the option to get the current value of - for a list of
@@ -8,7 +8,7 @@
 #' @param ... named option(s) to change - for a list of available options, see
 #' details below.
 #'
-#' @return The current value of all available RoBTT options (after applying any
+#' @return The current value of all available 'RoBTT' options (after applying any
 #' changes specified) is returned invisibly as a named list.
 #'
 #' @export RoBTT.options

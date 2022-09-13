@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot.RoBTT}
 \alias{plot.RoBTT}
-\title{Plots a fitted RoBTT object}
+\title{Plots a fitted 'RoBTT' object}
 \usage{
 \method{plot}{RoBTT}(
   x,
@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{x}{a fitted RoBTT object}
+\item{x}{a fitted 'RoBTT' object}
 
 \item{parameter}{a parameter to be plotted. Defaults to
 \code{"delta"} (for the effect size). The additional options

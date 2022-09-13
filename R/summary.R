@@ -1,6 +1,6 @@
-#' @title Prints a fitted RoBTT object
+#' @title Prints a fitted 'RoBTT' object
 #'
-#' @param x a fitted RoBTT object.
+#' @param x a fitted 'RoBTT' object.
 #' @param ... additional arguments.
 #'
 #'
@@ -16,13 +16,13 @@ print.RoBTT <- function(x, ...){
 }
 
 
-#' @title Summarize fitted RoBTT object
+#' @title Summarize fitted 'RoBTT' object
 #'
 #' @description \code{summary.RoBTT} creates summary tables for a
 #' RoBTT object.
 #'
-#' @param object a fitted RoBTT object
-#' @param type whether to show the overall RoBTT results (\code{"ensemble"}),
+#' @param object a fitted 'RoBTT' object
+#' @param type whether to show the overall 'RoBTT' results (\code{"ensemble"}),
 #' an overview of the individual models (\code{"models"}), an overview of
 #' the individual models MCMC diagnostics (\code{"diagnostics"}), or a detailed summary
 #' of the individual models (\code{"individual"}). Can be abbreviated to first letters.
@@ -271,9 +271,9 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
 }
 
 
-#' @title Prints summary object for RoBTT method
+#' @title Prints summary object for 'RoBTT' method
 #'
-#' @param x a summary of a RoBTT object
+#' @param x a summary of a 'RoBTT' object
 #' @param ... additional arguments
 #'
 #'
@@ -342,7 +342,7 @@ print.summary.RoBTT <- function(x, ...){
 }
 
 
-#' @title Reports whether x is a RoBTT object
+#' @title Reports whether x is a 'RoBTT' object
 #'
 #' @param x an object to test
 #'
@@ -355,10 +355,11 @@ is.RoBTT            <- function(x){
 }
 
 
-#' @title Interprets results of a RoBTT model.
+
+#' @title Interprets results of a 'RoBTT' model.
 #'
 #' @description \code{interpret} creates a brief textual summary
-#' of a fitted RoBTT object.
+#' of a fitted 'RoBTT' object.
 #'
 #' @inheritParams summary.RoBTT
 #'

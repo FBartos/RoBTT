@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.R
 \name{summary.RoBTT}
 \alias{summary.RoBTT}
-\title{Summarize fitted RoBTT object}
+\title{Summarize fitted 'RoBTT' object}
 \usage{
 \method{summary}{RoBTT}(
   object,
@@ -18,9 +18,9 @@
 )
 }
 \arguments{
-\item{object}{a fitted RoBTT object}
+\item{object}{a fitted 'RoBTT' object}
 
-\item{type}{whether to show the overall RoBTT results (\code{"ensemble"}),
+\item{type}{whether to show the overall 'RoBTT' results (\code{"ensemble"}),
 an overview of the individual models (\code{"models"}), an overview of
 the individual models MCMC diagnostics (\code{"diagnostics"}), or a detailed summary
 of the individual models (\code{"individual"}). Can be abbreviated to first letters.}
