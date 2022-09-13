@@ -14,10 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-options(warn = 3L)
-options("useFancyQuotes" = FALSE)
 
 make_cc <- function(file) {
+  
+  old <- options()
+  on.exit(options(old))
+  
+  options(warn = 3L)
+  options("useFancyQuotes" = FALSE)
+  
   file <- sub("\\.cc$", ".stan", file)
   cppcode <- rstan::stanc(file, allow_undefined = TRUE,
                           obfuscate_model_name = FALSE)$cppcode
