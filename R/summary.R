@@ -70,7 +70,6 @@ print.RoBTT <- function(x, ...){
 #'
 #' # summary of individual models and their parameters can be further obtained by
 #' summary(fit, type = "individual")
-#' }
 #'
 #'
 #' @return \code{summary.RoBTT} returns a list of tables of class 'BayesTools_table'.

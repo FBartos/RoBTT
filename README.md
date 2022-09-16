@@ -28,7 +28,7 @@ define a wide range of informative priors for all parameters of
 interest. The package provides convenient functions for summary,
 visualizations, and fit diagnostics.
 
-See our pre-print Maier et al. (forthcoming) introducing the method.
+See our pre-print Maier et al. (2022) introducing the method.
 
 We also prepared a vignette that illustrate functionality of the
 package:
@@ -58,8 +58,8 @@ line-spacing="2">
 <div id="ref-maier2022bayesian" class="csl-entry">
 
 Maier, M., Bartoš, F., Quintana, D. S., Bergh, D. van den, Marsman, M.,
-Ly, A., & Wagenmakers, E.-J. (forthcoming). Bayesian model-averaged
-t-tests. In *PsyArxiv*.
+Ly, A., & Wagenmakers, E.-J. (2022). Model-averaged Bayesian t-tests. In
+*PsyArxiv*. <https://doi.org/10.31234/osf.io/d5zwc>
 
 </div>
 

@@ -54,6 +54,38 @@ be omitted from the summary. Defaults to \code{FALSE}.}
 \code{summary.RoBTT} creates summary tables for a
 RoBTT object.
 }
+\examples{
+# using the example data from Anderson et al. 2010 and fitting the default model
+data("fertilization", package = "RoBTT")
+fit <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  likelihood  = "normal",
+  seed        = 1,
+  control     = set_control(adapt_delta = 0.95)
+)
+
+# summary can provide many details about the model
+summary(fit)
+
+# estimates from the conditional models can be obtained with
+summary(fit, conditional = TRUE)
+
+# overview of the models and their prior and posterior probability, marginal likelihood,
+# and inclusion Bayes factor can be obtained with
+summary(fit, type = "models")
+
+# diagnostics overview, containing the maximum R-hat, minimum ESS, maximum MCMC error, and
+# maximum MCMC error / sd across parameters for each individual model can be obtained with
+summary(fit, type = "diagnostics")
+
+# summary of individual models and their parameters can be further obtained by
+summary(fit, type = "individual")
+
+
+}
 \seealso{
 \code{\link[=RoBTT]{RoBTT()}}
 }
