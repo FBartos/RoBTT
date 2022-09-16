@@ -73,7 +73,7 @@
 #' @return \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
 #'
 #' @examples
-#' # using the example data from Anderson et al. 2010 and fitting the default model
+#' # using the example data from Darwin
 #' data("fertilization", package = "RoBTT")
 #' fit <- RoBTT(
 #'   x1       = fertilization$Self,

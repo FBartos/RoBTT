@@ -55,7 +55,7 @@ be omitted from the summary. Defaults to \code{FALSE}.}
 RoBTT object.
 }
 \examples{
-# using the example data from Anderson et al. 2010 and fitting the default model
+# using the example data from Darwin
 data("fertilization", package = "RoBTT")
 fit <- RoBTT(
   x1       = fertilization$Self,

@@ -136,7 +136,7 @@ Generic \code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=print.RoBTT]
 provided to facilitate manipulation with the ensemble.
 }
 \examples{
-# using the example data from Anderson et al. 2010 and fitting the default model
+# using the example data from Darwin
 data("fertilization", package = "RoBTT")
 fit <- RoBTT(
   x1       = fertilization$Self,
