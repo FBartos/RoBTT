@@ -58,8 +58,8 @@ line-spacing="2">
 <div id="ref-maier2022bayesian" class="csl-entry">
 
 Maier, M., Bartoš, F., Quintana, D. S., Bergh, D. van den, Marsman, M.,
-Ly, A., & Wagenmakers, E.-J. (2022). Model-averaged Bayesian t-tests. In
-*PsyArxiv*. <https://doi.org/10.31234/osf.io/d5zwc>
+Ly, A., & Wagenmakers, E.-J. (2022). *Model-averaged Bayesian t-tests*.
+<https://doi.org/10.31234/osf.io/d5zwc>
 
 </div>
 
