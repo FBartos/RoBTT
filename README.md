@@ -47,7 +47,7 @@ install.packages("RoBTT")
 and the development version of the package can be installed from GitHub:
 
 ``` r
-devtools::install_github("fbartos/RoBTT")
+devtools::install_github("FBartos/RoBTT")
 ```
 
 ### References
