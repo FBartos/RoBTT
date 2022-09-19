@@ -10,7 +10,7 @@ Authors@R: c(
     )
 Description: An implementation of Bayesian model-averaged t-test that allows 
     users to draw inference about the presence vs absence of the effect, 
-    heterogeneity of variances, and outliers. The RoBTT packages estimates model 
+    heterogeneity of variances, and outliers. The 'RoBTT' packages estimates model 
     ensembles of models created as a combination of the competing hypotheses and uses 
     Bayesian model-averaging to combine the models using posterior model probabilities. 
     Users can obtain the model-averaged posterior distributions and inclusion Bayes 
