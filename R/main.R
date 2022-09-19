@@ -81,7 +81,10 @@
 #'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
 #'   prior_rho   = prior("beta",   list(3, 3)),
 #'   likelihood  = "normal",
-#'   seed        = 1,
+#'   seed        = 1, 
+#'   chains      = 1,
+#'   warmup      = 1000,
+#'   iter        = 2000,
 #'   control     = set_control(adapt_delta = 0.95)
 #' )
 #'
@@ -152,7 +155,7 @@ RoBTT <- function(
     parallel::stopCluster(cl)
     
   }
-  
+
   # deal with non-converged the converged models
   object$add_info$converged <- .get_model_convergence(object)
 
