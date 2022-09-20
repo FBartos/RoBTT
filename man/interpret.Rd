@@ -2,17 +2,17 @@
 % Please edit documentation in R/summary.R
 \name{interpret}
 \alias{interpret}
-\title{Interprets results of a RoBTT model.}
+\title{Interprets results of a 'RoBTT' model.}
 \usage{
 interpret(object)
 }
 \arguments{
-\item{object}{a fitted RoBTT object}
+\item{object}{a fitted 'RoBTT' object}
 }
 \value{
 \code{interpret} returns a character.
 }
 \description{
 \code{interpret} creates a brief textual summary
-of a fitted RoBTT object.
+of a fitted 'RoBTT' object.
 }

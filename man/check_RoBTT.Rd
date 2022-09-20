@@ -2,19 +2,19 @@
 % Please edit documentation in R/tools.R
 \name{check_RoBTT}
 \alias{check_RoBTT}
-\title{Check fitted RoBTT object for errors and warnings}
+\title{Check fitted 'RoBTT' object for errors and warnings}
 \usage{
 check_RoBTT(fit)
 }
 \arguments{
-\item{fit}{a fitted RoBTT object.}
+\item{fit}{a fitted 'RoBTT' object.}
 }
 \value{
 \code{check_RoBTT} returns a vector of error and
 warning messages.
 }
 \description{
-Checks fitted RoBTT object
+Checks fitted 'RoBTT' object
 for warnings and errors and prints them to the
 console.
 }

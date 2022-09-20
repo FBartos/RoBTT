@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.R
 \name{summary.RoBTT}
 \alias{summary.RoBTT}
-\title{Summarize fitted RoBTT object}
+\title{Summarize fitted 'RoBTT' object}
 \usage{
 \method{summary}{RoBTT}(
   object,
@@ -18,9 +18,9 @@
 )
 }
 \arguments{
-\item{object}{a fitted RoBTT object}
+\item{object}{a fitted 'RoBTT' object}
 
-\item{type}{whether to show the overall RoBTT results (\code{"ensemble"}),
+\item{type}{whether to show the overall 'RoBTT' results (\code{"ensemble"}),
 an overview of the individual models (\code{"models"}), an overview of
 the individual models MCMC diagnostics (\code{"diagnostics"}), or a detailed summary
 of the individual models (\code{"individual"}). Can be abbreviated to first letters.}
@@ -55,9 +55,20 @@ be omitted from the summary. Defaults to \code{FALSE}.}
 RoBTT object.
 }
 \examples{
-\dontrun{
-# using the example data from Anderson et al. 2010 and fitting the default model
-# (note that the model can take a while to fit)
+# using the example data from Darwin
+data("fertilization", package = "RoBTT")
+fit <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  likelihood  = "normal",
+  seed        = 1, 
+  chains      = 1,
+  warmup      = 1000,
+  iter        = 2000,
+  control     = set_control(adapt_delta = 0.95)
+)
 
 # summary can provide many details about the model
 summary(fit)
@@ -75,7 +86,6 @@ summary(fit, type = "diagnostics")
 
 # summary of individual models and their parameters can be further obtained by
 summary(fit, type = "individual")
-}
 
 
 }

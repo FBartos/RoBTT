@@ -129,15 +129,30 @@ each group, \code{x1, x2}, or the summary statistics (in case only
 the \code{"normal"} likelihood is used).
 }
 \details{
-Add more details
+See \insertCite{maier2022bayesian;textual}{RoBTT} for more details
+regarding the methodology.
 
 Generic \code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=print.RoBTT]{print.RoBTT()}}, and \code{\link[=plot.RoBTT]{plot.RoBTT()}} functions are
 provided to facilitate manipulation with the ensemble.
 }
 \examples{
-\dontrun{
-# using the example data from XXX
-}
+# using the example data from Darwin
+data("fertilization", package = "RoBTT")
+fit <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  likelihood  = "normal",
+  seed        = 1, 
+  chains      = 1,
+  warmup      = 1000,
+  iter        = 2000,
+  control     = set_control(adapt_delta = 0.95)
+)
+
+# summary can provide many details about the model
+summary(fit)
 
 }
 \references{

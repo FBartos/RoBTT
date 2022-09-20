@@ -14,6 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+old <- options()
+on.exit(options(old))
+
 options(warn = 3L)
 stan_files <- dir("exec", pattern = "stan$", full.names = TRUE)
 include_files <- dir("src", pattern = "hpp$")

@@ -1,10 +1,10 @@
-#' @title Plots a fitted RoBTT object
+#' @title Plots a fitted 'RoBTT' object
 #'
 #' @description \code{plot.RoBTT} allows to visualize
 #' different \code{"RoBTT"} object parameters in various
 #' ways. See \code{type} for the different model types.
 #'
-#' @param x a fitted RoBTT object
+#' @param x a fitted 'RoBTT' object
 #' @param parameter a parameter to be plotted. Defaults to
 #' \code{"delta"} (for the effect size). The additional options
 #' are \code{"rho"} (for the heterogeneity),
@@ -39,7 +39,10 @@
 #'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
 #'   prior_rho   = prior("beta",   list(3, 3)),
 #'   likelihood  = "normal",
-#'   seed        = 1,
+#'   seed        = 1, 
+#'   chains      = 1,
+#'   warmup      = 1000,
+#'   iter        = 2000,
 #'   control     = set_control(adapt_delta = 0.95)
 #' )
 #' 

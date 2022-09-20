@@ -2,12 +2,12 @@
 % Please edit documentation in R/summary.R
 \name{print.RoBTT}
 \alias{print.RoBTT}
-\title{Prints a fitted RoBTT object}
+\title{Prints a fitted 'RoBTT' object}
 \usage{
 \method{print}{RoBTT}(x, ...)
 }
 \arguments{
-\item{x}{a fitted RoBTT object.}
+\item{x}{a fitted 'RoBTT' object.}
 
 \item{...}{additional arguments.}
 }
@@ -15,7 +15,7 @@
 \code{print.RoBTT} invisibly returns the print statement.
 }
 \description{
-Prints a fitted RoBTT object
+Prints a fitted 'RoBTT' object
 }
 \seealso{
 \code{\link[=RoBTT]{RoBTT()}}

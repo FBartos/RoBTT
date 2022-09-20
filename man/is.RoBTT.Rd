@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.R
 \name{is.RoBTT}
 \alias{is.RoBTT}
-\title{Reports whether x is a RoBTT object}
+\title{Reports whether x is a 'RoBTT' object}
 \usage{
 is.RoBTT(x)
 }
@@ -13,5 +13,5 @@ is.RoBTT(x)
 \code{is.RoBTT} returns a boolean.
 }
 \description{
-Reports whether x is a RoBTT object
+Reports whether x is a 'RoBTT' object
 }

@@ -76,6 +76,12 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
   BayesTools::check_bool(silent,   "silent",                  call = call)
   BayesTools::check_int(seed,      "seed", allow_NULL = TRUE, call = call)
   
+  if(!parallel){
+    cores <- 1
+  }else if(cores > RoBTT.get_option("max_cores")){
+    cores <- RoBTT.get_option("max_cores")
+  }
+  
   if(is.null(control[["adapt_delta"]])){
     control[["adapt_delta"]] <- 0.80
   }else{

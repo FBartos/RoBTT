@@ -1,6 +1,6 @@
-#' @title Prints a fitted RoBTT object
+#' @title Prints a fitted 'RoBTT' object
 #'
-#' @param x a fitted RoBTT object.
+#' @param x a fitted 'RoBTT' object.
 #' @param ... additional arguments.
 #'
 #'
@@ -16,13 +16,13 @@ print.RoBTT <- function(x, ...){
 }
 
 
-#' @title Summarize fitted RoBTT object
+#' @title Summarize fitted 'RoBTT' object
 #'
 #' @description \code{summary.RoBTT} creates summary tables for a
 #' RoBTT object.
 #'
-#' @param object a fitted RoBTT object
-#' @param type whether to show the overall RoBTT results (\code{"ensemble"}),
+#' @param object a fitted 'RoBTT' object
+#' @param type whether to show the overall 'RoBTT' results (\code{"ensemble"}),
 #' an overview of the individual models (\code{"models"}), an overview of
 #' the individual models MCMC diagnostics (\code{"diagnostics"}), or a detailed summary
 #' of the individual models (\code{"individual"}). Can be abbreviated to first letters.
@@ -42,7 +42,7 @@ print.RoBTT <- function(x, ...){
 #' @param ... additional arguments
 #'
 #' @examples
-#' # using the example data from Anderson et al. 2010 and fitting the default model
+#' # using the example data from Darwin
 #' data("fertilization", package = "RoBTT")
 #' fit <- RoBTT(
 #'   x1       = fertilization$Self,
@@ -50,7 +50,10 @@ print.RoBTT <- function(x, ...){
 #'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
 #'   prior_rho   = prior("beta",   list(3, 3)),
 #'   likelihood  = "normal",
-#'   seed        = 1,
+#'   seed        = 1, 
+#'   chains      = 1,
+#'   warmup      = 1000,
+#'   iter        = 2000,
 #'   control     = set_control(adapt_delta = 0.95)
 #' )
 #'
@@ -70,7 +73,6 @@ print.RoBTT <- function(x, ...){
 #'
 #' # summary of individual models and their parameters can be further obtained by
 #' summary(fit, type = "individual")
-#' }
 #'
 #'
 #' @return \code{summary.RoBTT} returns a list of tables of class 'BayesTools_table'.
@@ -271,9 +273,9 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
 }
 
 
-#' @title Prints summary object for RoBTT method
+#' @title Prints summary object for 'RoBTT' method
 #'
-#' @param x a summary of a RoBTT object
+#' @param x a summary of a 'RoBTT' object
 #' @param ... additional arguments
 #'
 #'
@@ -342,7 +344,7 @@ print.summary.RoBTT <- function(x, ...){
 }
 
 
-#' @title Reports whether x is a RoBTT object
+#' @title Reports whether x is a 'RoBTT' object
 #'
 #' @param x an object to test
 #'
@@ -355,10 +357,11 @@ is.RoBTT            <- function(x){
 }
 
 
-#' @title Interprets results of a RoBTT model.
+
+#' @title Interprets results of a 'RoBTT' model.
 #'
 #' @description \code{interpret} creates a brief textual summary
-#' of a fitted RoBTT object.
+#' of a fitted 'RoBTT' object.
 #'
 #' @inheritParams summary.RoBTT
 #'

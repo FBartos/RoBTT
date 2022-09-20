@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot.RoBTT}
 \alias{plot.RoBTT}
-\title{Plots a fitted RoBTT object}
+\title{Plots a fitted 'RoBTT' object}
 \usage{
 \method{plot}{RoBTT}(
   x,
@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{x}{a fitted RoBTT object}
+\item{x}{a fitted 'RoBTT' object}
 
 \item{parameter}{a parameter to be plotted. Defaults to
 \code{"delta"} (for the effect size). The additional options
@@ -24,9 +24,7 @@ are \code{"rho"} (for the heterogeneity),
 
 \item{conditional}{whether conditional estimates should be
 plotted. Defaults to \code{FALSE} which plots the model-averaged
-estimates. Note that both \code{"weightfunction"} and
-\code{"PET-PEESE"} are always ignoring the other type of
-publication bias adjustment.}
+estimates.}
 
 \item{plot_type}{whether to use a base plot \code{"base"}
 or ggplot2 \code{"ggplot"} for plotting. Defaults to
@@ -60,11 +58,25 @@ different \code{"RoBTT"} object parameters in various
 ways. See \code{type} for the different model types.
 }
 \examples{
-\dontrun{
-# using the example data from Anderson et al. 2010 and fitting the default model
-# (note that the model can take a while to fit)
-}
+data("fertilization", package = "RoBTT")
+fit <- RoBTT(
+  x1       = fertilization$Self,
+  x2       = fertilization$Crossed,
+  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+  prior_rho   = prior("beta",   list(3, 3)),
+  likelihood  = "normal",
+  seed        = 1, 
+  chains      = 1,
+  warmup      = 1000,
+  iter        = 2000,
+  control     = set_control(adapt_delta = 0.95)
+)
 
+# plot the model-averaged effect size estimate
+plot(fit, parameter = "delta")
+
+# plot prior and posterior of the conditional effect size estimate
+plot(fit, parameter = "delta", conditional = TRUE, prior = TRUE)
 
 }
 \seealso{
