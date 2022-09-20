@@ -245,13 +245,18 @@ also suppresses all messages.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Add more details</p>
+    <p>See Maier et al. (2022)
+ for more details
+regarding the methodology.</p>
 <p>Generic <code><a href="summary.RoBTT.html">summary.RoBTT()</a></code>, <code><a href="print.RoBTT.html">print.RoBTT()</a></code>, and <code><a href="plot.RoBTT.html">plot.RoBTT()</a></code> functions are
 provided to facilitate manipulation with the ensemble.</p>
     </div>
     <div id="references">
     <h2>References</h2>
-    <p>There are no references for Rd macro <code>\insertAllCites</code> on this help page.</p>
+    <p>Maier M, Bartoš F, Quintana DS, van den Bergh D, Marsman M, Ly A, Wagenmakers E (2022).
+“Model-averaged Bayesian t-tests.”
+<a href="https://doi.org/10.31234/osf.io/d5zwc" class="external-link">doi:10.31234/osf.io/d5zwc</a>
+, PsyArxiv Preprint.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -260,9 +265,91 @@ provided to facilitate manipulation with the ensemble.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># using the example data from XXX</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># using the example data from Darwin</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"fertilization"</span>, package <span class="op">=</span> <span class="st">"RoBTT"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">RoBTT</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span></span>
+<span class="r-in"><span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span></span>
+<span class="r-in"><span>  prior_delta <span class="op">=</span> <span class="fu"><a href="prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  prior_rho   <span class="op">=</span> <span class="fu"><a href="prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  likelihood  <span class="op">=</span> <span class="st">"normal"</span>,</span></span>
+<span class="r-in"><span>  seed        <span class="op">=</span> <span class="fl">1</span>, </span></span>
+<span class="r-in"><span>  chains      <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  warmup      <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>  iter        <span class="op">=</span> <span class="fl">2000</span>,</span></span>
+<span class="r-in"><span>  control     <span class="op">=</span> <span class="fu"><a href="RoBTT_control.html">set_control</a></span><span class="op">(</span>adapt_delta <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.6e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.020056 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.017853 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.037909 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2.7e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.27 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.034398 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.03775 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.072148 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.5e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.02572 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.023803 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.049523 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.9e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.03957 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.038694 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.078264 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (2): Minimum effective sample size was low (325).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (4): Minimum effective sample size was low (469).</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summary can provide many details about the model</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     likelihood = "normal", chains = 1, iter = 2000, warmup = 1000, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     control = set_control(adapt_delta = 0.95), seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Robust Bayesian t-test</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Components summary:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Models Prior prob. Post. prob. Inclusion BF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Effect           2/4       0.500       0.750        3.002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity    2/4       0.500       0.709        2.431</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model-averaged estimates:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Mean Median 0.025 0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.540  0.546 0.000 1.425</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.632  0.637 0.469 0.849</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (325).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (469).</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
