@@ -1,4 +1,4 @@
-#include /chunks/common_functions.stan
+#include /include/common_functions.stan
 
 data {
   // data
@@ -33,17 +33,15 @@ data {
   int prior_type_r;
 }
 parameters{
-  real<lower = 0> mu;
+  real mu;
   real<lower = 0> sigma2;
   real<lower = coefs_lb(bounds_type_d[1], bounds_d[1]), upper = coefs_ub(bounds_type_d[2], bounds_d[2])> delta[is_d];
   real<lower = coefs_lb(bounds_type_r[1], bounds_r[1]), upper = coefs_ub(bounds_type_r[2], bounds_r[2])> rho[is_r];
 }
 transformed parameters {
   real pooled_sigma;
-  vector[2] mu_i;
   vector[2] sigma_i;
-  vector[2] mu_log_i;
-  vector[2] sigma_log_i;
+  vector[2] mu_i;
 
   // compute means and sigmas for each group
   if(is_r == 1){
@@ -62,11 +60,6 @@ transformed parameters {
     mu_i[1] = mu - 0.5 * fixed_d[1] * pooled_sigma;
     mu_i[2] = mu + 0.5 * fixed_d[1] * pooled_sigma;
   }
-  
-  for(i in 1:2){
-    mu_log_i[i] = log( mu_i[i]) - log( - ( -pow(mu_i[i],2) - pow(sigma_i[i],2) ) / pow(mu_i[i],2) ) / 2;
-    sigma_log_i[i]  = sqrt( log( -( -pow(mu_i[i],2) - pow(sigma_i[i],2) ) / pow(mu_i[i],2) ) );
-  }
 }
 model {
   // default Jeffrey's priors for mu and sigma
@@ -83,9 +76,10 @@ model {
 
   // likelihood of the data
   if(is_ss == 0){
-    target += lognormal_lpdf(x1 | mu_log_i[1], sigma_log_i[1]);
-    target += lognormal_lpdf(x2 | mu_log_i[2], sigma_log_i[2]);
+    target += normal_lpdf(x1 | mu_i[1], sigma_i[1]);
+    target += normal_lpdf(x2 | mu_i[2], sigma_i[2]);
   }else{
-    reject("Fitting models with t likelihood and summary statistics is not possible :(.");
+    target += -N1 / 2.0 * log(2 * pi() * pow(sigma_i[1], 2)) - 1 / (2 * pow(sigma_i[1], 2)) * ((N1 - 1) * pow(sd_i[1], 2) + N1 * (mean_i[1] - mu_i[1])^2);
+    target += -N2 / 2.0 * log(2 * pi() * pow(sigma_i[2], 2)) - 1 / (2 * pow(sigma_i[2], 2)) * ((N2 - 1) * pow(sd_i[2], 2) + N2 * (mean_i[2] - mu_i[2])^2);
   }
 }

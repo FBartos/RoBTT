@@ -1,4 +1,4 @@
-#include /chunks/common_functions.stan
+#include /include/common_functions.stan
 
 data {
   // data
@@ -51,8 +51,8 @@ transformed parameters {
   real scale_i[2];
   real mu_i[2];
   real nu;
-  
-  
+
+
   // compute means and sigmas for each group
   if(is_nu == 1){
     nu = nu_p[1] + 2;
@@ -68,11 +68,11 @@ transformed parameters {
     sigma_i[2]   = sqrt( 1 / (2 * 1/sigma2 * (1 - fixed_r[1]) ) );
     pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
   }
-  
+
   scale_i[1] = sigma_i[1] / sqrt(nu / (nu - 2.0));
   scale_i[2] = sigma_i[2] / sqrt(nu / (nu - 2.0));
   pooled_sigma = pool_sigma(sigma_i[1], sigma_i[2], N1, N2);
-  
+
   if(is_d == 1){
     mu_i[1] = mu - 0.5 * delta[1] * pooled_sigma;
     mu_i[2] = mu + 0.5 * delta[1] * pooled_sigma;

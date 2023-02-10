@@ -1,4 +1,4 @@
-#include /chunks/common_functions.stan
+#include /include/common_functions.stan
 
 data {
   // data
@@ -62,7 +62,7 @@ transformed parameters {
     mu_i[1] = mu - 0.5 * fixed_d[1] * pooled_sigma;
     mu_i[2] = mu + 0.5 * fixed_d[1] * pooled_sigma;
   }
-  
+
   for(i in 1:2){
     alpha_i[i] = pow(mu_i[i], 2) / pow(sigma_i[i], 2);
     beta_i[i]  = mu_i[i] / pow(sigma_i[i], 2);
