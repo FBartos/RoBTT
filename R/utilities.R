@@ -77,6 +77,7 @@ assign("max_cores",       parallel::detectCores(logical = TRUE) - 1,  envir = Ro
   BayesTools_required <- switch(
     paste0(RoBTT.version, collapse = "."),
     "1.0.0" = c("0.2.12", "999.999.999"),
+    "1.0.1" = c("0.2.12", "999.999.999"),
     stop("New RoBTT version needs to be defined in '.check_BayesTools' function!")
   )
   

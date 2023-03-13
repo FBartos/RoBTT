@@ -34,3 +34,9 @@ src/stan_files/*.hpp
 src/stan_files/*.o
 /doc/
 /Meta/
+R/stanmodels.R
+src/Makevars
+src/Makevars.win
+*.cpp
+*.h
+*.cc
