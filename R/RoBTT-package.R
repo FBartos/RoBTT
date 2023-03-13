@@ -21,6 +21,8 @@
 ##' @references \insertAllCited{}
 ##' @importFrom BayesTools is.prior is.prior.none is.prior.point is.prior.simple
 ##' @importFrom RcppParallel CxxFlags RcppParallelLibs
+##' @importFrom Rdpack reprompt
+##' @importFrom methods new
 ##' @import Rcpp
 ##' @import rstantools
 ##' @useDynLib RoBTT,.registration = TRUE 
