@@ -17,13 +17,13 @@ functions {
   real coefs_lb(int[] type_in, vector bound_in) {
     int type;
     real bound;
+    real lb;
     if (num_elements(type_in) == 0) {
       return negative_infinity();
     } else {
       type = type_in[1];
       bound = bound_in[1];
     }
-    real lb;
     if (type == 0)
       lb = negative_infinity();
     else
@@ -33,13 +33,13 @@ functions {
   real coefs_ub(int[] type_in, vector bound_in) {
     int type;
     real bound;
+    real lb;
     if (num_elements(type_in) == 0) {
       return positive_infinity();
     } else {
       type = type_in[2];
       bound = bound_in[2];
     }
-    real lb;
     if (type == 0)
       lb = positive_infinity();
     else
