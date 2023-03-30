@@ -1,5 +1,5 @@
 functions {
-  
+
  // default Jeffrey priors for sigma and mu
   real Jeffreys_mu_lpdf(real mu){
     return 0;
@@ -14,16 +14,32 @@ functions {
   }
 
   // function for setting parameter bounds
-  real coefs_lb(int type, real bound) {
+  real coefs_lb(int[] type_in, vector bound_in) {
+    int type;
+    real bound;
     real lb;
+    if (num_elements(type_in) == 0) {
+      return negative_infinity();
+    } else {
+      type = type_in[1];
+      bound = bound_in[1];
+    }
     if (type == 0)
       lb = negative_infinity();
     else
       lb = bound;
     return lb;
   }
-  real coefs_ub(int type, real bound) {
+  real coefs_ub(int[] type_in, vector bound_in) {
+    int type;
+    real bound;
     real lb;
+    if (num_elements(type_in) == 0) {
+      return positive_infinity();
+    } else {
+      type = type_in[2];
+      bound = bound_in[2];
+    }
     if (type == 0)
       lb = positive_infinity();
     else

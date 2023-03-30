@@ -41,9 +41,9 @@ data {
 parameters{
   real mu;
   real<lower = 0> sigma2;
-  real<lower = coefs_lb(bounds_type_d[1],  bounds_d[1]),  upper = coefs_ub(bounds_type_d[2],  bounds_d[2])>  delta[is_d];
-  real<lower = coefs_lb(bounds_type_r[1],  bounds_r[1]),  upper = coefs_ub(bounds_type_r[2],  bounds_r[2])>  rho[is_r];
-  real<lower = coefs_lb(bounds_type_nu[1], bounds_nu[1]), upper = coefs_ub(bounds_type_nu[2], bounds_nu[2])> nu_p[is_nu];
+  real<lower = coefs_lb(bounds_type_d,  bounds_d),  upper = coefs_ub(bounds_type_d,  bounds_d)>  delta[is_d];
+  real<lower = coefs_lb(bounds_type_r,  bounds_r),  upper = coefs_ub(bounds_type_r,  bounds_r)>  rho[is_r];
+  real<lower = coefs_lb(bounds_type_nu, bounds_nu), upper = coefs_ub(bounds_type_nu, bounds_nu)> nu_p[is_nu];
 }
 transformed parameters {
   real pooled_sigma;
