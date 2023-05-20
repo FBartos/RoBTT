@@ -127,7 +127,7 @@ plot.RoBTT  <- function(x, parameter = "mu",
   args$transformation_arguments <- NULL
   args$transformation_settings  <- FALSE
   args$rescale_x                <- FALSE
-  args$par_name                 <- .plot.RoBTT_par_names(parameter, x)
+  args$par_name                 <- .plot.RoBTT_par_names(parameter)
   args$dots_prior               <- dots_prior
   
   plot <- do.call(BayesTools::plot_posterior, args)
@@ -172,12 +172,27 @@ plot.RoBTT  <- function(x, parameter = "mu",
   
   return(dots_prior)
 }
-.plot.RoBTT_par_names <- function(par, fit){
+.plot.RoBTT_par_names <- function(par, quote = FALSE){
   
-  return(switch(
-    par,
-    "delta" = expression(delta),
-    "rho"   = expression(rho),
-    "nu"    = expression(nu)
-  ))
+  if(quote){
+    return(switch(
+      par,
+      "delta"        = quote(delta),
+      "rho"          = quote(rho),
+      "nu"           = quote(nu),
+      "mu"           = quote(mu),
+      "sigma"        = quote(sigma),
+      "pooled_sigma" = quote(sigma)
+    ))
+  }else{
+    return(switch(
+      par,
+      "delta"        = expression(delta),
+      "rho"          = expression(rho),
+      "nu"           = expression(nu),
+      "mu"           = expression(mu),
+      "sigma"        = expression(sigma),
+      "pooled_sigma" = expression(sigma)
+    )) 
+  }
 }
