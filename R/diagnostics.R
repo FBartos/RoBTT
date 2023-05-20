@@ -110,8 +110,6 @@ diagnostics <- function(fit, parameter, type, show_models = NULL,
   }
   
   # do the plotting
-  out <- list()
-  
   models_ind <- 1:length(fit$models)
   if(!is.null(show_models)){
     models_ind <- models_ind[show_models]
@@ -144,7 +142,7 @@ diagnostics <- function(fit, parameter, type, show_models = NULL,
           ggplot2::ylab(.plot.RoBTT_par_names(parameter)) + 
           ggplot2::xlab("Iteration")
       }else if(type == "autocorrelation"){
-        plots[[i]] <- rstan::stan_ac(fit$models[[i]]$fit, pars = parameter, lags = lags, separate_chains = FALSE) + 
+        plots[[i]] <- rstan::stan_ac(fit$models[[i]]$fit, pars = parameter, lags = lags, separate_chains = TRUE) + 
           ggplot2::ylab(substitute("Autocorrelation"~(x), list(x = .plot.RoBTT_par_names(parameter, quote = TRUE)))) +
           ggplot2::xlab("Lag")
       }
@@ -153,8 +151,10 @@ diagnostics <- function(fit, parameter, type, show_models = NULL,
   
   
   # return the plots
-  if(length(plots) == 1){
-    plots <- plots[[1]]
+  if(length(plots) == 0){
+    plots <- NULL
+  }else if(length(models_ind) == 1){
+    plots <- plots[[models_ind]]
   }
   return(plots)
 }
@@ -178,9 +178,3 @@ diagnostics_density         <- function(fit, parameter = NULL, plot_type = "base
   diagnostics(fit = fit, parameter = parameter, type = "density", plot_type = plot_type, show_models = show_models, title = title, ...)
 }
 
-mean_se <- function(x, mult = 1){
-  x    <- stats::na.omit(x)
-  se   <- mult * sqrt(stats::var(x)/length(x))
-  mean <- mean(x)
-  return(data.frame(y = mean, ymin = mean - se, ymax = mean + se, .size = 1))
-}
