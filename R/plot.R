@@ -196,3 +196,19 @@ plot.RoBTT  <- function(x, parameter = "mu",
     )) 
   }
 }
+
+
+#' @title rho to log standard deviation ratio transformations
+#'
+#' @description A list containing the transformation function, 
+#' inverse transformation function, and the jacobian function.
+#'
+#'
+#' @return a list with the corresponding functions
+#'
+#' @export
+rho2logsdr <- list(
+  fun = function(x) log(sqrt(x/(1-x))),
+  inv = function(x) exp(2*x) / (exp(2*x) + 1),
+  jac = function(x) 2*exp(2*x) / (exp(2*x) + 1)^2
+)
