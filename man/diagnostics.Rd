@@ -20,7 +20,6 @@ diagnostics(
 diagnostics_autocorrelation(
   fit,
   parameter = NULL,
-  plot_type = "base",
   show_models = NULL,
   lags = 30,
   title = is.null(show_models) | length(show_models) > 1,
@@ -30,7 +29,6 @@ diagnostics_autocorrelation(
 diagnostics_trace(
   fit,
   parameter = NULL,
-  plot_type = "base",
   show_models = NULL,
   title = is.null(show_models) | length(show_models) > 1,
   ...
@@ -39,7 +37,6 @@ diagnostics_trace(
 diagnostics_density(
   fit,
   parameter = NULL,
-  plot_type = "base",
   show_models = NULL,
   title = is.null(show_models) | length(show_models) > 1,
   ...

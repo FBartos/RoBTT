@@ -27,3 +27,6 @@
 ##' @import rstantools
 ##' @useDynLib RoBTT,.registration = TRUE 
 "_PACKAGE"
+
+# hack for removing note from using quote in '.plot.RoBTT_par_names'
+utils::globalVariables(c("delta", "mu", "nu", "rho", "sigma"))

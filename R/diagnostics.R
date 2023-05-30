@@ -161,20 +161,20 @@ diagnostics <- function(fit, parameter, type, show_models = NULL,
 
 
 #' @rdname diagnostics
-diagnostics_autocorrelation <- function(fit, parameter = NULL, plot_type = "base", show_models = NULL,
+diagnostics_autocorrelation <- function(fit, parameter = NULL, show_models = NULL,
                                         lags = 30, title = is.null(show_models) | length(show_models) > 1, ...){
-  diagnostics(fit = fit, parameter = parameter, type = "autocorrelation", plot_type = plot_type, show_models = show_models, lags = lags, title = title, ...)
+  diagnostics(fit = fit, parameter = parameter, type = "autocorrelation", show_models = show_models, lags = lags, title = title, ...)
 }
 
 #' @rdname diagnostics
-diagnostics_trace           <- function(fit, parameter = NULL, plot_type = "base", show_models = NULL,
+diagnostics_trace           <- function(fit, parameter = NULL, show_models = NULL,
                                         title = is.null(show_models) | length(show_models) > 1, ...){
-  diagnostics(fit = fit, parameter = parameter, type = "trace", plot_type = plot_type, show_models = show_models, title = title, ...)
+  diagnostics(fit = fit, parameter = parameter, type = "trace", show_models = show_models, title = title, ...)
 }
 
 #' @rdname diagnostics
-diagnostics_density         <- function(fit, parameter = NULL, plot_type = "base", show_models = NULL,
+diagnostics_density         <- function(fit, parameter = NULL, show_models = NULL,
                                         title = is.null(show_models) | length(show_models) > 1, ...){
-  diagnostics(fit = fit, parameter = parameter, type = "density", plot_type = plot_type, show_models = show_models, title = title, ...)
+  diagnostics(fit = fit, parameter = parameter, type = "density", show_models = show_models, title = title, ...)
 }
 
