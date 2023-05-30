@@ -1,3 +1,123 @@
+#' @title Prints summary of \code{"RoBTT"} ensemble implied by the specified priors
+#'
+#' @description \code{check_setup} prints summary of \code{"RoBTT"} ensemble
+#' implied by the specified prior distributions. It is useful for checking
+#' the ensemble configuration prior to fitting all of the models.
+#'
+#' @inheritParams RoBTT
+#' @param models should the models' details be printed.
+#' @param silent do not print the results.
+#'
+#' @return \code{check_setup} invisibly returns list of summary tables.
+#'
+#' @seealso [RoBTT()]
+#' @export
+check_setup <- function(
+    prior_delta  = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
+    prior_rho    = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
+    prior_nu     = prior(distribution = "exp",     parameters = list(rate = 1)),
+    
+    prior_delta_null  = prior(distribution = "spike",  parameters = list(location = 0)),
+    prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
+    prior_nu_null     = NULL,
+    
+    likelihood = c("normal", if(!is.null(prior_nu)) "t"),
+    
+    models = FALSE, silent = FALSE){
+  
+  object <- list()
+  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
+  object$models      <- .get_models(object$priors, likelihood)
+  
+  ### model types overview
+  effect        <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "delta"))
+  heterogeneity <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "rho"))
+  outliers      <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "nu"))
+  
+  # number of model types
+  n_models    <- c(
+    effect        = sum(effect),
+    heterogeneity = sum(heterogeneity),
+    outliers      = sum(outliers)
+  )
+  
+  # extract model weights
+  prior_weights   <- sapply(object$models, function(m) m$prior_weights)
+  # standardize model weights
+  prior_weights   <- prior_weights / sum(prior_weights)
+  # conditional model weights
+  models_prior <- c(
+    effect         = sum(prior_weights[effect]),
+    heterogeneity  = sum(prior_weights[heterogeneity]),
+    outliers       = sum(prior_weights[outliers])
+  )
+  
+  # create overview table
+  components <- data.frame(
+    "models"     = n_models,
+    "prior_prob" = models_prior
+  )
+  rownames(components) <- c("Effect", "Heterogeneity", "Outliers")
+  
+  class(components)             <- c("BayesTools_table", "BayesTools_ensemble_summary", class(components))
+  attr(components, "type")      <- c("n_models", "prior_prob")
+  attr(components, "rownames")  <- TRUE
+  attr(components, "n_models")  <- length(object$models)
+  attr(components, "title")     <- "Components summary:"
+  attr(components, "footnotes") <- NULL
+  attr(components, "warnings")  <- NULL
+  
+  object$components <- components
+  
+  ### model details
+  if(models){
+    priors_effect        <- sapply(1:length(object$models), function(i) print(object$models[[i]]$priors$delta, silent = TRUE))
+    priors_heterogeneity <- sapply(1:length(object$models), function(i) print(object$models[[i]]$priors$rho,   silent = TRUE))
+    priors_outliers      <- sapply(1:length(object$models), function(i) {
+      if(is.null(object$models[[i]]$priors$nu)){
+        return("")
+      }else{
+        print(object$models[[i]]$priors$nu,    silent = TRUE)
+      }
+    })
+    
+    prior_weights    <- sapply(1:length(object$models), function(i)object$models[[i]]$prior_weights)
+    prior_prob       <- prior_weights / sum(prior_weights)
+    model_likelihood <- sapply(object[["models"]], function(m) m[["likelihood"]])
+    
+    summary <- cbind.data.frame(
+      "Model"         = 1:length(object$models),
+      "Distribution"  = model_likelihood,
+      "delta"         = priors_effect,
+      "rho"           = priors_heterogeneity,
+      "nu"            = priors_outliers,
+      "prior_prob"    = prior_prob
+    )
+    class(summary)             <- c("BayesTools_table", "BayesTools_ensemble_inference", class(summary))
+    attr(summary, "type")      <- c("integer", "string",  rep("prior", 3), "prior_prob")
+    attr(summary, "rownames")  <- FALSE
+    attr(summary, "title")     <- "Models overview:"
+    attr(summary, "footnotes") <- NULL
+    attr(summary, "warnings")  <- NULL
+    
+    object$summary <- summary
+  }
+  
+  
+  if(!silent){
+    cat("Robust Bayesian t-test (set-up)\n")
+    print(components, quote = FALSE, right = TRUE)
+    
+    if(models){
+      cat("\n")
+      print(summary, quote = FALSE, right = TRUE)
+    }
+  }
+  
+  return(invisible(object))
+}
+
+
 #' @title Convergence checks of the fitting process
 #'
 #' @description Set values for the convergence checks of the fitting process.

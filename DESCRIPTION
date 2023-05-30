@@ -1,6 +1,6 @@
 Package: RoBTT
 Title: Robust Bayesian T-Test
-Version: 1.0.3
+Version: 1.1.0
 Maintainer: František Bartoš <f.bartos96@gmail.com>
 Authors@R: c( 
     person("František", "Bartoš",     role = c("aut", "cre"),
@@ -26,7 +26,7 @@ Encoding: UTF-8
 LazyData: true
 SystemRequirements: GNU make
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 NeedsCompilation: yes
 ByteCompile: true
 LinkingTo: 
@@ -43,9 +43,10 @@ Imports:
     rstan(>= 2.21.2),
     rstantools(>= 1.5.0),
     RcppParallel (>= 5.0.1),
-    BayesTools (>= 0.2.12),
+    BayesTools (>= 0.2.14),
     bridgesampling,
     methods,
+    ggplot2,
     Rdpack
 Suggests:
     parallel,

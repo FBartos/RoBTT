@@ -9,6 +9,8 @@
 #' \code{"delta"} (for the effect size). The additional options
 #' are \code{"rho"} (for the heterogeneity),
 #' \code{"nu"} (for the degrees of freedom).
+#' @param transform_rho whether rho parameter should be translated 
+#' into log standard deviation ratio
 #' @param conditional whether conditional estimates should be
 #' plotted. Defaults to \code{FALSE} which plots the model-averaged
 #' estimates.
@@ -57,7 +59,7 @@
 #'
 #' @seealso [RoBTT()]
 #' @export
-plot.RoBTT  <- function(x, parameter = "mu",
+plot.RoBTT  <- function(x, parameter = "mu", transform_rho = FALSE,
                         conditional = FALSE, plot_type = "base", prior = FALSE, dots_prior = NULL, ...){
   
   # check whether plotting is possible
@@ -96,16 +98,17 @@ plot.RoBTT  <- function(x, parameter = "mu",
   
   # pretend that infinite degrees of freedom are 0 to make plotting possible for nu
   if(parameter == "nu"){
-    
-    if(prior)
-      stop("Prior and posterior plots are not implemented for the degrees of freedom parameter.")
-    # the prior needs to be "shifted by two to the right"
-    
+
     samples[["nu"]][is.infinite(samples[["nu"]])] <- 0
-    
+    samples[["nu"]]                               <- samples[["nu"]] - 2 
+
     for(i in seq_along(x[["models"]])){
       if(x[["models"]][[i]][["likelihood"]] == "normal"){
-        attr(samples[["nu"]], "prior_list")[[i]] <- prior("spike", list("location" = 0))
+        attr(samples[["nu"]], "prior_list")[[i]] <- prior(
+          distribution  = "spike", 
+          parameters    = list("location" = -2),
+          prior_weights = attr(samples[["nu"]], "prior_list")[[i]][["prior_weights"]]
+        )
       }
     }
     
@@ -127,11 +130,24 @@ plot.RoBTT  <- function(x, parameter = "mu",
   args$transformation_arguments <- NULL
   args$transformation_settings  <- FALSE
   args$rescale_x                <- FALSE
-  args$par_name                 <- .plot.RoBTT_par_names(parameter, x)
+  args$par_name                 <- .plot.RoBTT_par_names(parameter)
   args$dots_prior               <- dots_prior
   
-  plot <- do.call(BayesTools::plot_posterior, args)
+  if(transform_rho){
+    args$transformation          <- rho2logsdr
+    if(is.null(args[["xlim"]])){
+      args$xlim                  <- c(-3, 3)       
+    }
+    args$transformation_settings <- TRUE
+    args$par_name                <- "log(Standard deviation ratio)"
+  }
   
+  if(parameter == "nu"){
+    args$transformation           <- "lin"
+    args$transformation_arguments <- list(a = 2, b = 1)
+  }
+
+  plot <- do.call(BayesTools::plot_posterior, args)
   
   # return the plots
   if(plot_type == "base"){
@@ -172,12 +188,43 @@ plot.RoBTT  <- function(x, parameter = "mu",
   
   return(dots_prior)
 }
-.plot.RoBTT_par_names <- function(par, fit){
+.plot.RoBTT_par_names <- function(par, quote = FALSE){
   
-  return(switch(
-    par,
-    "delta" = expression(delta),
-    "rho"   = expression(rho),
-    "nu"    = expression(nu)
-  ))
+  if(quote){
+    return(switch(
+      par,
+      "delta"        = quote(delta),
+      "rho"          = quote(rho),
+      "nu"           = quote(nu),
+      "mu"           = quote(mu),
+      "sigma"        = quote(sigma),
+      "pooled_sigma" = quote(sigma)
+    ))
+  }else{
+    return(switch(
+      par,
+      "delta"        = expression(delta),
+      "rho"          = expression(rho),
+      "nu"           = expression(nu),
+      "mu"           = expression(mu),
+      "sigma"        = expression(sigma),
+      "pooled_sigma" = expression(sigma)
+    )) 
+  }
 }
+
+
+#' @title rho to log standard deviation ratio transformations
+#'
+#' @description A list containing the transformation function, 
+#' inverse transformation function, and the jacobian function.
+#'
+#'
+#' @return a list with the corresponding functions
+#'
+#' @export
+rho2logsdr <- list(
+  fun = function(x) log(sqrt(x/(1-x))),
+  inv = function(x) exp(2*x) / (exp(2*x) + 1),
+  jac = function(x) 2*exp(2*x) / (exp(2*x) + 1)^2
+)

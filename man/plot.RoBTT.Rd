@@ -7,6 +7,7 @@
 \method{plot}{RoBTT}(
   x,
   parameter = "mu",
+  transform_rho = FALSE,
   conditional = FALSE,
   plot_type = "base",
   prior = FALSE,
@@ -21,6 +22,9 @@
 \code{"delta"} (for the effect size). The additional options
 are \code{"rho"} (for the heterogeneity),
 \code{"nu"} (for the degrees of freedom).}
+
+\item{transform_rho}{whether rho parameter should be translated
+into log standard deviation ratio}
 
 \item{conditional}{whether conditional estimates should be
 plotted. Defaults to \code{FALSE} which plots the model-averaged

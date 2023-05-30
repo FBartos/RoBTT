@@ -37,27 +37,30 @@ test_that("Parameter plots work", {
   expect_doppelganger(paste0("plot_rho2_",i), function()plot(saved_fits[[i]], "rho", prior = TRUE))
   expect_doppelganger(paste0("plot_rho3_",i), function()plot(saved_fits[[i]], "rho", conditional = TRUE))
   expect_doppelganger(paste0("plot_rho4_",i), function()plot(saved_fits[[i]], "rho", conditional = TRUE, prior = TRUE))
+  
+  ### heterogeneity (standard deviation ratio)
+  i <- 1
+  # default ggplot2
+  expect_doppelganger(paste0("ggplot_lsdr1_",i), plot(saved_fits[[i]], "rho", plot_type = "ggplot", transform_rho = TRUE))
+  expect_doppelganger(paste0("ggplot_lsdr2_",i), plot(saved_fits[[i]], "rho", prior = TRUE, plot_type = "ggplot", transform_rho = TRUE))
+  
+  # default base plot
+  expect_doppelganger(paste0("plot_lsdr1_",i), function()plot(saved_fits[[i]], "rho", transform_rho = TRUE))
+  expect_doppelganger(paste0("plot_lsdr2_",i), function()plot(saved_fits[[i]], "rho", prior = TRUE, transform_rho = TRUE))
+  expect_doppelganger(paste0("plot_lsdr3_",i), function()plot(saved_fits[[i]], "rho", conditional = TRUE, transform_rho = TRUE))
+  expect_doppelganger(paste0("plot_lsdr4_",i), function()plot(saved_fits[[i]], "rho", conditional = TRUE, prior = TRUE, transform_rho = TRUE))
+  
 
   ### degrees of freedom
   i <- 1
   # default ggplot2
   expect_doppelganger(paste0("ggplot_nu1_",i), plot(saved_fits[[i]], "nu", plot_type = "ggplot"))
-  # expect_doppelganger(paste0("ggplot_nu2_",i), plot(saved_fits[[i]], "nu", prior = TRUE, plot_type = "ggplot"))
+  expect_doppelganger(paste0("ggplot_nu2_",i), plot(saved_fits[[i]], "nu", prior = TRUE, plot_type = "ggplot"))
   
   # default base plot
   expect_doppelganger(paste0("plot_nu1_",i), function()plot(saved_fits[[i]], "nu"))
-  # expect_doppelganger(paste0("plot_nu2_",i), function()plot(saved_fits[[i]], "nu", prior = TRUE))
+  expect_doppelganger(paste0("plot_nu2_",i), function()plot(saved_fits[[i]], "nu", prior = TRUE))
   expect_doppelganger(paste0("plot_nu3_",i), function()plot(saved_fits[[i]], "nu", conditional = TRUE))
-  # expect_doppelganger(paste0("plot_nu4_",i), function()plot(saved_fits[[i]], "nu", conditional = TRUE, prior = TRUE))
+  expect_doppelganger(paste0("plot_nu4_",i), function()plot(saved_fits[[i]], "nu", conditional = TRUE, prior = TRUE))
 
-  # TODO: implement this
-  expect_error(plot(saved_fits[[i]], "nu", prior = TRUE, plot_type = "ggplot"),
-               "Prior and posterior plots are not implemented for the degrees of freedom parameter.")
-  
-  expect_error(plot(saved_fits[[2]], "nu", plot_type = "ggplot"),
-               "The ensemble does not contain any posterior samples model-averaged across outliers. Please, verify that you specified at least one model for outliers.")
-  
-  expect_error(plot(saved_fits[[2]], "nu", conditional = TRUE, plot_type = "ggplot"),
-               "The ensemble does not contain any posterior samples model-averaged across the models assuming the presence of outliers. Please, verify that you specified at least one model assuming the presence of outliers.")
-  
 })
