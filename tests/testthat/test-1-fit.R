@@ -42,20 +42,21 @@ x2    <- c(0, 0.6,  9, 4, 2)
 
 
 test_that("Default model works", {
-
+  
+  set.seed(1)
+  
   fit1 <- suppressWarnings(RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = FALSE))
   expect_equal(clean_all(saved_fits[[1]]), clean_all(fit1))
   
   
-  fit2 <- suppressWarnings(RoBTT(mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2, likelihood = "normal", seed = 1, parallel = FALSE))
+  fit2 <- suppressWarnings(RoBTT(mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2, prior_nu = NULL, seed = 1, parallel = FALSE))
   expect_equal(clean_all(saved_fits[[2]]), clean_all(fit2))
   
   fit3 <- suppressWarnings(RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = FALSE, 
                                  prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
                                  prior_rho        = prior("beta",   list(3, 3)),
                                  prior_nu         = prior("exp",    list(1)),
-                                 prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)),
-                                 likelihood       = c("normal", "t"),))
+                                 prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf))))
   expect_equal(clean_all(saved_fits[[3]]), clean_all(fit3))
 
 })

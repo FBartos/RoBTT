@@ -19,15 +19,13 @@ check_setup <- function(
     
     prior_delta_null  = prior(distribution = "spike",  parameters = list(location = 0)),
     prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
-    prior_nu_null     = NULL,
-    
-    likelihood = c("normal", if(!is.null(prior_nu)) "t"),
+    prior_nu_null     = prior_none(),
     
     models = FALSE, silent = FALSE){
   
   object <- list()
   object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
-  object$models      <- .get_models(object$priors, likelihood)
+  object$models      <- .get_models(object$priors)
   
   ### model types overview
   effect        <- sapply(object$models, function(m)!.is_parameter_null(m$priors, "delta"))

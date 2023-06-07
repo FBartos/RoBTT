@@ -10,7 +10,7 @@
 .set_parameter_priors   <- function(priors_null, priors_alt, parameter){
   
   # check that at least one prior is specified (either null or alternative)
-  if(is.null(priors_null) & is.null(priors_alt))
+  if(parameter != "nu" && (is.null(priors_null) & is.null(priors_alt)))
     stop(paste0("At least one prior needs to be specified for the ", parameter," parameter (either null or alternative)."))
   
   # create an empty list if user didn't specified priors
@@ -51,9 +51,14 @@
     
     # check that the passed priors are supported for the parameter
     if(length(priors) > 0){
-      for(i in 1:length(priors)){
-        if(!priors[[i]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
-          stop(paste0(priors[[i]]$distribution," prior distribution is not supported for the ", parameter," parameter. See '?prior' for further information."))
+      for(p in names(priors)){
+        if(!priors[[p]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
+          stop(paste0(priors[[p]]$distribution," prior distribution is not supported for the ", parameter," parameter. See '?prior' for further information."))
+        if(priors[[p]]$distribution == "none"){
+          temp_is_null        <- priors[[p]]$is_null
+          priors[[p]]         <- prior(distribution = "spike", parameters = list(location = 0), prior_weights = priors[[p]][["prior_weights"]])
+          priors[[p]]$is_null <- temp_is_null
+        }
       }
     }
     
@@ -62,26 +67,31 @@
     
     # check that the passed priors are supported for the r parameter
     if(length(priors) > 0){
-      for(i in 1:length(priors)){
-        if(!priors[[i]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))stop(paste0(priors[[i]]$distribution," prior distribution is not supported for the tau parameter. See '?prior' for further information."))
-        if(priors[[i]]$distribution == "point"){
-          if(priors[[i]]$parameters$location <= 0 | priors[[i]]$parameters$location >= 1){
+      for(p in names(priors)){
+        if(!priors[[p]]$distribution %in% c("none", "normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
+          stop(paste0(priors[[p]]$distribution," prior distribution is not supported for the tau parameter. See '?prior' for further information."))
+        if(priors[[p]]$distribution == "none"){
+          temp_is_null        <- priors[[p]]$is_null
+          priors[[p]]         <- prior(distribution = "spike", parameters = list(location = 0.5), prior_weights = priors[[p]][["prior_weights"]])
+          priors[[p]]$is_null <- temp_is_null
+        }else if(priors[[p]]$distribution == "point"){
+          if(priors[[p]]$parameters$location <= 0 | priors[[p]]$parameters$location >= 1){
             stop(paste0("The location of a point prior distribution for ", parameter, " parameter must be larger than 0 and lower than 1. See '?prior' for further information."))
           }
-        }else if(priors[[i]]$distribution == "uniform"){
-          if(priors[[i]]$parameters$b < 0 ){
+        }else if(priors[[p]]$distribution == "uniform"){
+          if(priors[[p]]$parameters$b < 0 ){
             stop(paste0("The uniform prior distribution for ", parameter, " parameter cannot be defined on negative numbers. See '?prior' for further information."))
           }
-          if(priors[[i]]$parameters$a > 1){
+          if(priors[[p]]$parameters$a > 1){
             stop(paste0("The uniform prior distribution for ", parameter, " parameter cannot be defined on numbers larger than 1."))
           }
         }else{
-          if(priors[[i]]$truncation$lower < 0){
-            priors[[i]]$truncation$lower <- 0
+          if(priors[[p]]$truncation$lower < 0){
+            priors[[p]]$truncation$lower <- 0
             warning(paste0("The range of a prior distribution for ", parameter, " parameter cannot contain values lower than 0. The lower truncation point was set to 0. See '?prior' for further information."))
           }
-          if(priors[[i]]$truncation$upper > 1){
-            priors[[i]]$truncation$upper <- 1
+          if(priors[[p]]$truncation$upper > 1){
+            priors[[p]]$truncation$upper <- 1
             warning(paste0("The range of a prior distribution for ", parameter, " parameter cannot contain values larger than 1. The upper truncation point was set to 1. See '?prior' for further information."))
           }
         }
@@ -93,19 +103,26 @@
     
     # check that the passed priors are supported for the nu parameter
     if(length(priors) > 0){
-      for(i in 1:length(priors)){
-        if(!priors[[i]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))stop(paste0(priors[[i]]$distribution," prior distribution is not supported for the tau parameter. See '?prior' for further information."))
-        if(priors[[i]]$distribution == "point"){
-          if(priors[[i]]$parameters$location <= 0){
+      for(p in names(priors)){
+        if(!priors[[p]]$distribution %in% c("none", "normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
+          stop(paste0(priors[[p]]$distribution," prior distribution is not supported for the tau parameter. See '?prior' for further information."))
+        if(priors[[p]]$distribution == "none")
+          next
+        if(priors[[p]]$distribution == "point"){
+          if(is.infinite(priors[[p]]$parameters$location)){
+            temp_is_null        <- priors[[p]]$is_null
+            priors[[p]]         <- prior_none(prior_weights = priors[[p]][["prior_weights"]])
+            priors[[p]]$is_null <- temp_is_null
+          }else if(priors[[p]]$parameters$location <= 0){
             stop(paste0("The location of a point prior distribution for ", parameter, " parameter must be larger than 0 and lower than 1. See '?prior' for further information."))
           }
-        }else if(priors[[i]]$distribution == "uniform"){
-          if(priors[[i]]$parameters$b < 0 ){
+        }else if(priors[[p]]$distribution == "uniform"){
+          if(priors[[p]]$parameters$b < 0){
             stop(paste0("The uniform prior distribution for ", parameter, " parameter cannot be defined on negative numbers. See '?prior' for further information."))
           }
         }else{
-          if(priors[[i]]$truncation$lower < 0){
-            priors[[i]]$truncation$lower <- 0
+          if(priors[[p]]$truncation$lower < 0){
+            priors[[p]]$truncation$lower <- 0
             warning(paste0("The range of a prior distribution for ", parameter, " parameter cannot contain values lower than 0. The lower truncation point was set to 0. See '?prior' for further information."))
           }
         }
@@ -116,26 +133,17 @@
   
   return(priors)
 }
-.get_models             <- function(priors, likelihoods){
-  
-  BayesTools::check_char(likelihoods, "likelihoods", check_length = 0, allow_values = c("normal", "t"))
+.get_models             <- function(priors){
   
   # create models according to the set priors
   models <- NULL
   for(delta in priors[["delta"]]){
     for(rho in priors[["rho"]]){
-      for(likelihood in likelihoods){
-        if(likelihood == "t"){
-          for(nu in priors$nu){
-            models <- c(models, list(.create_model(delta, rho, nu, NULL, likelihood, delta[["prior_weights"]] * rho[["prior_weights"]] * nu[["prior_weights"]])))
-          }
-        }else{
-          models <- c(models, list(.create_model(delta, rho, NULL, NULL, likelihood, delta[["prior_weights"]] * rho[["prior_weights"]])))
-        } 
+      for(nu in priors[["nu"]]){
+        models <- c(models, list(.create_model(delta, rho, nu, NULL, NULL, delta[["prior_weights"]] * rho[["prior_weights"]] * nu[["prior_weights"]])))
       }
     }
   }
-  
   
   return(models)
 }
@@ -148,8 +156,10 @@
   priors$nu    <- prior_nu
   
   # possibly simplify t to normal
-  if(likelihood == "t" && prior_nu$distribution == "point" && prior_nu$parameters[["location"]] == Inf){
+  if(prior_nu$distribution == "none"){
     likelihood <- "normal"
+  }else{
+    likelihood <- "t"
   }
   
   model <- list(

@@ -104,14 +104,9 @@ plot.RoBTT  <- function(x, parameter = "mu", transform_rho = FALSE,
 
     for(i in seq_along(x[["models"]])){
       if(x[["models"]][[i]][["likelihood"]] == "normal"){
-        attr(samples[["nu"]], "prior_list")[[i]] <- prior(
-          distribution  = "spike", 
-          parameters    = list("location" = -2),
-          prior_weights = attr(samples[["nu"]], "prior_list")[[i]][["prior_weights"]]
-        )
+        attr(samples[["nu"]], "prior_list")[[i]][["parameters"]][["location"]] <- -2
       }
     }
-    
   }
   
   dots       <- .set_dots_plot(...)
@@ -133,7 +128,7 @@ plot.RoBTT  <- function(x, parameter = "mu", transform_rho = FALSE,
   args$par_name                 <- .plot.RoBTT_par_names(parameter)
   args$dots_prior               <- dots_prior
   
-  if(transform_rho){
+  if(parameter == "rho" && transform_rho){
     args$transformation          <- rho2logsdr
     if(is.null(args[["xlim"]])){
       args$xlim                  <- c(-3, 3)       

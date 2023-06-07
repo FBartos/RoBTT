@@ -1,3 +1,11 @@
+## version 1.2.0
+### Changes
+- when specifying prior distribution for the nu parameter, coerce Spike(Inf) to NULL
+- better handling of NULL in prior distribution settings and better coercing to normal likelihood
+
+### Fixes
+- conditional posterior distributions for degrees of freedom
+
 ## version 1.1.0
 ### Features
 - `check_setup()` function

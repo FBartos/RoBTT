@@ -19,8 +19,7 @@ RoBTT(
   prior_nu = prior(distribution = "exp", parameters = list(rate = 1)),
   prior_delta_null = prior(distribution = "spike", parameters = list(location = 0)),
   prior_rho_null = prior(distribution = "spike", parameters = list(location = 0.5)),
-  prior_nu_null = NULL,
-  likelihood = c("normal", if (!is.null(prior_nu)) "t"),
+  prior_nu_null = prior_none(),
   chains = 4,
   iter = 10000,
   warmup = 5000,
@@ -77,9 +76,6 @@ with location at 0.5 (
 that will be treated as belonging to the null hypothesis. Defaults to NULL (
 \code{NULL}, i.e., normal distribution).}
 
-\item{likelihood}{types of likelihood to be used. Defaults to \code{c("normal", "t")}
-for a normal and t likelihoods.}
-
 \item{chains}{a number of chains of the MCMC algorithm.}
 
 \item{iter}{a number of sampling iterations of the MCMC algorithm.
@@ -118,6 +114,9 @@ should be suppressed. Defaults to \code{TRUE}. Note that \code{parallel = TRUE}
 also suppresses all messages.}
 
 \item{...}{additional arguments.}
+
+\item{likelihood}{types of likelihood to be used. Defaults to \code{c("normal", "t")}
+for a normal and t likelihoods.}
 }
 \value{
 \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
