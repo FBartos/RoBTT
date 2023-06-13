@@ -149,19 +149,19 @@
   # non-normal > heterogeneity > effect
   fitting_difficulty <- sapply(models, function(model){
     
-    diffuculty <- 0
+    difficulty <- 0
     
     if(!is.null(model$priors[["delta"]]) && is.prior.simple(model$priors[["delta"]])){
-      diffuculty <- diffuculty + 1
+      difficulty <- difficulty + 1
     }
     if(!is.null(model$priors[["rho"]])   && is.prior.simple(model$priors[["rho"]])){
-      diffuculty <- diffuculty + 2
+      difficulty <- difficulty + 2
     }
     if(!is.null(model$priors[["nu"]])    && is.prior.simple(model$priors[["nu"]])){
-      diffuculty <- diffuculty + 3
+      difficulty <- difficulty + 3
     }
     
-    return(diffuculty)
+    return(difficulty)
   })
   
   return(order(fitting_difficulty, decreasing = TRUE))
