@@ -120,7 +120,7 @@ diagnostics <- function(fit, parameter, type, show_models = NULL,
   for(i in models_ind){
     
     prior_names <- names(attr(fit$models[[i]][["fit"]], "prior_list"))
-    prior_names <- prior_names[!sapply(attr(fit$models[[i]][["fit"]], "prior_list"), BayesTools::is.prior.point)]
+    prior_names <- prior_names[!sapply(attr(fit$models[[i]][["fit"]], "prior_list"), function(p) BayesTools::is.prior.point(p) | BayesTools::is.prior.none(p))]
     model_parameters <- c(prior_names, "mu", "pooled_sigma")
     
     if(!parameter_samples %in% model_parameters){
