@@ -40,8 +40,8 @@ with location at 0.5 (
 \code{prior(distribution = "point", parameters = list(location = 0.5))}).}
 
 \item{prior_nu_null}{prior distribution for the \code{nu} parameter
-that will be treated as belonging to the null hypothesis. Defaults to NULL (
-\code{NULL}, i.e., normal distribution).}
+that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
+(i.e., normal likelihood)).}
 
 \item{models}{should the models' details be printed.}
 

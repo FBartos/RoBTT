@@ -73,8 +73,8 @@ with location at 0.5 (
 \code{prior(distribution = "point", parameters = list(location = 0.5))}).}
 
 \item{prior_nu_null}{prior distribution for the \code{nu} parameter
-that will be treated as belonging to the null hypothesis. Defaults to NULL (
-\code{NULL}, i.e., normal distribution).}
+that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
+(i.e., normal likelihood)).}
 
 \item{chains}{a number of chains of the MCMC algorithm.}
 
@@ -114,9 +114,6 @@ should be suppressed. Defaults to \code{TRUE}. Note that \code{parallel = TRUE}
 also suppresses all messages.}
 
 \item{...}{additional arguments.}
-
-\item{likelihood}{types of likelihood to be used. Defaults to \code{c("normal", "t")}
-for a normal and t likelihoods.}
 }
 \value{
 \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
@@ -142,7 +139,6 @@ fit <- RoBTT(
   x2       = fertilization$Crossed,
   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
   prior_rho   = prior("beta",   list(3, 3)),
-  likelihood  = "normal",
   seed        = 1, 
   chains      = 1,
   warmup      = 1000,
