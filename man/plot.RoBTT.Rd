@@ -68,7 +68,6 @@ fit <- RoBTT(
   x2       = fertilization$Crossed,
   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
   prior_rho   = prior("beta",   list(3, 3)),
-  likelihood  = "normal",
   seed        = 1, 
   chains      = 1,
   warmup      = 1000,
