@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RoBTT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
       <h1 data-toc-skip>Introduction to RoBTT</h1>
                         <h4 data-toc-skip class="author">Maximilian Maier &amp; František Bartoš</h4>
             
-            <h4 data-toc-skip class="date">2023-03-30</h4>
+            <h4 data-toc-skip class="date">2023-07-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/FBartos/RoBTT/blob/HEAD/vignettes/Introduction_to_RoBTT.Rmd" class="external-link"><code>vignettes/Introduction_to_RoBTT.Rmd</code></a></small>
       <div class="hidden name"><code>Introduction_to_RoBTT.Rmd</code></div>
@@ -119,13 +119,13 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## fit equal variance t-test</span></span>
 <span><span class="va">fit_01</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RoBTT.html">RoBTT</a></span><span class="op">(</span></span>
-<span>  x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
-<span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prior_delta <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_rho   <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># this indicates no prior on the precision proportion -&gt; equal variance test</span></span>
-<span>  likelihood  <span class="op">=</span> <span class="st">"normal"</span>,</span>
-<span>  seed        <span class="op">=</span> <span class="fl">0</span></span>
+<span>    x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
+<span>    x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
+<span>    parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    prior_delta <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_rho   <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># this indicates no prior on the variance allocation factor -&gt; equal variance test </span></span>
+<span>    prior_nu    <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># this indicates no prior on the degrees of freedom -&gt; normal distribution test</span></span>
+<span>    seed        <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We can retrieve a summary of the estimates with the code below. This function gives us the posterior mean and median estimate for the effect in terms of Cohen’s <span class="math inline">\(d\)</span> and 95% central credible interval. In addition, it shows the estimates for mean and variance in each of the groups.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -133,25 +133,25 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_01</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
-<span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = NULL, likelihood = "normal", </span></span>
-<span><span class="co">#&gt;     parallel = TRUE, seed = 0)</span></span>
+<span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = NULL, prior_nu = NULL, parallel = TRUE, </span></span>
+<span><span class="co">#&gt;     seed = 0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Components summary:</span></span>
 <span><span class="co">#&gt;        Models Prior prob. Post. prob. Inclusion BF</span></span>
-<span><span class="co">#&gt; Effect    1/2       0.500       0.744        2.899</span></span>
+<span><span class="co">#&gt; Effect    1/2       0.500       0.744        2.902</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model-averaged estimates:</span></span>
 <span><span class="co">#&gt;        Mean Median 0.025 0.975</span></span>
-<span><span class="co">#&gt; delta 0.543  0.551 0.000 1.434</span></span></code></pre></div>
+<span><span class="co">#&gt; delta 0.529  0.537 0.000 1.398</span></span></code></pre></div>
 <p>We can also look at the estimates for the individual models and retrieve their prior distributions. The Bayesian equal variance <span class="math inline">\(t\)</span>-test uses two models: One assuming absence of an effect (as indicated by prior <span class="math inline">\(\delta = \text{Spike}(0)\)</span>) assuming presence of an effect (as indicated by prior <span class="math inline">\(\delta = \text{Cauchy}(0, 0.71)\)</span>). Both models assume equal variances. The inclusion Bayes factor shows the evidence for the inclusion of the individual models. In this case the Bayes factor for model 2 (assuming the difference in mean) is equivalent to the Bayes factor for the presence of an effect.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get individual model summaries</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_01</span>, type <span class="op">=</span> <span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
-<span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = NULL, likelihood = "normal", </span></span>
-<span><span class="co">#&gt;     parallel = TRUE, seed = 0)</span></span>
+<span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = NULL, prior_nu = NULL, parallel = TRUE, </span></span>
+<span><span class="co">#&gt;     seed = 0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Models overview:</span></span>
@@ -160,27 +160,27 @@
 <span><span class="co">#&gt;      2       normal Cauchy(0, 0.71)       0.500       -75.76       0.744</span></span>
 <span><span class="co">#&gt;  Inclusion BF</span></span>
 <span><span class="co">#&gt;         0.345</span></span>
-<span><span class="co">#&gt;         2.899</span></span></code></pre></div>
+<span><span class="co">#&gt;         2.902</span></span></code></pre></div>
 <p>Finally, we can use the <code>conditional = TRUE</code> argument to retrieve the estimates only for the models assuming an effect (i.e., without the spike).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_01</span>, conditional <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
-<span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = NULL, likelihood = "normal", </span></span>
-<span><span class="co">#&gt;     parallel = TRUE, seed = 0)</span></span>
+<span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = NULL, prior_nu = NULL, parallel = TRUE, </span></span>
+<span><span class="co">#&gt;     seed = 0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Components summary:</span></span>
 <span><span class="co">#&gt;        Models Prior prob. Post. prob. Inclusion BF</span></span>
-<span><span class="co">#&gt; Effect    1/2       0.500       0.744        2.899</span></span>
+<span><span class="co">#&gt; Effect    1/2       0.500       0.744        2.902</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model-averaged estimates:</span></span>
 <span><span class="co">#&gt;        Mean Median 0.025 0.975</span></span>
-<span><span class="co">#&gt; delta 0.543  0.551 0.000 1.434</span></span>
+<span><span class="co">#&gt; delta 0.529  0.537 0.000 1.398</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Conditional estimates:</span></span>
 <span><span class="co">#&gt;        Mean Median 0.025 0.975</span></span>
-<span><span class="co">#&gt; delta 0.732  0.721 0.032 1.503</span></span></code></pre></div>
+<span><span class="co">#&gt; delta 0.713  0.703 0.008 1.454</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="unequal-variance-t-test">Unequal Variance t-test<a class="anchor" aria-label="anchor" href="#unequal-variance-t-test"></a>
@@ -190,14 +190,14 @@
 <code class="sourceCode R"><span><span class="co">## fit equal unvariance t-test</span></span>
 <span></span>
 <span><span class="va">fit_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RoBTT.html">RoBTT</a></span><span class="op">(</span></span>
-<span>  x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
-<span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prior_delta    <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_rho      <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>, <span class="co"># prior on precision proportion</span></span>
-<span>  prior_rho_null <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># remove models assuming equal variance</span></span>
-<span>  likelihood     <span class="op">=</span> <span class="st">"normal"</span>,</span>
-<span>  seed           <span class="op">=</span> <span class="fl">0</span></span>
+<span>    x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
+<span>    x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
+<span>    parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    prior_delta    <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_rho      <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>, <span class="co">#prior on variance allocation</span></span>
+<span>    prior_rho_null <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># remove models assuming equal variance</span></span>
+<span>    prior_nu       <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    seed           <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We again retrieve the summary; however, this time we also get a Bayes factor for unequal variances (heterogeneity) and an estimate for <span class="math inline">\(\rho\)</span> (the precision proportion).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -205,26 +205,26 @@
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
 <span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span></span>
-<span><span class="co">#&gt;     prior_rho_null = NULL, likelihood = "normal", parallel = TRUE, </span></span>
+<span><span class="co">#&gt;     prior_nu = NULL, prior_rho_null = NULL, parallel = TRUE, </span></span>
 <span><span class="co">#&gt;     seed = 0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Components summary:</span></span>
 <span><span class="co">#&gt;               Models Prior prob. Post. prob. Inclusion BF</span></span>
-<span><span class="co">#&gt; Effect           1/2       0.500       0.747        2.945</span></span>
+<span><span class="co">#&gt; Effect           1/2       0.500       0.746        2.940</span></span>
 <span><span class="co">#&gt; Heterogeneity    2/2       1.000       1.000          Inf</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model-averaged estimates:</span></span>
 <span><span class="co">#&gt;        Mean Median 0.025 0.975</span></span>
-<span><span class="co">#&gt; delta 0.543  0.546 0.000 1.434</span></span>
-<span><span class="co">#&gt; rho   0.685  0.694 0.460 0.856</span></span></code></pre></div>
+<span><span class="co">#&gt; delta 0.539  0.546 0.000 1.421</span></span>
+<span><span class="co">#&gt; rho   0.682  0.693 0.458 0.851</span></span></code></pre></div>
 <p>We can again receive the individual model estimates. The <code>Prior rho</code> column now contains a beta distribution rather than spike at zero. This indicates that we used the models assuming differences in variances.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_10</span>, type <span class="op">=</span> <span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
 <span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span></span>
-<span><span class="co">#&gt;     prior_rho_null = NULL, likelihood = "normal", parallel = TRUE, </span></span>
+<span><span class="co">#&gt;     prior_nu = NULL, prior_rho_null = NULL, parallel = TRUE, </span></span>
 <span><span class="co">#&gt;     seed = 0)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
@@ -233,8 +233,8 @@
 <span><span class="co">#&gt;      1       normal        Spike(0) Beta(3, 3)       0.500       -75.96</span></span>
 <span><span class="co">#&gt;      2       normal Cauchy(0, 0.71) Beta(3, 3)       0.500       -74.88</span></span>
 <span><span class="co">#&gt;  Post. prob. Inclusion BF</span></span>
-<span><span class="co">#&gt;        0.253        0.340</span></span>
-<span><span class="co">#&gt;        0.747        2.945</span></span></code></pre></div>
+<span><span class="co">#&gt;        0.254        0.340</span></span>
+<span><span class="co">#&gt;        0.746        2.940</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model-averaging-over-equal-and-unequal-variances">Model-Averaging Over Equal and Unequal Variances<a class="anchor" aria-label="anchor" href="#model-averaging-over-equal-and-unequal-variances"></a>
@@ -242,14 +242,16 @@
 <p>The benefit of RoBTT in comparison to other commonly used <span class="math inline">\(t\)</span>-tests is that it does not require us to rely on a single model but instead allows researchers to take different models into account at the same time. In other words, RoBTT uses Bayesian model-averaging to allow the data to guide the inference to be based most strongly on those models that predicted the data best. We can fit a <span class="math inline">\(t\)</span>-test that model-averages over equal and unequal variances with the code provided below.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fit t-test model averaging over equal and unequal variances</span></span>
+<span></span>
 <span><span class="va">fit_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RoBTT.html">RoBTT</a></span><span class="op">(</span></span>
-<span>  x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
-<span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prior_delta <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_rho   <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  likelihood  <span class="op">=</span> <span class="st">"normal"</span>,</span>
-<span>  seed        <span class="op">=</span> <span class="fl">1</span></span>
+<span>    x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
+<span>    x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
+<span>    parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    prior_delta <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_rho   <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_nu    <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>    seed        <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    control     <span class="op">=</span> <span class="fu"><a href="../reference/RoBTT_control.html">set_control</a></span><span class="op">(</span>adapt_delta <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We retrieve the overall estimates as before using the summary function.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -257,25 +259,27 @@
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
 <span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span></span>
-<span><span class="co">#&gt;     likelihood = "normal", parallel = FALSE, seed = 1)</span></span>
+<span><span class="co">#&gt;     prior_nu = NULL, parallel = TRUE, control = set_control(adapt_delta = 0.95), </span></span>
+<span><span class="co">#&gt;     seed = 1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Components summary:</span></span>
 <span><span class="co">#&gt;               Models Prior prob. Post. prob. Inclusion BF</span></span>
-<span><span class="co">#&gt; Effect           2/4       0.500       0.745        2.929</span></span>
-<span><span class="co">#&gt; Heterogeneity    2/4       0.500       0.705        2.392</span></span>
+<span><span class="co">#&gt; Effect           2/4       0.500       0.746        2.936</span></span>
+<span><span class="co">#&gt; Heterogeneity    2/4       0.500       0.705        2.393</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Model-averaged estimates:</span></span>
 <span><span class="co">#&gt;        Mean Median 0.025 0.975</span></span>
-<span><span class="co">#&gt; delta 0.537  0.549 0.000 1.407</span></span>
-<span><span class="co">#&gt; rho   0.628  0.632 0.476 0.842</span></span></code></pre></div>
+<span><span class="co">#&gt; delta 0.540  0.553 0.000 1.414</span></span>
+<span><span class="co">#&gt; rho   0.630  0.632 0.486 0.845</span></span></code></pre></div>
 <p>When looking at the individual models, we see that four models (instead of two) are incorporated. These are the two equal variance models (from the first test in this vignette) and the two unequal variance models (from the second test in this vignette). The inclusion Bayes factors tell us the evidence for each of these individual models. We see that the model assuming an effect and unequal variances has the highest predictive accuracy.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_1</span>, type <span class="op">=</span> <span class="st">"models"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
 <span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span></span>
-<span><span class="co">#&gt;     likelihood = "normal", parallel = FALSE, seed = 1)</span></span>
+<span><span class="co">#&gt;     prior_nu = NULL, parallel = TRUE, control = set_control(adapt_delta = 0.95), </span></span>
+<span><span class="co">#&gt;     seed = 1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Models overview:</span></span>
@@ -286,24 +290,24 @@
 <span><span class="co">#&gt;      4       normal Cauchy(0, 0.71) Beta(3, 3)       0.250       -74.88</span></span>
 <span><span class="co">#&gt;  Post. prob. Inclusion BF</span></span>
 <span><span class="co">#&gt;        0.076        0.245</span></span>
-<span><span class="co">#&gt;        0.179        0.654</span></span>
+<span><span class="co">#&gt;        0.179        0.652</span></span>
 <span><span class="co">#&gt;        0.219        0.842</span></span>
-<span><span class="co">#&gt;        0.526        3.332</span></span></code></pre></div>
+<span><span class="co">#&gt;        0.527        3.338</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model-averaging-over-robust-t-likelihoods">Model-Averaging Over Robust t-likelihoods<a class="anchor" aria-label="anchor" href="#model-averaging-over-robust-t-likelihoods"></a>
 </h2>
-<p>A common problem for t-tests that assume the normality of residuals is outliers. When outliers are present, the estimates of these methods can be driven overly strongly by those outliers. A common way to accomodate outliers is by also model-averaging over robust <span class="math inline">\(t\)</span>-likelihoods. The t-distribution has thicker tails than the normal distribution; therefore, the estimate under the <span class="math inline">\(t\)</span>-likelihood will be affected less due to outliers than the estimate using a normal likelihood. We can fit RoBTT that also model-averages over <span class="math inline">\(t\)</span>-likelihoods as follows.</p>
+<p>A common problem for t-tests that assume the normality of residuals is outliers. When outliers are present, the estimates of these methods can be driven overly strongly by those outliers. A common way to accommodatee outliers is by also model-averaging over robust <span class="math inline">\(t\)</span>-likelihoods. The t-distribution has thicker tails than the normal distribution; therefore, the estimate under the <span class="math inline">\(t\)</span>-likelihood will be affected less due to outliers than the estimate using a normal likelihood. We can fit RoBTT that also model-averages over <span class="math inline">\(t\)</span>-likelihoods as follows.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RoBTT.html">RoBTT</a></span><span class="op">(</span></span>
-<span>  x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
-<span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prior_delta <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_rho   <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_nu    <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"exp"</span>,    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="co"># prior on degrees of freedom + 2</span></span>
-<span>  likelihood  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"t"</span><span class="op">)</span>, <span class="co"># use both normal and t-likelihoods</span></span>
-<span>  seed        <span class="op">=</span> <span class="fl">2</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">fit_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RoBTT.html">RoBTT</a></span><span class="op">(</span></span>
+<span>    x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
+<span>    x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
+<span>    parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    prior_delta <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_rho   <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_nu    <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"exp"</span>,    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="co"># prior on degrees of freedom</span></span>
+<span>    seed        <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>When looking at the individual model estimates incorporating <span class="math inline">\(t\)</span>-likelihoods, we find that the four models from the previous t-test are incorporated a second time, however, with t-likelihood in the likelihood column. In other words, we now use eight models overall.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -311,8 +315,7 @@
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
 <span><span class="co">#&gt;     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span></span>
-<span><span class="co">#&gt;     prior_nu = prior("exp", list(1)), likelihood = c("normal", </span></span>
-<span><span class="co">#&gt;         "t"), parallel = TRUE, seed = 2)</span></span>
+<span><span class="co">#&gt;     prior_nu = prior("exp", list(1)), parallel = TRUE, seed = 2)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Models overview:</span></span>
@@ -327,14 +330,14 @@
 <span><span class="co">#&gt;      8            t Cauchy(0, 0.71) Beta(3, 3) Exponential(1)       0.125</span></span>
 <span><span class="co">#&gt;  log(marglik) Post. prob. Inclusion BF</span></span>
 <span><span class="co">#&gt;        -76.82       0.006        0.042</span></span>
-<span><span class="co">#&gt;        -77.79       0.002        0.016</span></span>
-<span><span class="co">#&gt;        -75.96       0.014        0.100</span></span>
+<span><span class="co">#&gt;        -77.80       0.002        0.016</span></span>
+<span><span class="co">#&gt;        -75.96       0.014        0.101</span></span>
 <span><span class="co">#&gt;        -77.33       0.004        0.025</span></span>
-<span><span class="co">#&gt;        -75.76       0.017        0.123</span></span>
-<span><span class="co">#&gt;        -72.34       0.526        7.758</span></span>
-<span><span class="co">#&gt;        -74.88       0.042        0.303</span></span>
-<span><span class="co">#&gt;        -72.64       0.390        4.468</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">Model (8): Minimum effective sample size was low (244).</span></span></span></code></pre></div>
+<span><span class="co">#&gt;        -75.76       0.017        0.124</span></span>
+<span><span class="co">#&gt;        -72.35       0.525        7.751</span></span>
+<span><span class="co">#&gt;        -74.88       0.042        0.305</span></span>
+<span><span class="co">#&gt;        -72.65       0.389        4.463</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">Model (6): There were 2 divergent transitions.</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="perinull-testing">Perinull testing<a class="anchor" aria-label="anchor" href="#perinull-testing"></a>
@@ -342,15 +345,14 @@
 <p>It is sometimes argued that point null hypotheses are not meaningful to test as evidence for the alternative could already be provided by deviations from the null that would be considered small or uninteresting. RoBTT addresses this concern by allowing researchers to specify perinull hypotheses (i.e., a prior distribution with small sd instead of the point null).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RoBTT.html">RoBTT</a></span><span class="op">(</span></span>
-<span>  x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
-<span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prior_delta      <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_rho        <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_nu         <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"exp"</span>,    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  prior_delta_null <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>, <span class="co"># prior distribution and truncation</span></span>
-<span>  likelihood       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"t"</span><span class="op">)</span>,</span>
-<span>  seed             <span class="op">=</span> <span class="fl">3</span></span>
+<span>    x1       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Self</span>,</span>
+<span>    x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span>
+<span>    parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    prior_delta      <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_rho        <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_nu         <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"exp"</span>,    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    prior_delta_null <span class="op">=</span> <span class="fu"><a href="../reference/prior.html">prior</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>, <span class="co">#prior distribution and truncation</span></span>
+<span>    seed             <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>When looking at the individual models we see that the models that previously had Spike(0.5) are now using normal(0, 0.15) prior from 0 to infinity. This indicates the shift from point null to perinull testing.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -359,8 +361,7 @@
 <span><span class="co">#&gt; RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span></span>
 <span><span class="co">#&gt;     list(0, 1/sqrt(2)), list(0, Inf)), prior_rho = prior("beta", </span></span>
 <span><span class="co">#&gt;     list(3, 3)), prior_nu = prior("exp", list(1)), prior_delta_null = prior("normal", </span></span>
-<span><span class="co">#&gt;     list(0, 0.15), list(0, Inf)), likelihood = c("normal", "t"), </span></span>
-<span><span class="co">#&gt;     parallel = TRUE, seed = 3)</span></span>
+<span><span class="co">#&gt;     list(0, 0.15), list(0, Inf)), parallel = TRUE, seed = 3)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Robust Bayesian t-test</span></span>
 <span><span class="co">#&gt; Models overview:</span></span>
@@ -374,25 +375,28 @@
 <span><span class="co">#&gt;      7       normal Cauchy(0, 0.71)[0, Inf] Beta(3, 3)               </span></span>
 <span><span class="co">#&gt;      8            t Cauchy(0, 0.71)[0, Inf] Beta(3, 3) Exponential(1)</span></span>
 <span><span class="co">#&gt;  Prior prob. log(marglik) Post. prob. Inclusion BF</span></span>
-<span><span class="co">#&gt;        0.125       -76.07       0.006        0.040</span></span>
-<span><span class="co">#&gt;        0.125       -73.77       0.057        0.423</span></span>
-<span><span class="co">#&gt;        0.125       -75.19       0.014        0.097</span></span>
-<span><span class="co">#&gt;        0.125       -73.92       0.049        0.359</span></span>
+<span><span class="co">#&gt;        0.125       -76.06       0.006        0.040</span></span>
+<span><span class="co">#&gt;        0.125       -73.76       0.058        0.428</span></span>
+<span><span class="co">#&gt;        0.125       -75.20       0.014        0.097</span></span>
+<span><span class="co">#&gt;        0.125       -73.91       0.049        0.364</span></span>
 <span><span class="co">#&gt;        0.125       -75.10       0.015        0.107</span></span>
-<span><span class="co">#&gt;        0.125       -71.65       0.473        6.287</span></span>
-<span><span class="co">#&gt;        0.125       -74.21       0.037        0.267</span></span>
-<span><span class="co">#&gt;        0.125       -71.95       0.350        3.767</span></span></code></pre></div>
+<span><span class="co">#&gt;        0.125       -71.65       0.473        6.274</span></span>
+<span><span class="co">#&gt;        0.125       -74.21       0.037        0.266</span></span>
+<span><span class="co">#&gt;        0.125       -71.95       0.349        3.757</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="conclusions">Conclusions<a class="anchor" aria-label="anchor" href="#conclusions"></a>
 </h2>
-<p>This vignette showcased the applications of the RoBTT R package. For methodological background see the corresponding preprint (ref to preprint TBA).</p>
+<p>This vignette showcased the applications of the RoBTT R package. For methodological background see <span class="citation">Maier et al. (2022)</span> (<a href="https://doi.org/10.31234/osf.io/d5zwc" class="external-link uri">https://doi.org/10.31234/osf.io/d5zwc</a>).</p>
 <div class="section level3 unnumbered">
 <h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h3>
 <div id="refs" class="references">
 <div id="ref-fisher1937design">
 <p>Fisher, R. A. (1971). <em>The design of experiments</em>. Oliver &amp; Boyd, Edinburgh &amp; London.</p>
+</div>
+<div id="ref-maier2022bayesian">
+<p>Maier, M., Bartoš, F., Quintana, D. S., Bergh, D. van den, Marsman, M., Ly, A., &amp; Wagenmakers, E.-J. (2022). <em>Model-averaged Bayesian t-tests</em>. <a href="https://doi.org/10.31234/osf.io/d5zwc" class="external-link">https://doi.org/10.31234/osf.io/d5zwc</a></p>
 </div>
 </div>
 </div>

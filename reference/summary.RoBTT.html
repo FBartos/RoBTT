@@ -18,7 +18,7 @@ RoBTT object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RoBTT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -151,7 +151,6 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-in"><span>  x2       <span class="op">=</span> <span class="va">fertilization</span><span class="op">$</span><span class="va">Crossed</span>,</span></span>
 <span class="r-in"><span>  prior_delta <span class="op">=</span> <span class="fu"><a href="prior.html">prior</a></span><span class="op">(</span><span class="st">"cauchy"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  prior_rho   <span class="op">=</span> <span class="fu"><a href="prior.html">prior</a></span><span class="op">(</span><span class="st">"beta"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  likelihood  <span class="op">=</span> <span class="st">"normal"</span>,</span></span>
 <span class="r-in"><span>  seed        <span class="op">=</span> <span class="fl">1</span>, </span></span>
 <span class="r-in"><span>  chains      <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  warmup      <span class="op">=</span> <span class="fl">1000</span>,</span></span>
@@ -159,27 +158,27 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-in"><span>  control     <span class="op">=</span> <span class="fu"><a href="RoBTT_control.html">set_control</a></span><span class="op">(</span>adapt_delta <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.5e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.1e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.023334 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.02007 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.043404 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.029 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.025 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.054 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.9e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.041475 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.046395 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.08787 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.071 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.066 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.137 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
@@ -189,74 +188,143 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.030835 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.027601 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.058436 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.048 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.053 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.101 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2.3e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.048458 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.046301 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.094759 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.106 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.109 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.215 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (2): Minimum effective sample size was low (325).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (4): Minimum effective sample size was low (469).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.6e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.16 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.035 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.033 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.068 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.9e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.111 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.116 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.227 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 1.7e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.17 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.055 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.054 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.109 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 2.3e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.177 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.139 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.316 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 1000 iterations ended with a divergence.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (2): Minimum effective sample size was low (95).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (3): Minimum effective sample size was low (325).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (4): Minimum effective sample size was low (160).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (6): Minimum effective sample size was low (220).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Model (7): Minimum effective sample size was low (469).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were another 0 warnings. To see all warnings call 'check_RoBTT(fit)'.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># summary can provide many details about the model</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     likelihood = "normal", chains = 1, iter = 2000, warmup = 1000, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     control = set_control(adapt_delta = 0.95), seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     chains = 1, iter = 2000, warmup = 1000, control = set_control(adapt_delta = 0.95), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     seed = 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Robust Bayesian t-test</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Components summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Models Prior prob. Post. prob. Inclusion BF</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Effect           2/4       0.500       0.750        3.002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity    2/4       0.500       0.709        2.431</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Effect           4/8       0.500       0.975       39.159</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity    4/8       0.500       0.451        0.822</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Outliers         4/8       0.500       0.923       11.912</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model-averaged estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Mean Median 0.025 0.975</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.540  0.546 0.000 1.425</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.632  0.637 0.469 0.849</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (325).</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.870  0.854 0.000 1.695</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.532  0.500 0.335 0.787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu      Inf  2.602 2.047   Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (95).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (3): Minimum effective sample size was low (325).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (160).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (6): Minimum effective sample size was low (220).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (7): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">There were another 0 warnings. To see all warnings call 'check_RoBTT(fit)'.</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># estimates from the conditional models can be obtained with</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, conditional <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     likelihood = "normal", chains = 1, iter = 2000, warmup = 1000, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     control = set_control(adapt_delta = 0.95), seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     chains = 1, iter = 2000, warmup = 1000, control = set_control(adapt_delta = 0.95), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     seed = 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Robust Bayesian t-test</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Components summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Models Prior prob. Post. prob. Inclusion BF</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Effect           2/4       0.500       0.750        3.002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity    2/4       0.500       0.709        2.431</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Effect           4/8       0.500       0.975       39.159</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity    4/8       0.500       0.451        0.822</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Outliers         4/8       0.500       0.923       11.912</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model-averaged estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Mean Median 0.025 0.975</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.540  0.546 0.000 1.425</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.632  0.637 0.469 0.849</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (325).</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.870  0.854 0.000 1.695</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.532  0.500 0.335 0.787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu      Inf  2.602 2.047   Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (95).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (3): Minimum effective sample size was low (325).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (160).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (6): Minimum effective sample size was low (220).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (7): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">There were another 0 warnings. To see all warnings call 'check_RoBTT(fit)'.</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Conditional estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Mean Median 0.025 0.975</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.712  0.701 0.028 1.467</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.688  0.698 0.440 0.863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (325).</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta 0.890  0.862 0.254 1.697</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho   0.571  0.575 0.294 0.825</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu    2.792  2.538 2.044 5.032</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (95).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (3): Minimum effective sample size was low (325).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (160).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (6): Minimum effective sample size was low (220).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (7): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">There were another 0 warnings. To see all warnings call 'check_RoBTT(fit)'.</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># overview of the models and their prior and posterior probability, marginal likelihood,</span></span></span>
 <span class="r-in"><span><span class="co"># and inclusion Bayes factor can be obtained with</span></span></span>
@@ -264,23 +332,35 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     likelihood = "normal", chains = 1, iter = 2000, warmup = 1000, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     control = set_control(adapt_delta = 0.95), seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     chains = 1, iter = 2000, warmup = 1000, control = set_control(adapt_delta = 0.95), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     seed = 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Robust Bayesian t-test</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Models overview:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Model Distribution   Prior delta    Prior rho Prior prob. log(marglik)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1       normal        Spike(0) Spike(0.5)       0.250       -76.82</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2       normal        Spike(0) Beta(3, 3)       0.250       -75.96</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3       normal Cauchy(0, 0.71) Spike(0.5)       0.250       -75.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4       normal Cauchy(0, 0.71) Beta(3, 3)       0.250       -74.85</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob. Inclusion BF</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.074        0.240</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.176        0.640</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.217        0.833</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.533        3.420</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (325).</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model Distribution   Prior delta    Prior rho    Prior nu    Prior prob.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      1       normal        Spike(0) Spike(0.5)                      0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      2            t        Spike(0) Spike(0.5) Exponential(1)       0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      3       normal        Spike(0) Beta(3, 3)                      0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      4            t        Spike(0) Beta(3, 3) Exponential(1)       0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      5       normal Cauchy(0, 0.71) Spike(0.5)                      0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      6            t Cauchy(0, 0.71) Spike(0.5) Exponential(1)       0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      7       normal Cauchy(0, 0.71) Beta(3, 3)                      0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      8            t Cauchy(0, 0.71) Beta(3, 3) Exponential(1)       0.125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik) Post. prob. Inclusion BF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -76.82       0.006        0.040</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -77.79       0.002        0.015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -75.96       0.014        0.097</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -77.36       0.003        0.024</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -75.75       0.017        0.120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -72.31       0.524        7.710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -74.85       0.041        0.301</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        -72.60       0.393        4.530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (95).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (3): Minimum effective sample size was low (325).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (160).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (6): Minimum effective sample size was low (220).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (7): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">There were another 0 warnings. To see all warnings call 'check_RoBTT(fit)'.</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># diagnostics overview, containing the maximum R-hat, minimum ESS, maximum MCMC error, and</span></span></span>
 <span class="r-in"><span><span class="co"># maximum MCMC error / sd across parameters for each individual model can be obtained with</span></span></span>
@@ -288,38 +368,50 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     likelihood = "normal", chains = 1, iter = 2000, warmup = 1000, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     control = set_control(adapt_delta = 0.95), seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     chains = 1, iter = 2000, warmup = 1000, control = set_control(adapt_delta = 0.95), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     seed = 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Robust Bayesian t-test</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Diagnostics overview:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Model Distribution   Prior delta    Prior rho max[error(MCMC)]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1       normal        Spike(0) Spike(0.5)          0.13670</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2       normal        Spike(0) Beta(3, 3)          0.14611</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3       normal Cauchy(0, 0.71) Spike(0.5)          0.09697</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4       normal Cauchy(0, 0.71) Beta(3, 3)          0.10366</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model Distribution   Prior delta    Prior rho    Prior nu    max[error(MCMC)]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      1       normal        Spike(0) Spike(0.5)                         0.13670</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      2            t        Spike(0) Spike(0.5) Exponential(1)         75.26249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      3       normal        Spike(0) Beta(3, 3)                         0.14611</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      4            t        Spike(0) Beta(3, 3) Exponential(1)          4.77964</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      5       normal Cauchy(0, 0.71) Spike(0.5)                         0.09697</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      6            t Cauchy(0, 0.71) Spike(0.5) Exponential(1)          2.52735</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      7       normal Cauchy(0, 0.71) Beta(3, 3)                         0.10366</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      8            t Cauchy(0, 0.71) Beta(3, 3) Exponential(1)          2.45693</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  max[error(MCMC)/SD] min(ESS) max(R-hat)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                0.043      549      1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                0.103       95      1.007</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                0.055      325      1.007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                0.079      160      1.001</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                0.036      787      1.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                0.067      220      1.006</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                0.046      469      1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (325).</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                0.078      166      1.009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (2): Minimum effective sample size was low (95).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (3): Minimum effective sample size was low (325).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (4): Minimum effective sample size was low (160).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (6): Minimum effective sample size was low (220).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Model (7): Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">There were another 0 warnings. To see all warnings call 'check_RoBTT(fit)'.</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># summary of individual models and their parameters can be further obtained by</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"individual"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> RoBTT(x1 = fertilization$Self, x2 = fertilization$Crossed, prior_delta = prior("cauchy", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     list(0, 1/sqrt(2))), prior_rho = prior("beta", list(3, 3)), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     likelihood = "normal", chains = 1, iter = 2000, warmup = 1000, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     control = set_control(adapt_delta = 0.95), seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     chains = 1, iter = 2000, warmup = 1000, control = set_control(adapt_delta = 0.95), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     seed = 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Robust Bayesian t-test                                                                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Model               1             Parameter prior distributions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.250                        delta ~ Spike(0)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                        delta ~ Spike(0)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -76.82                          rho ~ Spike(0.5)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.074                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.240                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.006                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.040                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Mean    SD    lCI Median    uCI error(MCMC) error(MCMC)/SD ESS</span>
@@ -341,10 +433,44 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Model               2             Parameter prior distributions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.250                        delta ~ Spike(0)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                    delta ~ Spike(0)      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -77.79                      rho ~ Spike(0.5)    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.002                       nu ~ Exponential(1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.015                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 Mean       SD    lCI Median      uCI error(MCMC) error(MCMC)/SD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu            19.242    0.580 18.086 19.249   20.368     0.02700          0.047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       165.426 1011.385  8.400 19.935 1277.368    75.26249          0.074</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]        1.325    1.160  0.014  1.084    4.075     0.07076          0.061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma   7.220   10.650  2.898  4.465   35.740     1.09370          0.103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]     7.220   10.650  2.898  4.465   35.740     1.09370          0.103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]     7.220   10.650  2.898  4.465   35.740     1.09370          0.103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]     2.593    0.497  1.737  2.548    3.777     0.01455          0.029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]     2.593    0.497  1.737  2.548    3.777     0.01455          0.029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]       19.242    0.580 18.086 19.249   20.368     0.02700          0.047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]       19.242    0.580 18.086 19.249   20.368     0.02700          0.047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu             3.325    1.160  2.014  3.084    6.075     0.07076          0.061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               ESS R-hat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu            461 1.003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2        181 0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]       269 1.003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma   95 1.007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]     95 1.007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]     95 1.007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]   1168 0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]   1168 0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]       461 1.003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]       461 1.003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu            269 1.003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Minimum effective sample size was low (95).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               3             Parameter prior distributions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                        delta ~ Spike(0)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -75.96                          rho ~ Beta(3, 3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.176                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.640                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.014                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.097                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Mean    SD    lCI Median    uCI error(MCMC) error(MCMC)/SD ESS</span>
@@ -368,11 +494,47 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Minimum effective sample size was low (325).</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               3             Parameter prior distributions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.250                   delta ~ Cauchy(0, 0.71)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               4             Parameter prior distributions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                    delta ~ Spike(0)      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -77.36                      rho ~ Beta(3, 3)    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.003                       nu ~ Exponential(1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.024                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Mean     SD    lCI Median     uCI error(MCMC) error(MCMC)/SD ESS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu           18.791  0.654 17.533 18.769  20.107     0.03100          0.047 446</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       30.483 70.572  5.633 15.410 138.721     4.77964          0.068 218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho[1]        0.666  0.143  0.349  0.680   0.893     0.00727          0.051 388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]       1.532  1.223  0.078  1.225   4.674     0.06727          0.055 331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma  5.292  3.177  2.877  4.411  13.469     0.25124          0.079 160</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]    4.222  2.700  1.874  3.455  10.914     0.21074          0.078 164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]    6.062  3.786  3.067  5.099  15.020     0.29250          0.077 168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]    2.145  0.589  1.209  2.076   3.478     0.02667          0.045 488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]    3.120  0.757  1.872  3.039   4.780     0.02940          0.039 662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      18.791  0.654 17.533 18.769  20.107     0.03100          0.047 446</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      18.791  0.654 17.533 18.769  20.107     0.03100          0.047 446</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu            3.532  1.223  2.078  3.225   6.674     0.06727          0.055 331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              R-hat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu           0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       1.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho[1]       1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]      1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma 1.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]   1.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]   1.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu           1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Minimum effective sample size was low (160).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               5             Parameter prior distributions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                   delta ~ Cauchy(0, 0.71)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -75.75                     rho ~ Spike(0.5)     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.217                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.833                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.017                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.120                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Mean    SD    lCI Median    uCI error(MCMC) error(MCMC)/SD ESS</span>
@@ -395,11 +557,47 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      0.999</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               4             Parameter prior distributions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.250                   delta ~ Cauchy(0, 0.71)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               6             Parameter prior distributions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                   delta ~ Cauchy(0, 0.71)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -72.31                     rho ~ Spike(0.5)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.524                      nu ~ Exponential(1) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    7.710                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Mean     SD    lCI Median     uCI error(MCMC) error(MCMC)/SD ESS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu           19.595  0.400 18.706 19.621  20.278     0.02177          0.054 337</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       25.158 41.099  4.893 13.833 113.827     2.52735          0.061 264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta[1]      0.904  0.381  0.295  0.878   1.697     0.02235          0.059 290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]       0.771  0.831  0.046  0.526   2.934     0.04410          0.053 355</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma  4.417  2.377  2.212  3.719  10.669     0.16038          0.067 220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]    4.417  2.377  2.212  3.719  10.669     0.16038          0.067 220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]    4.417  2.377  2.212  3.719  10.669     0.16038          0.067 220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]    1.710  0.372  1.095  1.666   2.508     0.01354          0.036 757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]    1.710  0.372  1.095  1.666   2.508     0.01354          0.036 757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      17.904  0.557 16.753 17.920  18.930     0.02308          0.041 581</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      21.285  0.581 19.981 21.319  22.275     0.02737          0.047 451</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu            2.771  0.831  2.046  2.526   4.934     0.04410          0.053 355</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              R-hat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu           1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta[1]     1.006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]      1.004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma 1.004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]   1.004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]   1.004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu           1.004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Minimum effective sample size was low (220).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               7             Parameter prior distributions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                   delta ~ Cauchy(0, 0.71)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -74.85                     rho ~ Beta(3, 3)     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.533                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    3.420                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.041                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    0.301                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Mean    SD    lCI Median    uCI error(MCMC) error(MCMC)/SD ESS</span>
@@ -423,6 +621,44 @@ be omitted from the summary. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      0.999</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Minimum effective sample size was low (469).</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Model               8             Parameter prior distributions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prior prob.     0.125                   delta ~ Cauchy(0, 0.71)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  log(marglik)   -72.60                     rho ~ Beta(3, 3)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Post. prob.     0.393                      nu ~ Exponential(1) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Inclusion BF    4.530                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Mean     SD    lCI Median     uCI error(MCMC) error(MCMC)/SD ESS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu           19.580  0.399 18.769 19.602  20.353     0.01869          0.047 455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       21.138 31.637  4.555 12.028 107.607     2.45693          0.078 166</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta[1]      0.910  0.375  0.288  0.875   1.751     0.02166          0.058 300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho[1]        0.555  0.134  0.292  0.558   0.798     0.00522          0.039 657</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]       0.826  0.806  0.038  0.579   3.004     0.03735          0.046 466</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma  4.271  2.157  2.174  3.633  10.444     0.15503          0.072 194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]    3.996  2.170  1.905  3.364  10.365     0.14920          0.069 212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]    4.451  2.304  2.131  3.831  10.922     0.16267          0.071 201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]    1.628  0.415  0.989  1.561   2.611     0.01437          0.035 832</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]    1.849  0.523  0.999  1.793   2.955     0.01879          0.036 773</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      17.904  0.532 16.867 17.919  18.966     0.01942          0.036 751</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      21.256  0.593 20.037 21.294  22.345     0.02601          0.044 520</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu            2.826  0.806  2.038  2.579   5.004     0.03735          0.046 466</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              R-hat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu           1.002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2       1.009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delta[1]     0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rho[1]       1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu_p[1]      0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pooled_sigma 1.005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[1]   1.006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma_i[2]   1.005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[1]   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale_i[2]   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[1]      1.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu_i[2]      1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nu           0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">Minimum effective sample size was low (166).</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -34,6 +34,12 @@
     <loc>/reference/check_RoBTT.html</loc>
   </url>
   <url>
+    <loc>/reference/check_setup.html</loc>
+  </url>
+  <url>
+    <loc>/reference/diagnostics.html</loc>
+  </url>
+  <url>
     <loc>/reference/fertilization.html</loc>
   </url>
   <url>
@@ -56,6 +62,12 @@
   </url>
   <url>
     <loc>/reference/prior.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prior_none.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rho2logsdr.html</loc>
   </url>
   <url>
     <loc>/reference/summary.RoBTT.html</loc>
