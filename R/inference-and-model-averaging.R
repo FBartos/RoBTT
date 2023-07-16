@@ -3,7 +3,10 @@
   # modify the default null prior distribution to be spike at Inf
   for(i in seq_along(object[["models"]])){
     if(object[["models"]][[i]]$likelihood == "normal"){
-      attr(object[["models"]][[i]][["fit"]], "prior_list")$nu <- prior("spike", parameters = list(location = Inf))
+      attr(object[["models"]][[i]][["fit"]], "prior_list")$nu <- prior(
+        distribution  = "spike", 
+        parameters    = list(location = Inf),
+        prior_weights = attr(object[["models"]][[i]][["fit"]], "prior_list")$nu[["prior_weights"]])
     }
   }
   

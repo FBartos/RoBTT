@@ -11,8 +11,7 @@ check_setup(
   prior_nu = prior(distribution = "exp", parameters = list(rate = 1)),
   prior_delta_null = prior(distribution = "spike", parameters = list(location = 0)),
   prior_rho_null = prior(distribution = "spike", parameters = list(location = 0.5)),
-  prior_nu_null = NULL,
-  likelihood = c("normal", if (!is.null(prior_nu)) "t"),
+  prior_nu_null = prior_none(),
   models = FALSE,
   silent = FALSE
 )
@@ -41,11 +40,8 @@ with location at 0.5 (
 \code{prior(distribution = "point", parameters = list(location = 0.5))}).}
 
 \item{prior_nu_null}{prior distribution for the \code{nu} parameter
-that will be treated as belonging to the null hypothesis. Defaults to NULL (
-\code{NULL}, i.e., normal distribution).}
-
-\item{likelihood}{types of likelihood to be used. Defaults to \code{c("normal", "t")}
-for a normal and t likelihoods.}
+that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
+(i.e., normal likelihood)).}
 
 \item{models}{should the models' details be printed.}
 

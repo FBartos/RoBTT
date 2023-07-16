@@ -31,10 +31,8 @@
 #' with location at 0.5 (
 #' \code{prior(distribution = "point", parameters = list(location = 0.5))}).
 #' @param prior_nu_null prior distribution for the \code{nu} parameter
-#' that will be treated as belonging to the null hypothesis. Defaults to NULL (
-#' \code{NULL}, i.e., normal distribution).
-#' @param likelihood types of likelihood to be used. Defaults to \code{c("normal", "t")} 
-#' for a normal and t likelihoods.
+#' that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
+#' (i.e., normal likelihood)).
 #' @param chains a number of chains of the MCMC algorithm.
 #' @param iter a number of sampling iterations of the MCMC algorithm.
 #' Defaults to \code{10000}, with a minimum of \code{4000}.
@@ -80,7 +78,6 @@
 #'   x2       = fertilization$Crossed,
 #'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
 #'   prior_rho   = prior("beta",   list(3, 3)),
-#'   likelihood  = "normal",
 #'   seed        = 1, 
 #'   chains      = 1,
 #'   warmup      = 1000,
@@ -105,9 +102,7 @@ RoBTT <- function(
   
   prior_delta_null  = prior(distribution = "spike",  parameters = list(location = 0)),
   prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
-  prior_nu_null     = NULL,
-
-  likelihood = c("normal", if(!is.null(prior_nu)) "t"),
+  prior_nu_null     = prior_none(),
   
   chains  = 4, iter = 10000, warmup = 5000, thin = 1, parallel = FALSE,
   control = set_control(), convergence_checks = set_convergence_checks(), 
@@ -115,6 +110,7 @@ RoBTT <- function(
   save = "all", seed = NULL, silent = TRUE, ...){
   
   dots         <- .RoBTT_collect_dots(...)
+  object       <- NULL
   object       <- NULL
   object$call  <- match.call()
   object$data  <- .check_data(x1 = x1, x2 = x2, mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2)
@@ -126,7 +122,7 @@ RoBTT <- function(
   
   ### prepare and check the settings
   object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
-  object$models      <- .get_models(object$priors, likelihood)
+  object$models      <- .get_models(object$priors)
   object$add_info$warnings <- c()
   
 

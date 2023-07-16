@@ -47,8 +47,8 @@ fit_01 <- RoBTT(
   x2       = fertilization$Crossed,
   parallel = TRUE,
   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
-  prior_rho   = NULL, #this indicates no prior on the variance allocation factor -> equal variance test
-  likelihood  = "normal",
+  prior_rho   = NULL, # this indicates no prior on the variance allocation factor -> equal variance test 
+  prior_nu    = NULL, # this indicates no prior on the degrees of freedom -> normal distribution test
   seed        = 0
 )
 fit_10 <- RoBTT(
@@ -57,8 +57,8 @@ fit_10 <- RoBTT(
   parallel = TRUE,
   prior_delta    = prior("cauchy", list(0, 1/sqrt(2))),
   prior_rho      = prior("beta",   list(3, 3)), #prior on variance allocation
-  prior_rho_null = NULL, #remove models assuming equal variance
-  likelihood     = "normal",
+  prior_rho_null = NULL, # remove models assuming equal variance
+  prior_nu       = NULL,
   seed           = 0
 )
 fit_1 <- RoBTT(
@@ -67,7 +67,7 @@ fit_1 <- RoBTT(
   parallel = TRUE,
   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
   prior_rho   = prior("beta",   list(3, 3)),
-  likelihood  = "normal",
+  prior_nu    = NULL, 
   seed        = 1,
   control     = set_control(adapt_delta = 0.95)
 )
@@ -78,7 +78,6 @@ fit_2 <- RoBTT(
   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
   prior_rho   = prior("beta",   list(3, 3)),
   prior_nu    = prior("exp",    list(1)), # prior on degrees of freedom
-  likelihood  = c("normal", "t"), #use both normal and t-likelihoods
   seed        = 2
 )
 fit_3 <- RoBTT(
@@ -89,7 +88,6 @@ fit_3 <- RoBTT(
   prior_rho        = prior("beta",   list(3, 3)),
   prior_nu         = prior("exp",    list(1)),
   prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)), #prior distribution and truncation
-  likelihood       = c("normal", "t"),
   seed             = 3
 )
 
@@ -141,13 +139,13 @@ We reanalyze the data using a Bayesian equal variance $t$-test as follows.
 ```r
 ## fit equal variance t-test
 fit_01 <- RoBTT(
-  x1       = fertilization$Self,
-  x2       = fertilization$Crossed,
-  parallel = TRUE,
-  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
-  prior_rho   = NULL, # this indicates no prior on the precision proportion -> equal variance test
-  likelihood  = "normal",
-  seed        = 0
+    x1       = fertilization$Self,
+    x2       = fertilization$Crossed,
+    parallel = TRUE,
+    prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+    prior_rho   = NULL, # this indicates no prior on the variance allocation factor -> equal variance test 
+    prior_nu    = NULL, # this indicates no prior on the degrees of freedom -> normal distribution test
+    seed        = 0
 )
 ```
 
@@ -176,14 +174,14 @@ We can also analyze the example using an unequal variance $t$-test as follows.
 ## fit equal unvariance t-test
 
 fit_10 <- RoBTT(
-  x1       = fertilization$Self,
-  x2       = fertilization$Crossed,
-  parallel = TRUE,
-  prior_delta    = prior("cauchy", list(0, 1/sqrt(2))),
-  prior_rho      = prior("beta",   list(3, 3)), # prior on precision proportion
-  prior_rho_null = NULL, # remove models assuming equal variance
-  likelihood     = "normal",
-  seed           = 0
+    x1       = fertilization$Self,
+    x2       = fertilization$Crossed,
+    parallel = TRUE,
+    prior_delta    = prior("cauchy", list(0, 1/sqrt(2))),
+    prior_rho      = prior("beta",   list(3, 3)), #prior on variance allocation
+    prior_rho_null = NULL, # remove models assuming equal variance
+    prior_nu       = NULL,
+    seed           = 0
 )
 ```
 We again retrieve the summary; however, this time we also get a Bayes factor for unequal variances (heterogeneity) and an estimate for $\rho$ (the precision proportion).
@@ -204,14 +202,16 @@ The benefit of RoBTT in comparison to other commonly used $t$-tests is that it d
 
 ```r
 # fit t-test model averaging over equal and unequal variances
+
 fit_1 <- RoBTT(
-  x1       = fertilization$Self,
-  x2       = fertilization$Crossed,
-  parallel = TRUE,
-  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
-  prior_rho   = prior("beta",   list(3, 3)),
-  likelihood  = "normal",
-  seed        = 1
+    x1       = fertilization$Self,
+    x2       = fertilization$Crossed,
+    parallel = TRUE,
+    prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+    prior_rho   = prior("beta",   list(3, 3)),
+    prior_nu    = NULL, 
+    seed        = 1,
+    control     = set_control(adapt_delta = 0.95)
 )
 ```
 We retrieve the overall estimates as before using the summary function.
@@ -226,18 +226,18 @@ summary(fit_1, type = "models")
 ```
 ## Model-Averaging Over Robust t-likelihoods
 
-A common problem for t-tests that assume the normality of residuals is outliers. When outliers are present, the estimates of these methods can be driven overly strongly by those outliers. A common way to accomodate outliers is by also model-averaging over robust $t$-likelihoods. The t-distribution has thicker tails than the normal distribution; therefore, the estimate under the $t$-likelihood will be affected less due to outliers than the estimate using a normal likelihood. We can fit RoBTT that also model-averages over $t$-likelihoods as follows. 
+A common problem for t-tests that assume the normality of residuals is outliers. When outliers are present, the estimates of these methods can be driven overly strongly by those outliers. A common way to accommodatee outliers is by also model-averaging over robust $t$-likelihoods. The t-distribution has thicker tails than the normal distribution; therefore, the estimate under the $t$-likelihood will be affected less due to outliers than the estimate using a normal likelihood. We can fit RoBTT that also model-averages over $t$-likelihoods as follows. 
 
 ```r
+
 fit_2 <- RoBTT(
-  x1       = fertilization$Self,
-  x2       = fertilization$Crossed,
-  parallel = TRUE,
-  prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
-  prior_rho   = prior("beta",   list(3, 3)),
-  prior_nu    = prior("exp",    list(1)), # prior on degrees of freedom + 2
-  likelihood  = c("normal", "t"), # use both normal and t-likelihoods
-  seed        = 2
+    x1       = fertilization$Self,
+    x2       = fertilization$Crossed,
+    parallel = TRUE,
+    prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
+    prior_rho   = prior("beta",   list(3, 3)),
+    prior_nu    = prior("exp",    list(1)), # prior on degrees of freedom
+    seed        = 2
 )
 ```
 
@@ -253,17 +253,15 @@ It is sometimes argued that point null hypotheses are not meaningful to test as 
 
 ```r
 fit_3 <- RoBTT(
-  x1       = fertilization$Self,
-  x2       = fertilization$Crossed,
-  parallel = TRUE,
-  prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
-  prior_rho        = prior("beta",   list(3, 3)),
-  prior_nu         = prior("exp",    list(1)),
-  prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)), # prior distribution and truncation
-  likelihood       = c("normal", "t"),
-  seed             = 3
+    x1       = fertilization$Self,
+    x2       = fertilization$Crossed,
+    parallel = TRUE,
+    prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
+    prior_rho        = prior("beta",   list(3, 3)),
+    prior_nu         = prior("exp",    list(1)),
+    prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf)), #prior distribution and truncation
+    seed             = 3
 )
-
 ```
 
 When looking at the individual models we see that the models that previously had Spike(0.5) are now using normal(0, 0.15) prior from 0 to infinity. This indicates the shift from point null to perinull testing. 
@@ -274,7 +272,7 @@ summary(fit_3, type = "models")
 
 ## Conclusions
 
-This vignette showcased the applications of the RoBTT R package. For methodological background see the corresponding preprint (ref to preprint TBA). 
+This vignette showcased the applications of the RoBTT R package. For methodological background see @maier2022bayesian (https://doi.org/10.31234/osf.io/d5zwc). 
 
 
 ### References

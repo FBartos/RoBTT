@@ -39,7 +39,6 @@
 #'   x2       = fertilization$Crossed,
 #'   prior_delta = prior("cauchy", list(0, 1/sqrt(2))),
 #'   prior_rho   = prior("beta",   list(3, 3)),
-#'   likelihood  = "normal",
 #'   seed        = 1, 
 #'   chains      = 1,
 #'   warmup      = 1000,
@@ -120,7 +119,7 @@ diagnostics <- function(fit, parameter, type, show_models = NULL,
   for(i in models_ind){
     
     prior_names <- names(attr(fit$models[[i]][["fit"]], "prior_list"))
-    prior_names <- prior_names[!sapply(attr(fit$models[[i]][["fit"]], "prior_list"), BayesTools::is.prior.point)]
+    prior_names <- prior_names[!sapply(attr(fit$models[[i]][["fit"]], "prior_list"), function(p) BayesTools::is.prior.point(p) | BayesTools::is.prior.none(p))]
     model_parameters <- c(prior_names, "mu", "pooled_sigma")
     
     if(!parameter_samples %in% model_parameters){

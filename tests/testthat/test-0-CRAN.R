@@ -49,6 +49,7 @@ test_that("Basic functionality works", {
   )
   )
   
+    
   # test setup
   expect_equal(
     capture_output_lines(check_setup(models = FALSE), print = TRUE, width = 150),
@@ -72,14 +73,34 @@ test_that("Basic functionality works", {
       ""                                                                         ,
       "Models overview:"                                                         ,
       " Model Distribution   Prior delta    Prior rho    Prior nu    Prior prob.",
-      "     1       normal        Spike(0) Spike(0.5)                      0.125",
+      "     1       normal        Spike(0) Spike(0.5)           None       0.125",
       "     2            t        Spike(0) Spike(0.5) Exponential(1)       0.125",
-      "     3       normal        Spike(0) Beta(1, 1)                      0.125",
+      "     3       normal        Spike(0) Beta(1, 1)           None       0.125",
       "     4            t        Spike(0) Beta(1, 1) Exponential(1)       0.125",
-      "     5       normal Cauchy(0, 0.71) Spike(0.5)                      0.125",
+      "     5       normal Cauchy(0, 0.71) Spike(0.5)           None       0.125",
       "     6            t Cauchy(0, 0.71) Spike(0.5) Exponential(1)       0.125",
-      "     7       normal Cauchy(0, 0.71) Beta(1, 1)                      0.125",
+      "     7       normal Cauchy(0, 0.71) Beta(1, 1)           None       0.125",
       "     8            t Cauchy(0, 0.71) Beta(1, 1) Exponential(1)       0.125"
     )
   )
+  
+  
+  expect_equal(
+    capture_output_lines(check_setup(models = TRUE, prior_nu = NULL), print = TRUE, width = 150),
+    c(
+    "Robust Bayesian t-test (set-up)"                                    ,
+    "Components summary:"                                                ,
+    "              Models Prior prob."                                   ,
+    "Effect           2/4       0.500"                                   ,
+    "Heterogeneity    2/4       0.500"                                   ,
+    "Outliers         0/4       0.000"                                   ,
+    ""                                                                   ,
+    "Models overview:"                                                   ,
+    " Model Distribution   Prior delta    Prior rho Prior nu Prior prob.",
+    "     1       normal        Spike(0) Spike(0.5)     None       0.250",
+    "     2       normal        Spike(0) Beta(1, 1)     None       0.250",
+    "     3       normal Cauchy(0, 0.71) Spike(0.5)     None       0.250",
+    "     4       normal Cauchy(0, 0.71) Beta(1, 1)     None       0.250"
+    ))
+  
 })
