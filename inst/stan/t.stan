@@ -23,14 +23,14 @@ data {
   vector[is_d  == 1 ? 2 : 0] bounds_d;
   vector[is_r  == 1 ? 2 : 0] bounds_r;
   vector[is_nu == 1 ? 2 : 0] bounds_nu;
-  int bounds_type_d[is_d   == 1 ? 2 : 0];
-  int bounds_type_r[is_r   == 1 ? 2 : 0];
-  int bounds_type_nu[is_nu == 1 ? 2 : 0];
+  array[is_d   == 1 ? 2 : 0] int bounds_type_d;
+  array[is_r   == 1 ? 2 : 0] int bounds_type_r;
+  array[is_nu == 1 ? 2 : 0] int bounds_type_nu;
 
   // prior distribution specification of the parameteres
-  real fixed_d[is_d   == 0 ? 1 : 0];
-  real fixed_r[is_r   == 0 ? 1 : 0];
-  real fixed_nu[is_nu == 0 ? 1 : 0];
+  array[is_d   == 0 ? 1 : 0] real fixed_d;
+  array[is_r   == 0 ? 1 : 0] real fixed_r;
+  array[is_nu == 0 ? 1 : 0] real fixed_nu;
   vector[is_d  == 1 ? 3 : 0] prior_parameters_d;
   vector[is_r  == 1 ? 3 : 0] prior_parameters_r;
   vector[is_nu == 1 ? 3 : 0] prior_parameters_nu;
@@ -41,15 +41,15 @@ data {
 parameters{
   real mu;
   real<lower = 0> sigma2;
-  real<lower = coefs_lb(bounds_type_d,  bounds_d),  upper = coefs_ub(bounds_type_d,  bounds_d)>  delta[is_d];
-  real<lower = coefs_lb(bounds_type_r,  bounds_r),  upper = coefs_ub(bounds_type_r,  bounds_r)>  rho[is_r];
-  real<lower = coefs_lb(bounds_type_nu, bounds_nu), upper = coefs_ub(bounds_type_nu, bounds_nu)> nu_p[is_nu];
+  array[is_d] real<lower = coefs_lb(bounds_type_d,  bounds_d),  upper = coefs_ub(bounds_type_d,  bounds_d)>  delta;
+  array[is_r] real<lower = coefs_lb(bounds_type_r,  bounds_r),  upper = coefs_ub(bounds_type_r,  bounds_r)>  rho;
+  array[is_nu] real<lower = coefs_lb(bounds_type_nu, bounds_nu), upper = coefs_ub(bounds_type_nu, bounds_nu)> nu_p;
 }
 transformed parameters {
   real pooled_sigma;
-  real sigma_i[2];
-  real scale_i[2];
-  real mu_i[2];
+  array[2] real sigma_i;
+  array[2] real scale_i;
+  array[2] real mu_i;
   real nu;
 
 

@@ -21,8 +21,8 @@ data {
   // range of the parameters
   vector[is_d == 1 ? 2 : 0] bounds_d;
   vector[is_r == 1 ? 2 : 0] bounds_r;
-  int bounds_type_d[is_d == 1 ? 2 : 0];
-  int bounds_type_r[is_r == 1 ? 2 : 0];
+  array[is_d == 1 ? 2 : 0] int bounds_type_d;
+  array[is_r == 1 ? 2 : 0] int bounds_type_r;
 
   // prior distribution specification of the parameteres
   vector[is_d == 0 ? 1 : 0] fixed_d;
@@ -35,8 +35,8 @@ data {
 parameters{
   real<lower = 0> mu;
   real<lower = 0> sigma2;
-  real<lower = coefs_lb(bounds_type_d, bounds_d), upper = coefs_ub(bounds_type_d, bounds_d)> delta[is_d];
-  real<lower = coefs_lb(bounds_type_r, bounds_r), upper = coefs_ub(bounds_type_r, bounds_r)> rho[is_r];
+  array[is_d] real<lower = coefs_lb(bounds_type_d, bounds_d), upper = coefs_ub(bounds_type_d, bounds_d)> delta;
+  array[is_r] real<lower = coefs_lb(bounds_type_r, bounds_r), upper = coefs_ub(bounds_type_r, bounds_r)> rho;
 }
 transformed parameters {
   real pooled_sigma;
