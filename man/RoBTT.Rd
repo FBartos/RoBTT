@@ -132,6 +132,7 @@ Generic \code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=print.RoBTT]
 provided to facilitate manipulation with the ensemble.
 }
 \examples{
+\dontrun{
 # using the example data from Darwin
 data("fertilization", package = "RoBTT")
 fit <- RoBTT(
@@ -148,6 +149,7 @@ fit <- RoBTT(
 
 # summary can provide many details about the model
 summary(fit)
+}
 
 }
 \references{

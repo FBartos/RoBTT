@@ -55,6 +55,7 @@ be omitted from the summary. Defaults to \code{FALSE}.}
 RoBTT object.
 }
 \examples{
+\dontrun{
 # using the example data from Darwin
 data("fertilization", package = "RoBTT")
 fit <- RoBTT(
@@ -85,7 +86,7 @@ summary(fit, type = "diagnostics")
 
 # summary of individual models and their parameters can be further obtained by
 summary(fit, type = "individual")
-
+}
 
 }
 \seealso{

@@ -70,7 +70,7 @@
 #'
 #' @return \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
 #'
-#' @examples
+#' @examples \dontrun{
 #' # using the example data from Darwin
 #' data("fertilization", package = "RoBTT")
 #' fit <- RoBTT(
@@ -87,7 +87,8 @@
 #'
 #' # summary can provide many details about the model
 #' summary(fit)
-#'
+#' }
+#' 
 #' @references
 #' \insertAllCited{}
 #' @export RoBTT
