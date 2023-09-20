@@ -62,6 +62,7 @@ different \code{"RoBTT"} object parameters in various
 ways. See \code{type} for the different model types.
 }
 \examples{
+\dontrun{
 data("fertilization", package = "RoBTT")
 fit <- RoBTT(
   x1       = fertilization$Self,
@@ -80,6 +81,7 @@ plot(fit, parameter = "delta")
 
 # plot prior and posterior of the conditional effect size estimate
 plot(fit, parameter = "delta", conditional = TRUE, prior = TRUE)
+}
 
 }
 \seealso{

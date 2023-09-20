@@ -33,7 +33,7 @@
 #' x-label, y-label, title, x-axis range, and y-axis range
 #' respectively.
 #'
-#' @examples 
+#' @examples \dontrun{
 #' data("fertilization", package = "RoBTT")
 #' fit <- RoBTT(
 #'   x1       = fertilization$Self,
@@ -52,6 +52,7 @@
 #' 
 #' # plot prior and posterior of the conditional effect size estimate
 #' plot(fit, parameter = "delta", conditional = TRUE, prior = TRUE)
+#' }
 #' 
 #' @return \code{plot.RoBTT} returns either \code{NULL} if \code{plot_type = "base"}
 #' or an object object of class 'ggplot2' if \code{plot_type = "ggplot2"}.

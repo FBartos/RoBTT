@@ -1,3 +1,6 @@
+## version 1.2.1
+Compatibility update for the rstan 2.26.
+
 ## version 1.2.0
 ### Changes
 - when specifying prior distribution for the nu parameter, coerce Spike(Inf) to NULL

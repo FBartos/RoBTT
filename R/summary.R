@@ -41,7 +41,7 @@ print.RoBTT <- function(x, ...){
 #' be omitted from the summary. Defaults to \code{FALSE}.
 #' @param ... additional arguments
 #'
-#' @examples
+#' @examples \dontrun{
 #' # using the example data from Darwin
 #' data("fertilization", package = "RoBTT")
 #' fit <- RoBTT(
@@ -72,7 +72,7 @@ print.RoBTT <- function(x, ...){
 #'
 #' # summary of individual models and their parameters can be further obtained by
 #' summary(fit, type = "individual")
-#'
+#' }
 #'
 #' @return \code{summary.RoBTT} returns a list of tables of class 'BayesTools_table'.
 #'

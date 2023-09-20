@@ -14,7 +14,7 @@ functions {
   }
 
   // function for setting parameter bounds
-  real coefs_lb(int[] type_in, vector bound_in) {
+  real coefs_lb(array[] int type_in, vector bound_in) {
     int type;
     real bound;
     real lb;
@@ -30,7 +30,7 @@ functions {
       lb = bound;
     return lb;
   }
-  real coefs_ub(int[] type_in, vector bound_in) {
+  real coefs_ub(array[] int type_in, vector bound_in) {
     int type;
     real bound;
     real lb;
@@ -56,7 +56,7 @@ functions {
   // type 6 = inverse-gamma
   // type 7 = uniform
   // type 8 = beta
-  real set_prior(real parameter, int prior_type, vector prior_parameters, int[] bounds_type, vector bounds){
+  real set_prior(real parameter, int prior_type, vector prior_parameters, array[] int bounds_type, vector bounds){
     real ll;
 
     if(prior_type == 1){
