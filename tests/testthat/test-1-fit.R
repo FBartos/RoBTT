@@ -57,7 +57,11 @@ test_that("Default model works", {
                                  prior_nu         = prior("exp",    list(1)),
                                  prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf))))
   expect_equal(clean_all(saved_fits[[3]]), clean_all(fit3))
-
+  
+  # update prior model probs
+  fit2u <- update(fit2, prior_weights = c(2, 1, 2, 2))
+  
+  fit1u <- update(fit1)
 })
 
 
