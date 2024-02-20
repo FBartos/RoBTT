@@ -1,3 +1,7 @@
+## version 1.2.2
+### Features
+- `update.RoBTT()` function to refit models with convergence warnings or change prior model probabilities
+
 ## version 1.2.1
 Compatibility update for the rstan 2.26.
 

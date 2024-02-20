@@ -124,7 +124,11 @@ RoBTT <- function(
   ### prepare and check the settings
   object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
   object$models      <- .get_models(object$priors)
-  object$add_info$warnings <- c()
+  object$add_info    <- list(
+    warnings         = NULL,
+    seed             = seed,
+    save             = save
+  )
   
 
   ### fit the models and compute marginal likelihoods
@@ -182,3 +186,132 @@ RoBTT <- function(
   class(object) <- "RoBTT"
   return(object)
 }
+
+
+#' @title Updates a fitted RoBTT object
+#'
+#' @description \code{update.RoBTT} can be used to
+#' \enumerate{
+#'   \item{change the prior odds of fitted models by specifying a vector
+#'   \code{prior_weights} of the same length as the fitted models,}
+#'   \item{refitting models that failed to converge with updated settings
+#'   of control parameters,}
+#'   \item{or changing the convergence criteria and recalculating the ensemble
+#'   results by specifying new \code{control} argument and setting
+#'   \code{refit_failed == FALSE}.}
+#' }
+#'
+#' @param object a fitted RoBTT object
+#' @param prior_weights either a single value specifying prior model weight
+#' of a newly specified model using priors argument, or a vector of the
+#' same length as already fitted models to update their prior weights.
+#' @param refit_failed whether failed models should be refitted. Relevant only
+#' \code{prior_weights} are not supplied. Defaults to \code{TRUE}.
+#' @inheritParams RoBTT
+#' @param ... additional arguments.
+#'
+#' @details See [RoBTT()] for more details.
+#'
+#' @return \code{RoBTT} returns an object of class 'RoBTT'.
+#'
+#' @seealso [RoBTT()], [summary.RoBTT()], [prior()], [check_setup()]
+#' @export
+update.RoBTT <- function(object, refit_failed = TRUE, prior_weights = NULL,
+                         chains  = NULL, iter = NULL, warmup = NULL, thin = NULL, parallel = NULL,
+                         control = NULL, convergence_checks = NULL,
+                         save = "all", seed = NULL, silent = TRUE, ...){
+  
+  BayesTools::check_bool(refit_failed, "refit_failed")
+  
+
+  if(object$add_info$save == "min")
+    stop("Models cannot be updated because individual model posteriors were not save during the fitting process. Set 'save' parameter to 'all' in while fitting the model (see ?RoBMA for more details).")
+  
+  if(!is.null(prior_weights)){
+    
+    what_to_do <- "update_prior_weights"
+    if(length(prior_weights) != length(object$models))
+      stop("The number of newly specified prior odds does not match the number of models. See '?update.RoBTT' for more details.")
+    for(i in 1:length(object$models)){
+      object$models[[i]]$prior_weights     <- prior_weights[i]
+      object$models[[i]]$prior_weights_set <- prior_weights[i]
+    }
+    
+  }else if(refit_failed & any(!.get_model_convergence(object, include_warning = TRUE))){
+    
+    what_to_do <- "refit_failed_models"
+    
+  }else{
+    
+    what_to_do <- "update_settings"
+    
+  }
+  
+  
+  ### update control settings if any change is specified
+  object[["control"]]            <- .update_fit_control(object[["control"]], chains = chains, warmup = warmup, iter = iter, thin = thin, parallel = parallel, cores = chains, silent = silent, seed = seed, control = control)
+  object[["convergence_checks"]] <- .update_convergence_checks(object[["convergence_checks"]], convergence_checks)
+  
+  
+  ### clean errors and warnings
+  object$add_info[["errors"]]   <- NULL
+  object$add_info[["warnings"]] <- NULL
+  
+  
+  ### do the stuff
+  if(what_to_do == "refit_failed_models"){
+    
+    models_to_update <- seq_along(object$models)[!.get_model_convergence(object, include_warning = TRUE)]
+    
+    if(!object$control[["parallel"]]){
+      
+      if(dots[["is_JASP"]]){
+        .JASP_progress_bar_start(length(models_to_update))
+      }
+      
+      for(i in models_to_update){
+        object$models[[i]] <- .fit_RoBTT(object, i)
+        if(dots[["is_JASP"]]){
+          .JASP_progress_bar_tick()
+        }
+      }
+      
+    }else{
+      
+      cl <- parallel::makePSOCKcluster(floor(RoBTT.get_option("max_cores") / object$control[["chains"]]))
+      parallel::clusterEvalQ(cl, {library("RoBTT")})
+      parallel::clusterExport(cl, "object", envir = environment())
+      object$models[models_to_update] <- parallel::parLapplyLB(cl, models_to_update, .fit_RoBTT, object = object)
+      parallel::stopCluster(cl)
+      
+    }
+    
+  }
+  
+  
+  # create ensemble only if at least one model converged
+  if(all(object$add_info$converged)){
+    ### compute the model-space results
+    object$models        <- BayesTools::models_inference(object[["models"]])
+    object$RoBTT         <- .ensemble_inference(object)
+    object$coefficients  <- .compute_coeficients(object[["RoBTT"]])
+  }else{
+    stop(paste0("The following models failed the converge: ", paste(which(!object$add_info$converged), collapse = ", "), "."))
+  }
+  
+  
+  ### collect and print errors and warnings
+  object$add_info[["errors"]]   <- c(object$add_info[["errors"]],   .get_model_errors(object))
+  object$add_info[["warnings"]] <- c(object$add_info[["warnings"]], .get_model_warnings(object))
+  .print_errors_and_warnings(object)
+  
+  
+  ### remove model posteriors if asked to
+  if(save == "min"){
+    object <- .remove_model_posteriors(object)
+    object <- .remove_model_margliks(object)
+  }
+  
+  return(object)
+}
+

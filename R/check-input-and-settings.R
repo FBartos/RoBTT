@@ -180,8 +180,7 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
   
   return(convergence_checks)
 }
-
-.stan_check_and_list_fit_settings     <- function(chains, warmup, iter, thin, parallel, cores, silent, seed, control, check_mins = list(chains = 1, warmup = 50, iter = 50, thin = 1), call = ""){
+.stan_check_and_list_fit_settings  <- function(chains, warmup, iter, thin, parallel, cores, silent, seed, control, check_mins = list(chains = 1, warmup = 50, iter = 50, thin = 1), call = ""){
   
   BayesTools::check_int(chains, "chains",  lower = check_mins[["chains"]],  call = call)
   BayesTools::check_int(warmup, "warmup",  lower = check_mins[["warmup"]],  call = call)
@@ -231,6 +230,59 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
   )))
 }
 
+.update_fit_control        <- function(old_fit_control, chains, warmup, iter, thin, parallel, cores, silent, seed, control){
+  
+  if(is.null(chains)){
+    chains <- old_fit_control[["chains"]]
+  }
+  if(is.null(warmup)){
+    warmup  <- old_fit_control[["warmup"]]
+  }
+  if(is.null(iter)){
+    iter <- old_fit_control[["iter"]]
+  }
+  if(is.null(thin)){
+    thin  <- old_fit_control[["thin"]]
+  }
+  if(is.null(parallel)){
+    parallel <- old_fit_control[["parallel"]]
+  }
+  if(is.null(silent)){
+    silent <- old_fit_control[["silent"]]
+  }
+  if(is.null(seed)){
+    seed   <- old_fit_control[["seed"]]
+  }
+  if(is.null(control)){
+    control <- list(
+      adapt_delta     = old_fit_control[["adapt_delta"]],
+      max_treedepth   = old_fit_control[["max_treedepth"]],
+      bridge_max_iter = old_fit_control[["bridge_max_iter"]]
+    )
+  }
+  
+  new_fit_control <- .stan_check_and_list_fit_settings(chains = chains, warmup = warmup, iter = iter, thin = thin, parallel = parallel, cores = chains, silent = silent, seed = seed, control = control)
+  
+  return(new_fit_control)
+}
+.update_convergence_checks <- function(old_convergence_checks, convergence_checks){
+  
+  if(!is.null(convergence_checks[["max_Rhat"]])){
+    max_Rhat <- convergence_checks[["max_Rhat"]]
+  }else{
+    max_Rhat <- old_convergence_checks[["max_Rhat"]]
+  }
+  if(!is.null(convergence_checks[["min_ESS"]])){
+    min_ESS <- convergence_checks[["min_ESS"]]
+  }else{
+    min_ESS <- old_convergence_checks[["min_ESS"]]
+  }
+  
+  new_convergence_checks <- set_convergence_checks(max_Rhat = max_Rhat, min_ESS = min_ESS)
+  new_convergence_checks <- .check_and_list_convergence_checks(new_convergence_checks)
+  
+  return(new_convergence_checks)
+}
 
 .check_data <- function(x1, x2, mean1, mean2, sd1, sd2, N1, N2){
   
