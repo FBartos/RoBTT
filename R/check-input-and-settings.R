@@ -284,7 +284,7 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
   return(new_convergence_checks)
 }
 
-.check_data <- function(x1, x2, mean1, mean2, sd1, sd2, N1, N2){
+.check_data <- function(x1, x2, mean1, mean2, sd1, sd2, N1, N2, truncation){
   
   if(!is.null(mean1) & !is.null(mean2) &  !is.null(sd1) &  !is.null(sd2) &  !is.null(N1) &  !is.null(N2)){
     
@@ -327,8 +327,96 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
     )
     attr(data, "summary") <- FALSE
     
+    mean1 <- mean(x1)
+    mean2 <- mean(x2)
+    sd1   <- stats::sd(x1)
+    sd2   <- stats::sd(x2)
+    N1    <- length(x1)
+    N2    <- length(x2)
+    
   }else{
     stop("Insufficient data provided.")
+  }
+  
+  # add truncation
+  # - a single named integer sigma truncates both groups equally according to sd distance from the mean (common/grouped typed)
+  # - a vector of length two specifies a common truncation range
+  # - two vectors of length two specify different truncation ranges for each group
+  if(is.null(truncation)){
+    
+    data[["is_trun"]] <- 0
+    data[["trun1"]]   <- rep(0, 2)
+    data[["trun2"]]   <- rep(0, 2)
+    
+  }else{
+    
+    BayesTools::check_list(truncation, "truncation", check_names = c("sigma", "sigma1", "sigma2", "x", "x1", "x2"), allow_other = FALSE, all_objects = FALSE, check_length = 0)
+    
+    if("sigma" %in% names(truncation)){
+      
+      if(attr(data, "summary"))
+        stop("Truncation by sigma is not supported for summary data.")
+      
+      BayesTools::check_real(truncation[["sigma"]], "truncation::sigma", lower = 0, allow_bound = FALSE)
+      
+      data[["is_trun"]] <- 1
+      data[["trun1"]]   <- mean(c(x1, x2)) - truncation[["sigma"]] * sd(c(x1, x2))
+      data[["trun2"]]   <- mean(c(x1, x2)) - truncation[["sigma"]] * sd(c(x1, x2))
+      
+    }else if(all(c("sigma1", "sigma2") %in% names(truncation))){
+      
+      if(attr(data, "summary"))
+        stop("Truncation by sigma is not supported for summary data.")
+      
+      BayesTools::check_real(truncation[["sigma1"]], "truncation::sigma1", lower = 0, allow_bound = FALSE)
+      BayesTools::check_real(truncation[["sigma2"]], "truncation::sigma2", lower = 0, allow_bound = FALSE)
+      
+      data[["is_trun"]] <- 1
+      data[["trun1"]]   <- mean(x1) - truncation[["sigma1"]] * sd(x1)
+      data[["trun2"]]   <- mean(x2) - truncation[["sigma2"]] * sd(x2)
+      
+    }else if("x" %in% names(truncation)){
+      
+      BayesTools::check_real(truncation[["x"]], "truncation::x", check_length = 2)
+      BayesTools::check_real(truncation[["x"]][1], "truncation::x[1]", lower = truncation[["x"]][2], allow_bound = FALSE)
+      
+      data[["is_trun"]] <- 1
+      data[["trun1"]]   <- truncation[["x"]]
+      data[["trun2"]]   <- truncation[["x"]]
+      
+    }else if(all(c("x1", "x2") %in% names(truncation))){
+      
+      if(attr(data, "summary"))
+        stop("Truncation by x is not supported for summary data.")
+      
+      BayesTools::check_real(truncation[["x1"]], "truncation::x1", check_length = 2)
+      BayesTools::check_real(truncation[["x2"]], "truncation::x2", check_length = 2)
+      BayesTools::check_real(truncation[["x1"]][1], "truncation::x1[1]", lower = truncation[["x1"]][2], allow_bound = FALSE)
+      BayesTools::check_real(truncation[["x2"]][1], "truncation::x2[1]", lower = truncation[["x2"]][2], allow_bound = FALSE)
+      
+      data[["is_trun"]] <- 1
+      data[["trun1"]]   <- truncation[["x1"]]
+      data[["trun2"]]   <- truncation[["x2"]]
+      
+    }
+    
+    # remove the truncated values
+    if(!attr(data, "summary")){
+      
+      x1_outside <- x1 < data[["trun1"]][1] | x1 > data[["trun1"]][2]
+      x2_outside <- x2 < data[["trun2"]][1] | x2 > data[["trun2"]][2]
+      
+      if(sum(x1_outside) > 0 | sum(x2_outside) > 0){
+        warning(paste0("Truncation removed ", sum(x1_outside), " and ", sum(x2_outside), " observations from group 1 and 2, respectively."), immediate. = TRUE, call. = FALSE)
+      }
+      
+      if(sum(!x1_outside) < 1) stop("'x1' must contain at least one observation.")
+      if(sum(!x2_outside) < 2) stop("'x2' must contain at least one observation.")
+      
+      data[["x1"]] <- x1[!x1_outside]
+      data[["x2"]] <- x2[!x2_outside]
+    }
+    
   }
   
   return(data)

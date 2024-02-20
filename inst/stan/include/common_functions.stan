@@ -47,6 +47,26 @@ functions {
     return lb;
   }
 
+
+  // function for setting data bounds (for truncation)
+  real data_lb(int is_trunc, vector trunc_in) {
+    real lb;
+    if (is_trunc == 0)
+      lb = negative_infinity();
+    else
+      lb = trunc_in[1];
+    return lb;
+  }
+  real data_ub(int is_trunc, vector trunc_in) {
+    real ub;
+    if (is_trunc == 0)
+      ub = positive_infinity();
+    else
+      ub = trunc_in[2];
+    return ub;
+  }
+  
+  
   // function for setting prior distributions on the parameters
   // type 1 = normal
   // type 2 = lognormal

@@ -4,12 +4,19 @@ data {
   // data
   // are individual observation or summary statistics used
   int is_ss;
+   
+  // are data truncated
+  int is_trunc;
+  // range of truncation
+  vector[is_trunc == 1 ? 2 : 0] trunc1;
+  vector[is_trunc == 1 ? 2 : 0] trunc2;
+  
   // sample sizes
   int<lower=0> N1;
   int<lower=0> N2;
   // individual observations
-  vector[is_ss == 0 ? N1 : 0] x1;
-  vector[is_ss == 0 ? N2 : 0] x2;
+  vector<lower = data_lb(is_trunc, trunc1), upper = data_ub(is_trunc, trunc1)>[is_ss == 0 ? N1 : 0] x1;
+  vector<lower = data_lb(is_trunc, trunc2), upper = data_ub(is_trunc, trunc2)>[is_ss == 0 ? N2 : 0] x2;
   // summary statistics
   vector[is_ss == 1 ? 2 : 0] mean_i;
   vector[is_ss == 1 ? 2 : 0] sd_i;
@@ -103,5 +110,11 @@ model {
     target += student_t_lpdf(x2 | nu, mu_i[2], scale_i[2]);
   }else{
     reject("Fitting models with t likelihood and summary statistics is not possible :(.");
+  }
+  
+    // truncation addjustment for each group
+  if(is_trunc == 1){
+    target += -N1 * log_diff_exp(student_t_lcdf(trunc1[2] | nu, mu_i[1], sigma_i[1]), student_t_lcdf(trunc1[1] | nu, mu_i[1], sigma_i[1]));
+    target += -N2 * log_diff_exp(student_t_lcdf(trunc2[2] | nu, mu_i[2], sigma_i[2]), student_t_lcdf(trunc2[1] | nu, mu_i[2], sigma_i[2]));
   }
 }

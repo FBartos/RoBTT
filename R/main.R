@@ -96,6 +96,7 @@
 RoBTT <- function(
   x1 = NULL, x2 = NULL,
   mean1 = NULL, mean2 = NULL, sd1 = NULL, sd2 = NULL, N1 = NULL, N2 = NULL,
+  truncation = NULL,
   
   prior_delta  = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
   prior_rho    = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
@@ -114,7 +115,7 @@ RoBTT <- function(
   object       <- NULL
   object       <- NULL
   object$call  <- match.call()
-  object$data  <- .check_data(x1 = x1, x2 = x2, mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2)
+  object$data  <- .check_data(x1 = x1, x2 = x2, mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2, truncation = truncation)
 
   ### check MCMC settings
   object$control            <- .stan_check_and_list_fit_settings(chains = chains, warmup = warmup, iter = iter, thin = thin,

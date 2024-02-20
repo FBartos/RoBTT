@@ -4,12 +4,19 @@ data {
   // data
   // are individual observation or summary statistics used
   int is_ss;
+  
+  // are data truncated
+  int is_trunc;
+  // range of truncation
+  vector[is_trunc == 1 ? 2 : 0] trunc1;
+  vector[is_trunc == 1 ? 2 : 0] trunc2;
+  
   // sample sizes
   int<lower=0> N1;
   int<lower=0> N2;
   // individual observations
-  vector[is_ss == 0 ? N1 : 0] x1;
-  vector[is_ss == 0 ? N2 : 0] x2;
+  vector<lower = data_lb(is_trunc, trunc1), upper = data_ub(is_trunc, trunc1)>[is_ss == 0 ? N1 : 0] x1;
+  vector<lower = data_lb(is_trunc, trunc2), upper = data_ub(is_trunc, trunc2)>[is_ss == 0 ? N2 : 0] x2;
   // summary statistics
   vector[is_ss == 1 ? 2 : 0] mean_i;
   vector[is_ss == 1 ? 2 : 0] sd_i;
@@ -31,6 +38,8 @@ data {
   vector[is_r == 1 ? 3 : 0] prior_parameters_r;
   int prior_type_d;
   int prior_type_r;
+  
+
 }
 parameters{
   real mu;
@@ -42,6 +51,7 @@ transformed parameters {
   real pooled_sigma;
   vector[2] sigma_i;
   vector[2] mu_i;
+  real trunc_adj[2];
 
   // compute means and sigmas for each group
   if(is_r == 1){
@@ -76,10 +86,16 @@ model {
 
   // likelihood of the data
   if(is_ss == 0){
-    target += normal_lpdf(x1 | mu_i[1], sigma_i[1]);
-    target += normal_lpdf(x2 | mu_i[2], sigma_i[2]);
+    target += normal_lpdf(x1 | mu_i[1], sigma_i[1]) - trunc_adj[1];
+    target += normal_lpdf(x2 | mu_i[2], sigma_i[2]) - trunc_adj[2];
   }else{
     target += -N1 / 2.0 * log(2 * pi() * pow(sigma_i[1], 2)) - 1 / (2 * pow(sigma_i[1], 2)) * ((N1 - 1) * pow(sd_i[1], 2) + N1 * (mean_i[1] - mu_i[1])^2);
     target += -N2 / 2.0 * log(2 * pi() * pow(sigma_i[2], 2)) - 1 / (2 * pow(sigma_i[2], 2)) * ((N2 - 1) * pow(sd_i[2], 2) + N2 * (mean_i[2] - mu_i[2])^2);
+  }
+  
+  // truncation addjustment for each group
+  if(is_trunc == 1){
+    target += -N1 * log_diff_exp(normal_lcdf(trunc1[2] | mu_i[1], sigma_i[1]), normal_lcdf(trunc1[1] | mu_i[1], sigma_i[1]));
+    target += -N2 * log_diff_exp(normal_lcdf(trunc2[2] | mu_i[2], sigma_i[2]), normal_lcdf(trunc2[1] | mu_i[2], sigma_i[2]));
   }
 }
