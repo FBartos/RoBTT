@@ -1,3 +1,6 @@
+## version 1.3.0
+- adds `truncation` argument to `RoBTT()` function to allow for truncation of the normal/t-distribution models
+
 ## version 1.2.2
 ### Features
 - `update.RoBTT()` function to refit models with convergence warnings or change prior model probabilities

@@ -26,24 +26,30 @@ data {
   int is_r;
 
   // range of the parameters
+  vector[2] bounds_mu;
+  vector[2] bounds_sigma2;
   vector[is_d == 1 ? 2 : 0] bounds_d;
   vector[is_r == 1 ? 2 : 0] bounds_r;
+  array[2] int bounds_type_mu;
+  array[2] int bounds_type_sigma2;
   array[is_d == 1 ? 2 : 0] int bounds_type_d;
   array[is_r == 1 ? 2 : 0] int bounds_type_r;
 
   // prior distribution specification of the parameteres
   vector[is_d == 0 ? 1 : 0] fixed_d;
   vector[is_r == 0 ? 1 : 0] fixed_r;
+  vector[3] prior_parameters_mu;
+  vector[3] prior_parameters_sigma2;
   vector[is_d == 1 ? 3 : 0] prior_parameters_d;
   vector[is_r == 1 ? 3 : 0] prior_parameters_r;
+  int prior_type_mu;
+  int prior_type_sigma2;
   int prior_type_d;
   int prior_type_r;
-  
-
 }
 parameters{
-  real mu;
-  real<lower = 0> sigma2;
+  real<lower = coefs_lb(bounds_type_mu, bounds_mu),         upper = coefs_ub(bounds_type_mu, bounds_mu)>  mu;
+  real<lower = coefs_lb(bounds_type_sigma2, bounds_sigma2), upper = coefs_ub(bounds_type_sigma2, bounds_sigma2)> sigma2;
   array[is_d] real<lower = coefs_lb(bounds_type_d, bounds_d), upper = coefs_ub(bounds_type_d, bounds_d)> delta;
   array[is_r] real<lower = coefs_lb(bounds_type_r, bounds_r), upper = coefs_ub(bounds_type_r, bounds_r)> rho;
 }
@@ -51,7 +57,6 @@ transformed parameters {
   real pooled_sigma;
   vector[2] sigma_i;
   vector[2] mu_i;
-  real trunc_adj[2];
 
   // compute means and sigmas for each group
   if(is_r == 1){
@@ -72,10 +77,10 @@ transformed parameters {
   }
 }
 model {
-  // default Jeffrey's priors for mu and sigma
-  target += Jeffreys_mu_lpdf(mu);
-  target += Jeffreys_sigma_lpdf(sigma2);
-
+  // priors for mu and sigma2
+  target += set_prior(mu,     prior_type_mu,     prior_parameters_mu,     bounds_type_mu,     bounds_mu);
+  target += set_prior(sigma2, prior_type_sigma2, prior_parameters_sigma2, bounds_type_sigma2, bounds_sigma2);  
+  
   // priors on d and r
   if(is_d == 1){
     target += set_prior(delta[1], prior_type_d, prior_parameters_d, bounds_type_d, bounds_d);
@@ -86,8 +91,8 @@ model {
 
   // likelihood of the data
   if(is_ss == 0){
-    target += normal_lpdf(x1 | mu_i[1], sigma_i[1]) - trunc_adj[1];
-    target += normal_lpdf(x2 | mu_i[2], sigma_i[2]) - trunc_adj[2];
+    target += normal_lpdf(x1 | mu_i[1], sigma_i[1]);
+    target += normal_lpdf(x2 | mu_i[2], sigma_i[2]);
   }else{
     target += -N1 / 2.0 * log(2 * pi() * pow(sigma_i[1], 2)) - 1 / (2 * pow(sigma_i[1], 2)) * ((N1 - 1) * pow(sd_i[1], 2) + N1 * (mean_i[1] - mu_i[1])^2);
     target += -N2 / 2.0 * log(2 * pi() * pow(sigma_i[2], 2)) - 1 / (2 * pow(sigma_i[2], 2)) * ((N2 - 1) * pow(sd_i[2], 2) + N2 * (mean_i[2] - mu_i[2])^2);

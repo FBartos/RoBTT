@@ -27,9 +27,13 @@ data {
   int is_nu;
 
   // range of the parameters
+  vector[2] bounds_mu;
+  vector[2] bounds_sigma2;
   vector[is_d  == 1 ? 2 : 0] bounds_d;
   vector[is_r  == 1 ? 2 : 0] bounds_r;
   vector[is_nu == 1 ? 2 : 0] bounds_nu;
+  array[2] int bounds_type_mu;
+  array[2] int bounds_type_sigma2;
   array[is_d   == 1 ? 2 : 0] int bounds_type_d;
   array[is_r   == 1 ? 2 : 0] int bounds_type_r;
   array[is_nu == 1 ? 2 : 0] int bounds_type_nu;
@@ -38,9 +42,13 @@ data {
   array[is_d   == 0 ? 1 : 0] real fixed_d;
   array[is_r   == 0 ? 1 : 0] real fixed_r;
   array[is_nu == 0 ? 1 : 0] real fixed_nu;
+  vector[3] prior_parameters_mu;
+  vector[3] prior_parameters_sigma2;
   vector[is_d  == 1 ? 3 : 0] prior_parameters_d;
   vector[is_r  == 1 ? 3 : 0] prior_parameters_r;
   vector[is_nu == 1 ? 3 : 0] prior_parameters_nu;
+  int prior_type_mu;
+  int prior_type_sigma2;
   int prior_type_d;
   int prior_type_r;
   int prior_type_nu;
@@ -58,7 +66,6 @@ transformed parameters {
   array[2] real scale_i;
   array[2] real mu_i;
   real nu;
-
 
   // compute means and sigmas for each group
   if(is_nu == 1){
@@ -89,9 +96,9 @@ transformed parameters {
   }
 }
 model {
-  // default Jeffrey's priors for mu and sigma
-  target += Jeffreys_mu_lpdf(mu);
-  target += Jeffreys_sigma_lpdf(sigma2);
+  // priors for mu and sigma2
+  target += set_prior(mu,     prior_type_mu,     prior_parameters_mu,     bounds_type_mu,     bounds_mu);
+  target += set_prior(sigma2, prior_type_sigma2, prior_parameters_sigma2, bounds_type_sigma2, bounds_sigma2);
 
   // priors on d and r
   if(is_d == 1){

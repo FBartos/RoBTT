@@ -50,23 +50,42 @@
   
   out <- list()
   
+  # special handling of the Jeffreys priors pseudo-distributions
+  if(parameter %in% c("mu", "sigma2") && is.character(prior) && prior %in% c("Jeffreys_mu", "Jeffreys_sigma2")){
+    
+    out[[paste0("prior_type_", parameter)]] <- switch(
+      prior,
+      "Jeffreys_mu"     = 98,
+      "Jeffreys_sigma2" = 99
+    )
+    
+    out[[paste0("bounds_", parameter)]]           <- c(999, 999)
+    out[[paste0("bounds_type_", parameter)]]      <- c(0, 0)
+    out[[paste0("prior_parameters_", parameter)]] <- c(999, 999, 999)
+    
+    return(out)
+  }
+  
   out[[paste0("prior_type_", parameter)]] <- switch(
     prior[["distribution"]],
-    "point"      = 0,
-    "normal"     = 1,
-    "lognormal"  = 2,
-    "t"          = 4,
-    "gamma"      = 5,
-    "invgamma"   = 6,
-    "uniform"    = 7,
-    "beta"       = 8,
-    "exp"        = 9,
+    "point"           = 0,
+    "normal"          = 1,
+    "lognormal"       = 2,
+    "t"               = 4,
+    "gamma"           = 5,
+    "invgamma"        = 6,
+    "uniform"         = 7,
+    "beta"            = 8,
+    "exp"             = 9
   )
   
   if(is.prior.point(prior)){
     
-    out[[paste0("is_", parameter)]]          <- 0
-    out[[paste0("fixed_", parameter)]]       <- as.array(prior$parameters[["location"]])
+    if(!parameter %in% c("mu", "sigma2")){
+      out[[paste0("is_", parameter)]]          <- 0
+      out[[paste0("fixed_", parameter)]]       <- as.array(prior$parameters[["location"]])      
+    }
+
     out[[paste0("bounds_", parameter)]]      <- numeric()
     out[[paste0("bounds_type_", parameter)]] <- numeric()
     
@@ -74,9 +93,11 @@
     
   }else if(is.prior.simple(prior)){
     
-    out[[paste0("is_", parameter)]]     <- 1
-    out[[paste0("fixed_", parameter)]]  <- numeric()
-    
+    if(!parameter %in% c("mu", "sigma2")){
+      out[[paste0("is_", parameter)]]     <- 1
+      out[[paste0("fixed_", parameter)]]  <- numeric()      
+    }
+
     out[[paste0("bounds_", parameter)]] <- c(
       if(is.infinite(prior$truncation[["lower"]])) 999 else prior$truncation[["lower"]],
       if(is.infinite(prior$truncation[["upper"]])) 999 else prior$truncation[["upper"]]
@@ -98,7 +119,7 @@
   
   # a vector of length three always needs to be passed - filling the redundant values with 999
   prior_parameters <- rep(999, 3)
-  
+
   if(prior[["distribution"]] == "normal"){
     prior_parameters[1] <- prior$parameters[["mean"]]
     prior_parameters[2] <- prior$parameters[["sd"]]

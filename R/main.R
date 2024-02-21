@@ -13,6 +13,22 @@
 #' @param sd2 standard deviation of the first group
 #' @param N1 sample size of the first group
 #' @param N2 sample size of the first group
+#' @param truncation an optional list specifying truncation applied to the data. 
+#' Defaults to \code{NULL}, i.e., no truncation was applied and the full likelihood is 
+#' applied. Alternative the truncation can be specified via a named list with:
+#' \describe{
+#'   \item{\code{"x"}}{where \code{x} is a vector of two values specifying the lower 
+#'   and upper truncation points common across the groups}
+#'   \item{\code{"x1"} and \code{"x2"}}{where \code{x1} is a vector of two values specifying 
+#'   the lower and upper truncation points for the first group and \code{x2} is a vector of
+#'   two values specifying the lower and upper truncation points for the second group.}
+#'   \item{\code{"sigma"}}{where \code{sigma} corresponds to the number of standard deviations
+#'   from the common mean where the truncation points should be set.}
+#'   \item{\code{"sigma1"} and \code{"sigma2"}}{where \code{sigma1} corresponds to the number of
+#'   standard deviations from the mean of the first group where the truncation points should be set
+#'   and \code{sigma2} corresponds to the number of standard deviations from the mean of the second
+#'   group where the truncation points should be set.}
+#' }
 #' @param prior_delta prior distributions for the effect size \code{delta} parameter 
 #' that will be treated as belonging to the alternative hypothesis. Defaults to \code{
 #' prior(distribution = "Cauchy", parameters = list(location = 0, scale = sqrt(2)/2))}.
@@ -21,7 +37,9 @@
 #' prior(distribution = "beta", parameters = list(alpha = 1, beta = 1))}.
 #' @param prior_nu prior distribution for the degrees of freedom + 2 \code{nu}
 #' parameter that will be treated as belonging to the alternative hypothesis.
-#' Defaults to \code{prior(distribution = "exp", parameters = list(rate = 1))}.
+#' Defaults to \code{prior(distribution = "exp", parameters = list(rate = 1))} if no 
+#' \code{truncation} is specified. If \code{truncation} is specified, the default is
+#' \code{NULL} (i.e., use only normal likelihood).
 #' @param prior_delta_null prior distribution for the \code{delta} parameter that
 #' will be treated as belonging to the null hypothesis. Defaults to point distribution
 #' with location at 0 (
@@ -33,6 +51,13 @@
 #' @param prior_nu_null prior distribution for the \code{nu} parameter
 #' that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
 #' (i.e., normal likelihood)).
+#' @param prior_mu prior distribution for the grand mean parameter. Defaults to \code{NULL} 
+#' which sets Jeffreys prior for the grand mean in case of no truncation or a standard normal 
+#' prior distributions for the grand mean in case of truncation (which greatly improves 
+#' sampling efficiency).
+#' @param prior_sigma2 prior distribution for the grand variance parameter. Defaults to \code{NULL}
+#' which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
+#' distribution for the variance in case of truncation (which greatly improves sampling efficiency).
 #' @param chains a number of chains of the MCMC algorithm.
 #' @param iter a number of sampling iterations of the MCMC algorithm.
 #' Defaults to \code{10000}, with a minimum of \code{4000}.
@@ -100,11 +125,13 @@ RoBTT <- function(
   
   prior_delta  = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
   prior_rho    = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
-  prior_nu     = prior(distribution = "exp",     parameters = list(rate = 1)),
+  prior_nu     = if(is.null(truncation)) prior(distribution = "exp", parameters = list(rate = 1)),
   
   prior_delta_null  = prior(distribution = "spike",  parameters = list(location = 0)),
   prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
   prior_nu_null     = prior_none(),
+  
+  prior_mu = NULL, prior_sigma2 = NULL,
   
   chains  = 4, iter = 10000, warmup = 5000, thin = 1, parallel = FALSE,
   control = set_control(), convergence_checks = set_convergence_checks(), 
@@ -123,7 +150,7 @@ RoBTT <- function(
   object$convergence_checks <- .check_and_list_convergence_checks(convergence_checks)
   
   ### prepare and check the settings
-  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
+  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, !is.null(truncation))
   object$models      <- .get_models(object$priors)
   object$add_info    <- list(
     warnings         = NULL,

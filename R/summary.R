@@ -115,6 +115,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       parameters = names(object$RoBTT[["posteriors"]]),
       probs      = probs,
       title      = "Model-averaged estimates:",
+      footnotes  = .truncation_footnote(object),
       warnings   = .collect_errors_and_warnings(object)
     )
     
@@ -124,6 +125,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
         parameters = names(object$RoBTT[["posteriors_est"]]),
         probs      = probs,
         title      = "Model-averaged group parameter estimates:",
+        footnotes  = .truncation_footnote(object),
         warnings   = .collect_errors_and_warnings(object)
       )
     }
@@ -136,6 +138,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       attr(estimates_conditional, "type")      <- rep("estimate", ncol(estimates_conditional))
       attr(estimates_conditional, "rownames")  <- TRUE
       attr(estimates_conditional, "title")     <- "Conditional estimates:"
+      attr(estimates_conditional, "footnotes") <- .truncation_footnote(object)
       attr(estimates_conditional, "warnings")  <- .collect_errors_and_warnings(object)
     }else{
       estimates_conditional <- BayesTools::ensemble_estimates_table(
@@ -143,6 +146,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
         parameters = names(object$RoBTT[["posteriors_conditional"]]),
         probs      = probs,
         title      = "Conditional estimates:",
+        footnotes  = .truncation_footnote(object),
         warnings   = .collect_errors_and_warnings(object)
       )
     }
@@ -178,7 +182,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       models         = object[["models"]],
       parameters     = parameters,
       title          = "Models overview:",
-      footnotes      = NULL,
+      footnotes      = .truncation_footnote(object),
       warnings       = .collect_errors_and_warnings(object),
       short_name     = short_name,
       remove_spike_0 = remove_spike_0
@@ -211,7 +215,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       models         = object[["models"]],
       parameters     = parameters,
       title          = "Diagnostics overview:",
-      footnotes      = NULL,
+      footnotes      = .truncation_footnote(object),
       warnings       = .collect_errors_and_warnings(object),
       short_name     = short_name,
       remove_spike_0 = remove_spike_0
@@ -252,6 +256,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       )
 
       estimates <- object[["models"]][[i]][["fit_summary"]]
+      attr(estimates, "footnotes") <- .truncation_footnote(object)
       attr(estimates, "warnings")  <- object[["models"]][[i]][["warnings"]]
       attr(estimates, "title")     <- "Parameter estimates:"
       

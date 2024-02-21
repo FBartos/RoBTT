@@ -76,6 +76,8 @@ functions {
   // type 6 = inverse-gamma
   // type 7 = uniform
   // type 8 = beta
+  // type 98 = Jeffrey's prior for mu
+  // type 99 = Jeffrey's prior for sigma2
   real set_prior(real parameter, int prior_type, vector prior_parameters, array[] int bounds_type, vector bounds){
     real ll;
 
@@ -177,6 +179,10 @@ functions {
       }else if(bounds_type[2] != 0){
         ll -= exponential_lcdf(bounds[2]  | prior_parameters[1]);
       }
+    }else if(prior_type == 98){
+      ll = Jeffreys_mu_lpdf(parameter);
+    }else if(prior_type == 99){
+      ll = Jeffreys_sigma_lpdf(parameter);
     }
 
     return ll;

@@ -76,6 +76,13 @@ check_RoBTT <- function(fit){
   
   return(c(short_warnings, short_errors, conv_warning))
 }
+.truncation_footnote         <- function(object){
+  if(!is.null(attr(object[["data"]], "n_truncated")) && attr(object[["data"]], "n_truncated") > 0){
+    return(paste0(attr(object[["data"]], "n_truncated"), " observations were truncated."))
+  }else{
+    return(NULL)
+  }
+}
 .get_model_convergence       <- function(object, include_warning = FALSE){
   if(include_warning){
     return(sapply(object[["models"]], function(model) if(is.null(model[["converged"]])) FALSE else model[["converged"]] && is.null(model[["warnings"]])))    

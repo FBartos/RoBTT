@@ -12,6 +12,9 @@ check_setup(
   prior_delta_null = prior(distribution = "spike", parameters = list(location = 0)),
   prior_rho_null = prior(distribution = "spike", parameters = list(location = 0.5)),
   prior_nu_null = prior_none(),
+  prior_mu = NULL,
+  prior_sigma2 = NULL,
+  truncation = NULL,
   models = FALSE,
   silent = FALSE
 )
@@ -27,7 +30,9 @@ prior(distribution = "beta", parameters = list(alpha = 1, beta = 1))}.}
 
 \item{prior_nu}{prior distribution for the degrees of freedom + 2 \code{nu}
 parameter that will be treated as belonging to the alternative hypothesis.
-Defaults to \code{prior(distribution = "exp", parameters = list(rate = 1))}.}
+Defaults to \code{prior(distribution = "exp", parameters = list(rate = 1))} if no
+\code{truncation} is specified. If \code{truncation} is specified, the default is
+\code{NULL} (i.e., use only normal likelihood).}
 
 \item{prior_delta_null}{prior distribution for the \code{delta} parameter that
 will be treated as belonging to the null hypothesis. Defaults to point distribution
@@ -42,6 +47,32 @@ with location at 0.5 (
 \item{prior_nu_null}{prior distribution for the \code{nu} parameter
 that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
 (i.e., normal likelihood)).}
+
+\item{prior_mu}{prior distribution for the grand mean parameter. Defaults to \code{NULL}
+which sets Jeffreys prior for the grand mean in case of no truncation or a standard normal
+prior distributions for the grand mean in case of truncation (which greatly improves
+sampling efficiency).}
+
+\item{prior_sigma2}{prior distribution for the grand variance parameter. Defaults to \code{NULL}
+which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
+distribution for the variance in case of truncation (which greatly improves sampling efficiency).}
+
+\item{truncation}{an optional list specifying truncation applied to the data.
+Defaults to \code{NULL}, i.e., no truncation was applied and the full likelihood is
+applied. Alternative the truncation can be specified via a named list with:
+\describe{
+\item{\code{"x"}}{where \code{x} is a vector of two values specifying the lower
+and upper truncation points common across the groups}
+\item{\code{"x1"} and \code{"x2"}}{where \code{x1} is a vector of two values specifying
+the lower and upper truncation points for the first group and \code{x2} is a vector of
+two values specifying the lower and upper truncation points for the second group.}
+\item{\code{"sigma"}}{where \code{sigma} corresponds to the number of standard deviations
+from the common mean where the truncation points should be set.}
+\item{\code{"sigma1"} and \code{"sigma2"}}{where \code{sigma1} corresponds to the number of
+standard deviations from the mean of the first group where the truncation points should be set
+and \code{sigma2} corresponds to the number of standard deviations from the mean of the second
+group where the truncation points should be set.}
+}}
 
 \item{models}{should the models' details be printed.}
 
