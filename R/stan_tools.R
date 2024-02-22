@@ -59,8 +59,16 @@
       "Jeffreys_sigma2" = 99
     )
     
-    out[[paste0("bounds_", parameter)]]           <- c(999, 999)
-    out[[paste0("bounds_type_", parameter)]]      <- c(0, 0)
+    out[[paste0("bounds_", parameter)]]           <- switch(
+      prior,
+      "Jeffreys_mu"     = c(999, 999),
+      "Jeffreys_sigma2" = c(0,   999)
+    )
+    out[[paste0("bounds_type_", parameter)]]      <- switch(
+      prior,
+      "Jeffreys_mu"     = c(0, 0),
+      "Jeffreys_sigma2" = c(1, 0)
+    )
     out[[paste0("prior_parameters_", parameter)]] <- c(999, 999, 999)
     
     return(out)
