@@ -2,7 +2,7 @@
 .stan_data            <- function(data){
   
   if(attr(data, "summary")){
-    stan_data <- .stan_data.summary(data[["mean1"]], data[["mean2"]], data[["sd1"]], data[["sd2"]], data[["N1"]], data[["N2"]], data[["is_trunc"]], data[["trunc2"]], data[["trunc2"]])
+    stan_data <- .stan_data.summary(data[["mean1"]], data[["mean2"]], data[["sd1"]], data[["sd2"]], data[["N1"]], data[["N2"]], data[["is_trunc"]], data[["trunc1"]], data[["trunc2"]])
   }else{
     stan_data <- .stan_data.individual(data[["x1"]], data[["x2"]], data[["is_trunc"]], data[["trunc1"]], data[["trunc2"]])
   }
@@ -19,7 +19,7 @@
     is_ss    = 0,
     is_trunc = is_trunc,
     
-    trunc1 = trunc2,
+    trunc1 = trunc1,
     trunc2 = trunc2,
     
     mean_i = numeric(),
@@ -37,7 +37,7 @@
     is_ss    = 1,
     is_trunc = is_trunc,
     
-    trunc1 = trunc2,
+    trunc1 = trunc1,
     trunc2 = trunc2,
     
     x1     = numeric(),

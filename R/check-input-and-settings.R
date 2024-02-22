@@ -362,8 +362,8 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
       BayesTools::check_real(truncation[["sigma"]], "truncation::sigma", lower = 0, allow_bound = FALSE)
       
       data[["is_trunc"]] <- 1
-      data[["trunc1"]]   <- mean(c(x1, x2)) - truncation[["sigma"]] * sd(c(x1, x2))
-      data[["trunc2"]]   <- mean(c(x1, x2)) - truncation[["sigma"]] * sd(c(x1, x2))
+      data[["trunc1"]]   <- mean(c(x1, x2)) + c(-1, 1) * truncation[["sigma"]] * sd(c(x1, x2))
+      data[["trunc2"]]   <- mean(c(x1, x2)) + c(-1, 1) * truncation[["sigma"]] * sd(c(x1, x2))
       
     }else if(all(c("sigma1", "sigma2") %in% names(truncation))){
       
@@ -374,8 +374,8 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
       BayesTools::check_real(truncation[["sigma2"]], "truncation::sigma2", lower = 0, allow_bound = FALSE)
       
       data[["is_trunc"]] <- 1
-      data[["trunc1"]]   <- mean(x1) - truncation[["sigma1"]] * sd(x1)
-      data[["trunc2"]]   <- mean(x2) - truncation[["sigma2"]] * sd(x2)
+      data[["trunc1"]]   <- mean(x1) + c(-1, 1) * truncation[["sigma1"]] * sd(x1)
+      data[["trunc2"]]   <- mean(x2) + c(-1, 1) * truncation[["sigma2"]] * sd(x2)
       
     }else if("x" %in% names(truncation)){
       
