@@ -49,7 +49,7 @@ that will be treated as belonging to the null hypothesis. Defaults to \code{prio
 (i.e., normal likelihood)).}
 
 \item{prior_mu}{prior distribution for the grand mean parameter. Defaults to \code{NULL}
-which sets Jeffreys prior for the grand mean in case of no truncation or a standard normal
+which sets Jeffreys prior for the grand mean in case of no truncation or an unit Cauchy
 prior distributions for the grand mean in case of truncation (which greatly improves
 sampling efficiency).}
 

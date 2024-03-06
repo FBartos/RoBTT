@@ -52,7 +52,7 @@
 #' that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
 #' (i.e., normal likelihood)).
 #' @param prior_mu prior distribution for the grand mean parameter. Defaults to \code{NULL} 
-#' which sets Jeffreys prior for the grand mean in case of no truncation or a standard normal 
+#' which sets Jeffreys prior for the grand mean in case of no truncation or an unit Cauchy 
 #' prior distributions for the grand mean in case of truncation (which greatly improves 
 #' sampling efficiency).
 #' @param prior_sigma2 prior distribution for the grand variance parameter. Defaults to \code{NULL}
@@ -250,7 +250,7 @@ update.RoBTT <- function(object, refit_failed = TRUE, prior_weights = NULL,
                          save = "all", seed = NULL, silent = TRUE, ...){
   
   BayesTools::check_bool(refit_failed, "refit_failed")
-  
+  dots <- .RoBTT_collect_dots(...)
 
   if(object$add_info$save == "min")
     stop("Models cannot be updated because individual model posteriors were not save during the fitting process. Set 'save' parameter to 'all' in while fitting the model (see ?RoBMA for more details).")

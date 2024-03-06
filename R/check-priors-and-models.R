@@ -143,8 +143,8 @@
     if(is_trunc){
       prior <- switch(
         parameter,
-        "mu"     = prior("normal", parameters = list(mean = 0, sd = 1)),
-        "sigma2" = prior("exp", parameters = list(rate = 1))
+        "mu"     = prior("cauchy", parameters = list(location = 0, scale = 1)),
+        "sigma2" = prior("exp",    parameters = list(rate = 1))
       )
     }else{
       prior <- switch(
