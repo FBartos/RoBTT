@@ -1,0 +1,121 @@
+---
+title: "code_vignette"
+author: "HG,FB,EJW"
+date: "2024-03-25"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# R Code Vignette - Addressing the Effect of Outlier Handling with the RoBTT Package in R
+
+## Introduction
+Besides the model-averaged Bayesian independent samples $t$-test, the RoBTT package in R implements a truncated adaptation of the test, designed to allow researchers to adapt their model according to their outlier handling, and thus to mitigate unwanted side effects on the inferences. This vignette focuses on the model-averaged truncated Bayesian independent samples $t$-test, showcasing its utility in adapting the model to outlier handling for more unbiased inferences.
+
+## Background
+Outliers in statistical data can potentially lead to biased analysis results. The widely applied approach of simply excluding extreme observations without changing the analysis may not always be appropriate, as it can lead to evidence inflation in Bayesian analysis. This vignette introduces a truncated version of the robust Bayesian independent samples $t$-test in the RoBTT package and demonstrates how it can be used to handle outliers in a Bayesian hypothesis testing framework. By incorporating a model-averaged approach and the option to truncate the likelihood function, the RoBTT package offers a robust solution for conducting independent samples $t$-tests that are less susceptible to the influence of outlier handling. The likelihood can be truncated exactly according to the truncation applied to the data. It can be adapted to any exclusion applied by the researcher before the analysis, or directly during the estimation. This allows to mitigate the effects of reduced variance due to outlier handling.
+
+The model-averaged truncated Bayesian independent samples $t$-test estimates $4$ different model at the same time. A model assuming no effect, and equal variances across group. A model assuming no effect, and unequal variances across groups. A model assuming an unknown effect, and equal variances across group. And a model assuming an unknown effect, and unequal variances across groups. For all models, the likelihood is adjusted according to the specified values. Inferences are based on a weighted average of each model's predictive performance.
+
+## Application
+
+### Installing and Loading RoBTT
+
+First, we ensure that the RoBTT package is installed and loaded into the R session:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+# Install RoBTT from CRAN
+# install.packages("RoBTT")
+
+# Load the RoBTT package
+library(RoBTT)
+```
+
+### Example Data Generation
+We generate some example data to demonstrate the functionality of the test:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+set.seed(42)
+x1 <- rnorm(100, 0, 1)
+x2 <- rnorm(100, 0, 1)
+```
+
+### Model-Averaged Truncated Bayesian Independent Samples $t$-Test
+
+#### 1. Manual Outlier Exclusion Based on Specific Cutoffs.
+First, we demonstrate how to manually exclude outliers using specific cut-offs and then apply truncation to the likelihood function. It is possible to specify specific cut-offs for each group separately, for instance because the box plot method was used before to identify cut-offs. Further, it is possible to define a cut-off that was applied to both groups, for instance when all response times slower than $200$ ms and higher than $1000$ ms should be excluded in both groups.
+
+First, a cut-off range for each group:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+# Identify outliers using boxplot statistics for each group
+stats1 <- boxplot.stats(x1)
+lower_whisker1 <- stats1$stats[1]
+upper_whisker1 <- stats1$stats[5]
+
+
+stats2 <- boxplot.stats(x2)
+lower_whisker2 <- stats2$stats[1]
+upper_whisker2 <- stats2$stats[5]
+
+# Exclude outliers based on identified whiskers
+x1_filtered <- x1[x1 >= lower_whisker1 & x1 <= upper_whisker1]
+x2_filtered <- x2[x2 >= lower_whisker2 & x2 <= upper_whisker2]
+
+# Define whiskers for truncated likelihood application
+whisker1 <- c(lower_whisker1, upper_whisker1)
+whisker2 <- c(lower_whisker2, upper_whisker2)
+```
+
+We can then fit the truncated RoBTT:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+# Fit the RoBTT model with truncation using the filtered data
+fit1_trunc <- RoBTT(x1 = x1_filtered, x2 = x2_filtered, seed = 1, parallel = FALSE, truncation = list(x1 = whisker1, x2 = whisker2))
+```
+
+The following specification of the truncation argument implements the same cut-off range for both group:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+cut_off <- c(-2,2)
+
+x1 <- x1[x1 >= -2 & x1 <= 2]
+x2 <- x2[x2 >= -2 & x2 <= 2]
+
+# fit RoBTT with truncated likelihood
+fit1_trunc  <- RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = F, truncation = list(x = cut_off))
+```
+
+We can retrieve a summary of the estimates with the code below. This function gives us the posterior mean and median estimate for the effect (Cohen’s d) and 95\% central credible interval. It further shows the estimates for mean and variance in each of the groups. In addition, it shows the inclusion Bayes factor for a presence of an effect across all models, as well as for including heterogeneity.
+
+```{r}
+summary(fit1_trunc, group_estimates = TRUE)
+```
+
+We can also look at the estimates for the individual models and retrieve a table including information about the prior distributions. The inclusion Bayes factor shows the evidence for the inclusion of the individual models.
+
+```{r}
+summary(fit1_trunc, group_estimates = TRUE, type= "models")
+```
+
+
+#### 2. Applying Direct Truncation Based on Standard Deviations
+The RoBTT package also allows specifying truncation directly based on standard deviations, simplifying the process of outlier handling. The function will then proceed to exclude extreme observations and accordingly to truncate the likelihood, before estimating the model. No manual outlier exclusion is needed before. This is again possible for the same standard deviation value sigma to be applied to both groups, as well as to specify different standard deviations per group.
+
+First, a cut-off range sigma for both groups:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+# Fit the model with direct truncation based on standard deviations
+fit1_trunc <- RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = FALSE, truncation = list(sigma = 2.5))
+```
+
+Second, a different standard deviation sigma for each group:
+
+```{r, echo=T,error=F, message=F, warning=F, results="hide"}
+# Fit the model with direct truncation based on standard deviations
+fit1_trunc <- RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = FALSE, truncation = list(sigma1 = 2, sigma2 = 2.5))
+```
+
+
+## References
+This vignette is a simplified example to guide readers through the process of using the RoBTT package for handling outlier exclusion in a model-averaged truncated Bayesian independent samples $t$-test. For additional information, please visit the RoBTT package documentation.
