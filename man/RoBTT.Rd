@@ -151,17 +151,23 @@ also suppresses all messages.}
 \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
 }
 \description{
-\code{RoBTT} is used to estimate a Robust Bayesian
-T-Test. The input either requires the vector of observations for
-each group, \code{x1, x2}, or the summary statistics (in case only
-the \code{"normal"} likelihood is used).
+\code{RoBTT} is used to estimate a robust Bayesian
+t-test or truncated Bayesian t-test (if \code{truncation} is used).
+The input either requires the vector of observations for
+each group, \code{x1, x2}, or the summary statistics (only if the normal
+likelihood models are used).
 }
 \details{
 See \insertCite{maier2022bayesian;textual}{RoBTT} for more details
-regarding the methodology.
+regarding the robust Bayesian t-test methodology and the corresponding
+vignette (\href{../doc/Introduction_to_RoBTT.html}{\code{vignette("Introduction_to_RoBTT", package = "RoBTT")}}).
 
-Generic \code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=print.RoBTT]{print.RoBTT()}}, and \code{\link[=plot.RoBTT]{plot.RoBTT()}} functions are
-provided to facilitate manipulation with the ensemble.
+See \insertCite{godmann2024how;textual}{RoBTT} for more details
+regarding the truncated Bayesian t-test methodology and the corresponding
+vignette (\href{../doc/Truncated_t_test.html}{\code{vignette("Truncated_t_test", package = "RoBTT")}}).
+
+Generic \code{\link[=summary.RoBTT]{summary.RoBTT()}}, \code{\link[=print.RoBTT]{print.RoBTT()}}, and \code{\link[=plot.RoBTT]{plot.RoBTT()}}
+functions are provided to facilitate manipulation with the ensemble.
 }
 \examples{
 \dontrun{
