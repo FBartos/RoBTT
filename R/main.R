@@ -1,9 +1,10 @@
 #' @title Estimate a Robust Bayesian T-Test
 #'
-#' @description \code{RoBTT} is used to estimate a Robust Bayesian
-#' T-Test. The input either requires the vector of observations for 
-#' each group, \code{x1, x2}, or the summary statistics (in case only 
-#' the \code{"normal"} likelihood is used).
+#' @description \code{RoBTT} is used to estimate a robust Bayesian
+#' t-test or truncated Bayesian t-test (if \code{truncation} is used). 
+#' The input either requires the vector of observations for 
+#' each group, \code{x1, x2}, or the summary statistics (only if the normal 
+#' likelihood models are used).
 #'
 #' @param x1 vector of observations of the first group
 #' @param x2 vector of observations of the second group
@@ -13,6 +14,22 @@
 #' @param sd2 standard deviation of the first group
 #' @param N1 sample size of the first group
 #' @param N2 sample size of the first group
+#' @param truncation an optional list specifying truncation applied to the data. 
+#' Defaults to \code{NULL}, i.e., no truncation was applied and the full likelihood is 
+#' applied. Alternative the truncation can be specified via a named list with:
+#' \describe{
+#'   \item{\code{"x"}}{where \code{x} is a vector of two values specifying the lower 
+#'   and upper truncation points common across the groups}
+#'   \item{\code{"x1"} and \code{"x2"}}{where \code{x1} is a vector of two values specifying 
+#'   the lower and upper truncation points for the first group and \code{x2} is a vector of
+#'   two values specifying the lower and upper truncation points for the second group.}
+#'   \item{\code{"sigma"}}{where \code{sigma} corresponds to the number of standard deviations
+#'   from the common mean where the truncation points should be set.}
+#'   \item{\code{"sigma1"} and \code{"sigma2"}}{where \code{sigma1} corresponds to the number of
+#'   standard deviations from the mean of the first group where the truncation points should be set
+#'   and \code{sigma2} corresponds to the number of standard deviations from the mean of the second
+#'   group where the truncation points should be set.}
+#' }
 #' @param prior_delta prior distributions for the effect size \code{delta} parameter 
 #' that will be treated as belonging to the alternative hypothesis. Defaults to \code{
 #' prior(distribution = "Cauchy", parameters = list(location = 0, scale = sqrt(2)/2))}.
@@ -21,7 +38,9 @@
 #' prior(distribution = "beta", parameters = list(alpha = 1, beta = 1))}.
 #' @param prior_nu prior distribution for the degrees of freedom + 2 \code{nu}
 #' parameter that will be treated as belonging to the alternative hypothesis.
-#' Defaults to \code{prior(distribution = "exp", parameters = list(rate = 1))}.
+#' Defaults to \code{prior(distribution = "exp", parameters = list(rate = 1))} if no 
+#' \code{truncation} is specified. If \code{truncation} is specified, the default is
+#' \code{NULL} (i.e., use only normal likelihood).
 #' @param prior_delta_null prior distribution for the \code{delta} parameter that
 #' will be treated as belonging to the null hypothesis. Defaults to point distribution
 #' with location at 0 (
@@ -33,6 +52,13 @@
 #' @param prior_nu_null prior distribution for the \code{nu} parameter
 #' that will be treated as belonging to the null hypothesis. Defaults to \code{prior_none} (
 #' (i.e., normal likelihood)).
+#' @param prior_mu prior distribution for the grand mean parameter. Defaults to \code{NULL} 
+#' which sets Jeffreys prior for the grand mean in case of no truncation or an unit Cauchy 
+#' prior distributions for the grand mean in case of truncation (which greatly improves 
+#' sampling efficiency).
+#' @param prior_sigma2 prior distribution for the grand variance parameter. Defaults to \code{NULL}
+#' which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
+#' distribution for the variance in case of truncation (which greatly improves sampling efficiency).
 #' @param chains a number of chains of the MCMC algorithm.
 #' @param iter a number of sampling iterations of the MCMC algorithm.
 #' Defaults to \code{10000}, with a minimum of \code{4000}.
@@ -62,11 +88,18 @@
 #' also suppresses all messages.
 #' @param ... additional arguments.
 #'
-#' @details See \insertCite{maier2022bayesian;textual}{RoBTT} for more details 
-#' regarding the methodology.
+#' @details 
+#' See \insertCite{maier2022bayesian;textual}{RoBTT} for more details 
+#' regarding the robust Bayesian t-test methodology and the corresponding 
+#' vignette (\href{../doc/Introduction_to_RoBTT.html}{\code{vignette("Introduction_to_RoBTT", package = "RoBTT")}}).
+#' 
+#' See \insertCite{godmann2024how;textual}{RoBTT} for more details 
+#' regarding the truncated Bayesian t-test methodology and the corresponding 
+#' vignette (\href{../doc/Truncated_t_test.html}{\code{vignette("Truncated_t_test", package = "RoBTT")}}).
 #'
-#' Generic [summary.RoBTT()], [print.RoBTT()], and [plot.RoBTT()] functions are
-#' provided to facilitate manipulation with the ensemble.
+#' Generic [summary.RoBTT()], [print.RoBTT()], and [plot.RoBTT()] 
+#' functions are provided to facilitate manipulation with the ensemble.
+#' 
 #'
 #' @return \code{RoBTT} returns an object of \link[base]{class} \code{"RoBTT"}.
 #'
@@ -96,14 +129,17 @@
 RoBTT <- function(
   x1 = NULL, x2 = NULL,
   mean1 = NULL, mean2 = NULL, sd1 = NULL, sd2 = NULL, N1 = NULL, N2 = NULL,
+  truncation = NULL,
   
   prior_delta  = prior(distribution = "cauchy",  parameters = list(location = 0, scale = sqrt(2)/2)),
   prior_rho    = prior(distribution = "beta",    parameters = list(alpha = 1, beta = 1)),
-  prior_nu     = prior(distribution = "exp",     parameters = list(rate = 1)),
+  prior_nu     = if(is.null(truncation)) prior(distribution = "exp", parameters = list(rate = 1)),
   
   prior_delta_null  = prior(distribution = "spike",  parameters = list(location = 0)),
   prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
   prior_nu_null     = prior_none(),
+  
+  prior_mu = NULL, prior_sigma2 = NULL,
   
   chains  = 4, iter = 10000, warmup = 5000, thin = 1, parallel = FALSE,
   control = set_control(), convergence_checks = set_convergence_checks(), 
@@ -114,7 +150,7 @@ RoBTT <- function(
   object       <- NULL
   object       <- NULL
   object$call  <- match.call()
-  object$data  <- .check_data(x1 = x1, x2 = x2, mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2)
+  object$data  <- .check_data(x1 = x1, x2 = x2, mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2, truncation = truncation)
 
   ### check MCMC settings
   object$control            <- .stan_check_and_list_fit_settings(chains = chains, warmup = warmup, iter = iter, thin = thin,
@@ -122,7 +158,7 @@ RoBTT <- function(
   object$convergence_checks <- .check_and_list_convergence_checks(convergence_checks)
   
   ### prepare and check the settings
-  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
+  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, !is.null(truncation))
   object$models      <- .get_models(object$priors)
   object$add_info    <- list(
     warnings         = NULL,
@@ -222,7 +258,7 @@ update.RoBTT <- function(object, refit_failed = TRUE, prior_weights = NULL,
                          save = "all", seed = NULL, silent = TRUE, ...){
   
   BayesTools::check_bool(refit_failed, "refit_failed")
-  
+  dots <- .RoBTT_collect_dots(...)
 
   if(object$add_info$save == "min")
     stop("Models cannot be updated because individual model posteriors were not save during the fitting process. Set 'save' parameter to 'all' in while fitting the model (see ?RoBMA for more details).")

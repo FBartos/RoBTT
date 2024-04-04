@@ -21,10 +21,12 @@ check_setup <- function(
     prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
     prior_nu_null     = prior_none(),
     
+    prior_mu = NULL, prior_sigma2 = NULL, truncation = NULL,
+    
     models = FALSE, silent = FALSE){
   
   object <- list()
-  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null)
+  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, !is.null(truncation))
   object$models      <- .get_models(object$priors)
   
   ### model types overview
@@ -284,7 +286,7 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
   return(new_convergence_checks)
 }
 
-.check_data <- function(x1, x2, mean1, mean2, sd1, sd2, N1, N2){
+.check_data <- function(x1, x2, mean1, mean2, sd1, sd2, N1, N2, truncation){
   
   if(!is.null(mean1) & !is.null(mean2) &  !is.null(sd1) &  !is.null(sd2) &  !is.null(N1) &  !is.null(N2)){
     
@@ -327,8 +329,98 @@ set_control             <- function(adapt_delta = 0.80, max_treedepth = 15, brid
     )
     attr(data, "summary") <- FALSE
     
+    mean1 <- mean(x1)
+    mean2 <- mean(x2)
+    sd1   <- stats::sd(x1)
+    sd2   <- stats::sd(x2)
+    N1    <- length(x1)
+    N2    <- length(x2)
+    
   }else{
     stop("Insufficient data provided.")
+  }
+  
+  # add truncation
+  # - a single named integer sigma truncates both groups equally according to sd distance from the mean (common/grouped typed)
+  # - a vector of length two specifies a common truncation range
+  # - two vectors of length two specify different truncation ranges for each group
+  if(is.null(truncation)){
+    
+    data[["is_trunc"]] <- 0
+    data[["trunc1"]]   <- numeric()
+    data[["trunc2"]]   <- numeric()
+    
+  }else{
+    
+    BayesTools::check_list(truncation, "truncation", check_names = c("sigma", "sigma1", "sigma2", "x", "x1", "x2"), allow_other = FALSE, all_objects = FALSE, check_length = 0)
+    
+    if("sigma" %in% names(truncation)){
+      
+      if(attr(data, "summary"))
+        stop("Truncation by sigma is not supported for summary data.")
+      
+      BayesTools::check_real(truncation[["sigma"]], "truncation::sigma", lower = 0, allow_bound = FALSE)
+      
+      data[["is_trunc"]] <- 1
+      data[["trunc1"]]   <- mean(c(x1, x2)) + c(-1, 1) * truncation[["sigma"]] * stats::sd(c(x1, x2))
+      data[["trunc2"]]   <- mean(c(x1, x2)) + c(-1, 1) * truncation[["sigma"]] * stats::sd(c(x1, x2))
+      
+    }else if(all(c("sigma1", "sigma2") %in% names(truncation))){
+      
+      if(attr(data, "summary"))
+        stop("Truncation by sigma is not supported for summary data.")
+      
+      BayesTools::check_real(truncation[["sigma1"]], "truncation::sigma1", lower = 0, allow_bound = FALSE)
+      BayesTools::check_real(truncation[["sigma2"]], "truncation::sigma2", lower = 0, allow_bound = FALSE)
+      
+      data[["is_trunc"]] <- 1
+      data[["trunc1"]]   <- mean(x1) + c(-1, 1) * truncation[["sigma1"]] * stats::sd(x1)
+      data[["trunc2"]]   <- mean(x2) + c(-1, 1) * truncation[["sigma2"]] * stats::sd(x2)
+      
+    }else if("x" %in% names(truncation)){
+      
+      BayesTools::check_real(truncation[["x"]], "truncation::x", check_length = 2)
+      BayesTools::check_real(truncation[["x"]][1], "truncation::x[1]", upper = truncation[["x"]][2], allow_bound = FALSE)
+      
+      data[["is_trunc"]] <- 1
+      data[["trunc1"]]   <- truncation[["x"]]
+      data[["trunc2"]]   <- truncation[["x"]]
+      
+    }else if(all(c("x1", "x2") %in% names(truncation))){
+      
+      if(attr(data, "summary"))
+        stop("Truncation by x is not supported for summary data.")
+      
+      BayesTools::check_real(truncation[["x1"]], "truncation::x1", check_length = 2)
+      BayesTools::check_real(truncation[["x2"]], "truncation::x2", check_length = 2)
+      BayesTools::check_real(truncation[["x1"]][1], "truncation::x1[1]", upper = truncation[["x1"]][2], allow_bound = FALSE)
+      BayesTools::check_real(truncation[["x2"]][1], "truncation::x2[1]", upper = truncation[["x2"]][2], allow_bound = FALSE)
+      
+      data[["is_trunc"]] <- 1
+      data[["trunc1"]]   <- truncation[["x1"]]
+      data[["trunc2"]]   <- truncation[["x2"]]
+      
+    }
+    
+    # remove the truncated values
+    if(!attr(data, "summary")){
+      
+      x1_outside <- x1 < data[["trunc1"]][1] | x1 > data[["trunc1"]][2]
+      x2_outside <- x2 < data[["trunc2"]][1] | x2 > data[["trunc2"]][2]
+      
+      if(sum(x1_outside) > 0 | sum(x2_outside) > 0){
+        warning(paste0("Truncation removed ", sum(x1_outside), " and ", sum(x2_outside), " observations from group 1 and 2, respectively."), immediate. = TRUE, call. = FALSE)
+      }
+      
+      attr(data, "n_truncated") <- sum(x1_outside) + sum(x2_outside)
+      
+      if(sum(!x1_outside) < 1) stop("'x1' must contain at least one observation.")
+      if(sum(!x2_outside) < 2) stop("'x2' must contain at least one observation.")
+      
+      data[["x1"]] <- x1[!x1_outside]
+      data[["x2"]] <- x2[!x2_outside]
+    }
+    
   }
   
   return(data)

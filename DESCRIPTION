@@ -1,12 +1,14 @@
 Package: RoBTT
 Title: Robust Bayesian T-Test
-Version: 1.2.2
+Version: 1.3.0
 Maintainer: František Bartoš <f.bartos96@gmail.com>
 Authors@R: c( 
     person("František", "Bartoš",     role = c("aut", "cre"),
     email   = "f.bartos96@gmail.com", comment = c(ORCID = "0000-0002-0018-5573")),
     person("Maximilian", "Maier",     role = "aut",
-    email   = "maximilianmaier0401@gmail.com", comment = c(ORCID = "0000-0002-9873-6096"))
+    email   = "maximilianmaier0401@gmail.com", comment = c(ORCID = "0000-0002-9873-6096")),
+    person("Henrik R", "Godmann",     role = "aut",
+    email   = "hrgodmann@gmail.com", comment = c(ORCID = "0009-0003-6410-4765"))    
     )
 Description: An implementation of Bayesian model-averaged t-test that allows 
     users to draw inference about the presence vs absence of the effect, 

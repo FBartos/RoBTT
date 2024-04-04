@@ -65,7 +65,7 @@
   fit <- tryCatch(suppressWarnings(do.call(rstan::sampling, model_call)), error = function(e)e)
   
   # for BayesTools formatting
-  attr(fit, "prior_list") <- priors
+  attr(fit, "prior_list") <- priors[!names(priors) %in% c("mu", "sigma2")]
   
   if(all(class(fit) %in% c("simpleError", "error", "condition"))){
     errors    <- c(errors, fit$message)
@@ -134,7 +134,10 @@
   if(likelihood == "t"){
     data <- c(data, .stan_distribution("nu", priors[["nu"]]))
   }
-  
+
+  data <- c(data, .stan_distribution("mu",     priors[["mu"]]))
+  data <- c(data, .stan_distribution("sigma2", priors[["sigma2"]]))
+    
   return(data)
 }
 .marglik_fail          <- function(){

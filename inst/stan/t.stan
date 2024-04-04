@@ -4,12 +4,19 @@ data {
   // data
   // are individual observation or summary statistics used
   int is_ss;
+   
+  // are data truncated
+  int is_trunc;
+  // range of truncation
+  vector[is_trunc == 1 ? 2 : 0] trunc1;
+  vector[is_trunc == 1 ? 2 : 0] trunc2;
+  
   // sample sizes
   int<lower=0> N1;
   int<lower=0> N2;
   // individual observations
-  vector[is_ss == 0 ? N1 : 0] x1;
-  vector[is_ss == 0 ? N2 : 0] x2;
+  vector<lower = data_lb(is_trunc, trunc1), upper = data_ub(is_trunc, trunc1)>[is_ss == 0 ? N1 : 0] x1;
+  vector<lower = data_lb(is_trunc, trunc2), upper = data_ub(is_trunc, trunc2)>[is_ss == 0 ? N2 : 0] x2;
   // summary statistics
   vector[is_ss == 1 ? 2 : 0] mean_i;
   vector[is_ss == 1 ? 2 : 0] sd_i;
@@ -20,9 +27,13 @@ data {
   int is_nu;
 
   // range of the parameters
+  vector[2] bounds_mu;
+  vector[2] bounds_sigma2;
   vector[is_d  == 1 ? 2 : 0] bounds_d;
   vector[is_r  == 1 ? 2 : 0] bounds_r;
   vector[is_nu == 1 ? 2 : 0] bounds_nu;
+  array[2] int bounds_type_mu;
+  array[2] int bounds_type_sigma2;
   array[is_d   == 1 ? 2 : 0] int bounds_type_d;
   array[is_r   == 1 ? 2 : 0] int bounds_type_r;
   array[is_nu == 1 ? 2 : 0] int bounds_type_nu;
@@ -31,9 +42,13 @@ data {
   array[is_d   == 0 ? 1 : 0] real fixed_d;
   array[is_r   == 0 ? 1 : 0] real fixed_r;
   array[is_nu == 0 ? 1 : 0] real fixed_nu;
+  vector[3] prior_parameters_mu;
+  vector[3] prior_parameters_sigma2;
   vector[is_d  == 1 ? 3 : 0] prior_parameters_d;
   vector[is_r  == 1 ? 3 : 0] prior_parameters_r;
   vector[is_nu == 1 ? 3 : 0] prior_parameters_nu;
+  int prior_type_mu;
+  int prior_type_sigma2;
   int prior_type_d;
   int prior_type_r;
   int prior_type_nu;
@@ -51,7 +66,6 @@ transformed parameters {
   array[2] real scale_i;
   array[2] real mu_i;
   real nu;
-
 
   // compute means and sigmas for each group
   if(is_nu == 1){
@@ -82,9 +96,9 @@ transformed parameters {
   }
 }
 model {
-  // default Jeffrey's priors for mu and sigma
-  target += Jeffreys_mu_lpdf(mu);
-  target += Jeffreys_sigma_lpdf(sigma2);
+  // priors for mu and sigma2
+  target += set_prior(mu,     prior_type_mu,     prior_parameters_mu,     bounds_type_mu,     bounds_mu);
+  target += set_prior(sigma2, prior_type_sigma2, prior_parameters_sigma2, bounds_type_sigma2, bounds_sigma2);
 
   // priors on d and r
   if(is_d == 1){
@@ -103,5 +117,11 @@ model {
     target += student_t_lpdf(x2 | nu, mu_i[2], scale_i[2]);
   }else{
     reject("Fitting models with t likelihood and summary statistics is not possible :(.");
+  }
+  
+    // truncation addjustment for each group
+  if(is_trunc == 1){
+    target += -N1 * log_diff_exp(student_t_lcdf(trunc1[2] | nu, mu_i[1], sigma_i[1]), student_t_lcdf(trunc1[1] | nu, mu_i[1], sigma_i[1]));
+    target += -N2 * log_diff_exp(student_t_lcdf(trunc2[2] | nu, mu_i[2], sigma_i[2]), student_t_lcdf(trunc2[1] | nu, mu_i[2], sigma_i[2]));
   }
 }

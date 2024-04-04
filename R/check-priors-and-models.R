@@ -1,9 +1,12 @@
-.set_priors             <- function(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null){
+.set_priors             <- function(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, is_trunc){
   
   priors        <- list()
   priors$delta  <- .set_parameter_priors(prior_delta_null,  prior_delta,  "delta")
   priors$rho    <- .set_parameter_priors(prior_rho_null,    prior_rho,    "rho")
   priors$nu     <- .set_parameter_priors(prior_nu_null,     prior_nu,     "nu")
+  
+  priors$mu     <- .set_common_prior(prior_mu,     "mu",     is_trunc)
+  priors$sigma2 <- .set_common_prior(prior_sigma2, "sigma2", is_trunc)
   
   return(priors)
 }
@@ -52,7 +55,7 @@
     # check that the passed priors are supported for the parameter
     if(length(priors) > 0){
       for(p in names(priors)){
-        if(!priors[[p]]$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
+        if(!priors[[p]]$distribution %in% c("none", "normal", "lognormal", "t", "gamma", "invgamma", "point", "uniform", "beta", "exp"))
           stop(paste0(priors[[p]]$distribution," prior distribution is not supported for the ", parameter," parameter. See '?prior' for further information."))
         if(priors[[p]]$distribution == "none"){
           temp_is_null        <- priors[[p]]$is_null
@@ -133,6 +136,50 @@
   
   return(priors)
 }
+.set_common_prior       <- function(prior, parameter, is_trunc){
+  
+  # set default priors if not specified
+  if(is.null(prior)){
+    if(is_trunc){
+      prior <- switch(
+        parameter,
+        "mu"     = prior("cauchy", parameters = list(location = 0, scale = 1)),
+        "sigma2" = prior("exp",    parameters = list(rate = 1))
+      )
+    }else{
+      prior <- switch(
+        parameter,
+        "mu"     = "Jeffreys_mu",
+        "sigma2" = "Jeffreys_sigma2"
+      )
+    }
+    return(prior)
+  }
+  
+  ### check that the specified prior distributions are valid
+  if(parameter == "mu"){
+    
+    if(!prior$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "uniform", "beta", "exp"))
+      stop(paste0(prior$distribution," prior distribution is not supported for the ", parameter," parameter. See '?prior' for further information."))
+    
+  }else if(parameter == "sigma2"){
+    
+    if(!prior$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "uniform", "beta", "exp"))
+      stop(paste0(prior$distribution," prior distribution is not supported for the ", parameter, " parameter. See '?prior' for further information."))
+    if(prior$distribution == "uniform"){
+      if(prior$parameters$a < 0 ){
+        stop(paste0("The uniform prior distribution for ", parameter, " parameter cannot be defined on negative numbers. See '?prior' for further information."))
+      }
+    }else{
+      if(prior$truncation$lower < 0){
+        prior$truncation$lower <- 0
+        warning(paste0("The range of a prior distribution for ", parameter, " parameter cannot contain values lower than 0. The lower truncation point was set to 0. See '?prior' for further information."))
+      }
+    }
+  }
+  
+  return(prior)
+}
 .get_models             <- function(priors){
   
   # create models according to the set priors
@@ -140,20 +187,23 @@
   for(delta in priors[["delta"]]){
     for(rho in priors[["rho"]]){
       for(nu in priors[["nu"]]){
-        models <- c(models, list(.create_model(delta, rho, nu, NULL, NULL, delta[["prior_weights"]] * rho[["prior_weights"]] * nu[["prior_weights"]])))
+        models <- c(models, list(.create_model(delta, rho, nu, NULL, NULL, delta[["prior_weights"]] * rho[["prior_weights"]] * nu[["prior_weights"]], priors[["mu"]], priors[["sigma2"]])))
       }
     }
   }
   
   return(models)
 }
-.create_model           <- function(prior_delta, prior_rho, prior_nu, prior_p, likelihood, prior_weights){
+.create_model           <- function(prior_delta, prior_rho, prior_nu, prior_p, likelihood, prior_weights, prior_mu, prior_sigma2){
   
   priors <- list()
   
   priors$delta <- prior_delta
   priors$rho   <- prior_rho
   priors$nu    <- prior_nu
+
+  priors$mu     <- prior_mu
+  priors$sigma2 <- prior_sigma2
   
   # possibly simplify t to normal
   if(prior_nu$distribution == "none"){
