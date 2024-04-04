@@ -19,7 +19,7 @@ the ensemble configuration prior to fitting all of the models.'><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RoBTT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@ the ensemble configuration prior to fitting all of the models.'><!-- mathjax -->
   </a>
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/Introduction_to_RoBTT.html">Introduction to RoBTT</a>
+    </li>
+    <li>
+      <a href="../articles/Truncated_t_test.html">Truncated Bayesian Model-Averaged T-Test</a>
     </li>
   </ul></li>
 <li>
@@ -75,6 +78,9 @@ the ensemble configuration prior to fitting all of the models.</p>
 <span>  prior_delta_null <span class="op">=</span> <span class="fu"><a href="prior.html">prior</a></span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"spike"</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  prior_rho_null <span class="op">=</span> <span class="fu"><a href="prior.html">prior</a></span><span class="op">(</span>distribution <span class="op">=</span> <span class="st">"spike"</span>, parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  prior_nu_null <span class="op">=</span> <span class="fu"><a href="prior_none.html">prior_none</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  prior_mu <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prior_sigma2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  truncation <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  silent <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -97,7 +103,9 @@ prior(distribution = "beta", parameters = list(alpha = 1, beta = 1))</code>.</p>
 <dt>prior_nu</dt>
 <dd><p>prior distribution for the degrees of freedom + 2 <code>nu</code>
 parameter that will be treated as belonging to the alternative hypothesis.
-Defaults to <code>prior(distribution = "exp", parameters = list(rate = 1))</code>.</p></dd>
+Defaults to <code>prior(distribution = "exp", parameters = list(rate = 1))</code> if no
+<code>truncation</code> is specified. If <code>truncation</code> is specified, the default is
+<code>NULL</code> (i.e., use only normal likelihood).</p></dd>
 
 
 <dt>prior_delta_null</dt>
@@ -118,6 +126,45 @@ with location at 0.5 (
 <dd><p>prior distribution for the <code>nu</code> parameter
 that will be treated as belonging to the null hypothesis. Defaults to <code>prior_none</code> (
 (i.e., normal likelihood)).</p></dd>
+
+
+<dt>prior_mu</dt>
+<dd><p>prior distribution for the grand mean parameter. Defaults to <code>NULL</code>
+which sets Jeffreys prior for the grand mean in case of no truncation or an unit Cauchy
+prior distributions for the grand mean in case of truncation (which greatly improves
+sampling efficiency).</p></dd>
+
+
+<dt>prior_sigma2</dt>
+<dd><p>prior distribution for the grand variance parameter. Defaults to <code>NULL</code>
+which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
+distribution for the variance in case of truncation (which greatly improves sampling efficiency).</p></dd>
+
+
+<dt>truncation</dt>
+<dd><p>an optional list specifying truncation applied to the data.
+Defaults to <code>NULL</code>, i.e., no truncation was applied and the full likelihood is
+applied. Alternative the truncation can be specified via a named list with:</p><dl><dt><code>"x"</code></dt>
+<dd><p>where <code>x</code> is a vector of two values specifying the lower
+and upper truncation points common across the groups</p></dd>
+
+<dt><code>"x1"</code> and <code>"x2"</code></dt>
+<dd><p>where <code>x1</code> is a vector of two values specifying
+the lower and upper truncation points for the first group and <code>x2</code> is a vector of
+two values specifying the lower and upper truncation points for the second group.</p></dd>
+
+<dt><code>"sigma"</code></dt>
+<dd><p>where <code>sigma</code> corresponds to the number of standard deviations
+from the common mean where the truncation points should be set.</p></dd>
+
+<dt><code>"sigma1"</code> and <code>"sigma2"</code></dt>
+<dd><p>where <code>sigma1</code> corresponds to the number of
+standard deviations from the mean of the first group where the truncation points should be set
+and <code>sigma2</code> corresponds to the number of standard deviations from the mean of the second
+group where the truncation points should be set.</p></dd>
+
+
+</dl></dd>
 
 
 <dt>models</dt>
@@ -147,7 +194,7 @@ that will be treated as belonging to the null hypothesis. Defaults to <code>prio
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by František Bartoš, Maximilian Maier.</p>
+  <p></p><p>Developed by František Bartoš, Maximilian Maier, Henrik R Godmann.</p>
 </div>
 
 <div class="pkgdown">
