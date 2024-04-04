@@ -1,0 +1,7 @@
+"Call:"
+"RoBTT(x1 = x1, x2 = x2, truncation = list(x1 = c(-4, 6), x2 = c(-1, "
+"    10)), parallel = FALSE, seed = 1)"
+""
+"Estimates:"
+"     delta        rho "
+"0.05060986 0.66247458 "

@@ -191,7 +191,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
     summary <- BayesTools::add_column(
       summary,
       column_title    = "Distribution",
-      column_values   = sapply(object[["models"]], function(m) m[["likelihood"]]),
+      column_values   = .get_distributions(object),
       column_position = 2,
       column_type     = "string")
     
@@ -224,7 +224,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
     diagnostics <- BayesTools::add_column(
       diagnostics,
       column_title    = "Distribution",
-      column_values   = sapply(object[["models"]], function(m) m[["likelihood"]]),
+      column_values   = .get_distributions(object),
       column_position = 2,
       column_type     = "string")
     

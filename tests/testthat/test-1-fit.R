@@ -2,7 +2,7 @@ context("(1) Fitting and updating functions")
 skip_on_cran()
 
 # test objects
-saved_files <- paste0("fit_", 1:3, ".RDS")
+saved_files <- paste0("fit_", 1:4, ".RDS")
 saved_fits  <- list()
 for(i in seq_along(saved_files)){
   saved_fits[[i]] <- readRDS(file = file.path("../results/fits", saved_files[i]))
@@ -62,12 +62,16 @@ test_that("Default model works", {
   fit2u <- update(fit2, prior_weights = c(2, 1, 2, 2))
   
   fit1u <- update(fit1)
+  
+  # fit a truncated t-test
+  fit4 <- suppressWarnings(RoBTT(x1 = x1, x2 = x2, seed = 1, truncation = list(x1 = c(-4, 6), x2 = c(-1, 10)),parallel = FALSE))
+  expect_equal(clean_all(saved_fits[[4]]), clean_all(fit4))
 })
 
 
 #### creating / updating the test settings ####
 if(FALSE){
-  saved_fits <- list(fit1, fit2, fit3)
+  saved_fits <- list(fit1, fit2, fit3, fit4)
 
   for(i in 1:length(saved_fits)){
     saveRDS(saved_fits[[i]], file = file.path("tests/results/fits", paste0("fit_",i,".RDS")),   compress  = "xz")

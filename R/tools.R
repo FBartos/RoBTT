@@ -120,6 +120,16 @@ check_RoBTT <- function(fit){
   
   return(constant)
 }
+.get_distributions <- function(object){
+  
+  distributions <- sapply(object[["models"]], function(m) m[["likelihood"]])
+  
+  if(!is.null(object$data[["is_trunc"]]) && object$data[["is_trunc"]] == 1){
+    distributions <- paste0("truncated ", distributions)
+  }
+  
+  return(distributions)
+}
 .get_no_support    <- function(models, par){
   
   no_support  <- NULL
