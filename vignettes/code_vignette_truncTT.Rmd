@@ -173,7 +173,7 @@ summary(fit1_trunc, group_estimates = TRUE, type = "models")
 
 This output contains a table summarizing the specifics for each model: The type of likelihood distribution, the prior distributions on the effect parameter, the prior distributions on the rho parameter, the prior model probabilities, the log marginal likelihoods, posterior model probabilities, and the inclusion Bayes factors.
 
-Second, we show how to specify identical cut-offs across groups:
+In this first application, we specified the cut-off range for each group separately. We can also specify identical cut-offs across groups:
 
 ```{r, echo=T,error=F, message=F, warning=F, results="hide"}
 cut_off <- c(-2,2)
