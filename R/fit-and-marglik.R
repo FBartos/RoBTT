@@ -47,15 +47,33 @@
     model_call$open_progress <- FALSE
     model_call$show_messages <- FALSE
   }
+
+  # specify init
+  model_call$init <- lapply(1:control[["chains"]], function(i) {
+
+    if(fit_data[["is_ss"]] == 1){
+      mean_x <- (fit_data[["mean_1"]] + fit_data[["mean_2"]]) / 2
+      var_x  <- (fit_data[["sd_1"]]^2 + fit_data[["sd_2"]]^2) / 2
+    } else {
+      mean_x <- (mean(fit_data[["x1"]]) + mean(fit_data[["x2"]])) / 2
+      var_x  <- (var(fit_data[["x1"]])  + var(fit_data[["x2"]]))  / 2
+    }
+    
+    init <- list(
+      mu    = BayesTools::rng(prior("normal", parameters = list(mean = mean_x, sd = sqrt(var_x)/10)), 1),
+      sigma = BayesTools::rng(prior("exp", parameters = list(rate = 1/sqrt(var_x))), 1)
+    )
+    
+    if(!is.null(priors$delta) && !BayesTools::is.prior.none(priors$delta) && !BayesTools::is.prior.point(priors$delta))
+      init$delta <- as.array(BayesTools::rng(priors$delta, 1))
+    if(!is.null(priors$rho) && !BayesTools::is.prior.none(priors$rho) && !BayesTools::is.prior.point(priors$rho))
+      init$rho <- as.array(BayesTools::rng(priors$rho, 1))
+    if(!is.null(priors$nu) && !BayesTools::is.prior.none(priors$nu) && !BayesTools::is.prior.point(priors$nu))
+      init$nu <- as.array(BayesTools::rng(priors$nu, 1))
+    
+    return(init)
+  })
   
-  if(likelihood == "beta"){
-    model_call$init <- lapply(1:control[["chains"]], function(i) {
-      list(
-        mu      = 0.5,
-        sigma   = sqrt(1/12)
-      )
-    })
-  }
   
   if(!is.null(control[["seed"]])){
     set.seed(control[["seed"]])
