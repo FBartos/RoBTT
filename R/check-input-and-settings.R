@@ -21,12 +21,12 @@ check_setup <- function(
     prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
     prior_nu_null     = prior_none(),
     
-    prior_mu = NULL, prior_sigma2 = NULL, truncation = NULL,
+    prior_mu = NULL, prior_sigma = NULL, truncation = NULL,
     
     models = FALSE, silent = FALSE){
   
   object <- list()
-  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, !is.null(truncation))
+  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma, NULL, !is.null(truncation))
   object$models      <- .get_models(object$priors)
   
   ### model types overview

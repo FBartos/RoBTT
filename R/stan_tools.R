@@ -55,19 +55,19 @@
     
     out[[paste0("prior_type_", parameter)]] <- switch(
       prior,
-      "Jeffreys_mu"     = 98,
-      "Jeffreys_sigma2" = 99
+      "Jeffreys_mu"    = 98,
+      "Jeffreys_sigma" = 99
     )
     
     out[[paste0("bounds_", parameter)]]           <- switch(
       prior,
-      "Jeffreys_mu"     = c(999, 999),
-      "Jeffreys_sigma2" = c(0,   999)
+      "Jeffreys_mu"    = c(999, 999),
+      "Jeffreys_sigma" = c(0,   999)
     )
     out[[paste0("bounds_type_", parameter)]]      <- switch(
       prior,
-      "Jeffreys_mu"     = c(0, 0),
-      "Jeffreys_sigma2" = c(1, 0)
+      "Jeffreys_mu"    = c(0, 0),
+      "Jeffreys_sigma" = c(1, 0)
     )
     out[[paste0("prior_parameters_", parameter)]] <- c(999, 999, 999)
     
@@ -89,7 +89,7 @@
   
   if(is.prior.point(prior)){
     
-    if(!parameter %in% c("mu", "sigma2")){
+    if(!parameter %in% c("mu", "sigma")){
       out[[paste0("is_", parameter)]]          <- 0
       out[[paste0("fixed_", parameter)]]       <- as.array(prior$parameters[["location"]])      
     }

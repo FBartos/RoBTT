@@ -1,12 +1,12 @@
-.set_priors             <- function(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, is_trunc){
+.set_priors             <- function(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma, data = NULL, is_trunc){
   
   priors        <- list()
   priors$delta  <- .set_parameter_priors(prior_delta_null,  prior_delta,  "delta")
   priors$rho    <- .set_parameter_priors(prior_rho_null,    prior_rho,    "rho")
   priors$nu     <- .set_parameter_priors(prior_nu_null,     prior_nu,     "nu")
   
-  priors$mu     <- .set_common_prior(prior_mu,     "mu",     is_trunc)
-  priors$sigma2 <- .set_common_prior(prior_sigma2, "sigma2", is_trunc)
+  priors$mu    <- .set_common_prior(prior_mu,    "mu",    data, is_trunc)
+  priors$sigma <- .set_common_prior(prior_sigma, "sigma", data, is_trunc)
   
   return(priors)
 }
@@ -136,21 +136,38 @@
   
   return(priors)
 }
-.set_common_prior       <- function(prior, parameter, is_trunc){
+.set_common_prior       <- function(prior, parameter, data = NULL, is_trunc){
   
   # set default priors if not specified
   if(is.null(prior)){
     if(is_trunc){
-      prior <- switch(
-        parameter,
-        "mu"     = prior("cauchy", parameters = list(location = 0, scale = 1)),
-        "sigma2" = prior("exp",    parameters = list(rate = 1))
-      )
+      if(is.null(data)) {
+        prior <- switch(
+          parameter,
+          "mu"    = prior("cauchy", parameters = list(location = 0, scale = 1)),
+          "sigma" = prior("rate", parameters = list(rate = 1))
+        )
+      } else {
+        
+        if (attr(data, "summary")) {
+          mean_x <- (data[["mean1"]] + data[["mean2"]]) / 2
+          var_x  <- (data[["sd1"]]^2 + data[["sd2"]]^2) / 2
+        } else {
+          mean_x <- (mean(data[["x1"]]) + mean(data[["x2"]])) / 2
+          var_x  <- (var(data[["x1"]])  + var(data[["x2"]]))  / 2
+        }
+        
+        prior <- switch(
+          parameter,
+          "mu"    = prior("cauchy", parameters = list(location = mean_x, scale = sqrt(var_x))),
+          "sigma" = prior("exp",    parameters = list(rate = 1/sqrt(var_x)))
+        )
+      }
     }else{
       prior <- switch(
         parameter,
-        "mu"     = "Jeffreys_mu",
-        "sigma2" = "Jeffreys_sigma2"
+        "mu"    = "Jeffreys_mu",
+        "sigma" = "Jeffreys_sigma"
       )
     }
     return(prior)
@@ -162,7 +179,7 @@
     if(!prior$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "uniform", "beta", "exp"))
       stop(paste0(prior$distribution," prior distribution is not supported for the ", parameter," parameter. See '?prior' for further information."))
     
-  }else if(parameter == "sigma2"){
+  }else if(parameter %in% "sigma"){
     
     if(!prior$distribution %in% c("normal", "lognormal", "t", "gamma", "invgamma", "uniform", "beta", "exp"))
       stop(paste0(prior$distribution," prior distribution is not supported for the ", parameter, " parameter. See '?prior' for further information."))
@@ -187,14 +204,14 @@
   for(delta in priors[["delta"]]){
     for(rho in priors[["rho"]]){
       for(nu in priors[["nu"]]){
-        models <- c(models, list(.create_model(delta, rho, nu, NULL, NULL, delta[["prior_weights"]] * rho[["prior_weights"]] * nu[["prior_weights"]], priors[["mu"]], priors[["sigma2"]])))
+        models <- c(models, list(.create_model(delta, rho, nu, NULL, NULL, delta[["prior_weights"]] * rho[["prior_weights"]] * nu[["prior_weights"]], priors[["mu"]], priors[["sigma"]])))
       }
     }
   }
   
   return(models)
 }
-.create_model           <- function(prior_delta, prior_rho, prior_nu, prior_p, likelihood, prior_weights, prior_mu, prior_sigma2){
+.create_model           <- function(prior_delta, prior_rho, prior_nu, prior_p, likelihood, prior_weights, prior_mu, prior_sigma){
   
   priors <- list()
   
@@ -202,8 +219,8 @@
   priors$rho   <- prior_rho
   priors$nu    <- prior_nu
 
-  priors$mu     <- prior_mu
-  priors$sigma2 <- prior_sigma2
+  priors$mu    <- prior_mu
+  priors$sigma <- prior_sigma
   
   # possibly simplify t to normal
   if(prior_nu$distribution == "none"){

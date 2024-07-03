@@ -56,9 +56,9 @@
 #' which sets Jeffreys prior for the grand mean in case of no truncation or an unit Cauchy 
 #' prior distributions for the grand mean in case of truncation (which greatly improves 
 #' sampling efficiency).
-#' @param prior_sigma2 prior distribution for the grand variance parameter. Defaults to \code{NULL}
-#' which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
-#' distribution for the variance in case of truncation (which greatly improves sampling efficiency).
+#' @param prior_sigma prior distribution for the grand variance parameter. Defaults to \code{NULL}
+#' which sets Jeffreys prior for the standard deviation in case of no truncation or an exponential prior
+#' distribution for the standard deviation in case of truncation (which greatly improves sampling efficiency).
 #' @param chains a number of chains of the MCMC algorithm.
 #' @param iter a number of sampling iterations of the MCMC algorithm.
 #' Defaults to \code{10000}, with a minimum of \code{4000}.
@@ -139,7 +139,7 @@ RoBTT <- function(
   prior_rho_null    = prior(distribution = "spike",  parameters = list(location = 0.5)),
   prior_nu_null     = prior_none(),
   
-  prior_mu = NULL, prior_sigma2 = NULL,
+  prior_mu = NULL, prior_sigma = NULL,
   
   chains  = 4, iter = 10000, warmup = 5000, thin = 1, parallel = FALSE,
   control = set_control(), convergence_checks = set_convergence_checks(), 
@@ -158,7 +158,7 @@ RoBTT <- function(
   object$convergence_checks <- .check_and_list_convergence_checks(convergence_checks)
   
   ### prepare and check the settings
-  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma2, !is.null(truncation))
+  object$priors      <- .set_priors(prior_delta, prior_rho, prior_nu, prior_delta_null, prior_rho_null, prior_nu_null, prior_mu, prior_sigma, object$data, !is.null(truncation))
   object$models      <- .get_models(object$priors)
   object$add_info    <- list(
     warnings         = NULL,

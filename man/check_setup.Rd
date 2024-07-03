@@ -13,7 +13,7 @@ check_setup(
   prior_rho_null = prior(distribution = "spike", parameters = list(location = 0.5)),
   prior_nu_null = prior_none(),
   prior_mu = NULL,
-  prior_sigma2 = NULL,
+  prior_sigma = NULL,
   truncation = NULL,
   models = FALSE,
   silent = FALSE
@@ -53,9 +53,9 @@ which sets Jeffreys prior for the grand mean in case of no truncation or an unit
 prior distributions for the grand mean in case of truncation (which greatly improves
 sampling efficiency).}
 
-\item{prior_sigma2}{prior distribution for the grand variance parameter. Defaults to \code{NULL}
-which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
-distribution for the variance in case of truncation (which greatly improves sampling efficiency).}
+\item{prior_sigma}{prior distribution for the grand variance parameter. Defaults to \code{NULL}
+which sets Jeffreys prior for the standard deviation in case of no truncation or an exponential prior
+distribution for the standard deviation in case of truncation (which greatly improves sampling efficiency).}
 
 \item{truncation}{an optional list specifying truncation applied to the data.
 Defaults to \code{NULL}, i.e., no truncation was applied and the full likelihood is

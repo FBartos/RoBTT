@@ -52,7 +52,7 @@
     model_call$init <- lapply(1:control[["chains"]], function(i) {
       list(
         mu      = 0.5,
-        sigma2  = 1/12
+        sigma   = sqrt(1/12)
       )
     })
   }
@@ -65,7 +65,7 @@
   fit <- tryCatch(suppressWarnings(do.call(rstan::sampling, model_call)), error = function(e)e)
   
   # for BayesTools formatting
-  attr(fit, "prior_list") <- priors[!names(priors) %in% c("mu", "sigma2")]
+  attr(fit, "prior_list") <- priors[!names(priors) %in% c("mu", "sigma")]
   
   if(all(class(fit) %in% c("simpleError", "error", "condition"))){
     errors    <- c(errors, fit$message)
@@ -135,8 +135,8 @@
     data <- c(data, .stan_distribution("nu", priors[["nu"]]))
   }
 
-  data <- c(data, .stan_distribution("mu",     priors[["mu"]]))
-  data <- c(data, .stan_distribution("sigma2", priors[["sigma2"]]))
+  data <- c(data, .stan_distribution("mu",    priors[["mu"]]))
+  data <- c(data, .stan_distribution("sigma", priors[["sigma"]]))
     
   return(data)
 }

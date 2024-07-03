@@ -23,7 +23,7 @@ RoBTT(
   prior_rho_null = prior(distribution = "spike", parameters = list(location = 0.5)),
   prior_nu_null = prior_none(),
   prior_mu = NULL,
-  prior_sigma2 = NULL,
+  prior_sigma = NULL,
   chains = 4,
   iter = 10000,
   warmup = 5000,
@@ -104,9 +104,9 @@ which sets Jeffreys prior for the grand mean in case of no truncation or an unit
 prior distributions for the grand mean in case of truncation (which greatly improves
 sampling efficiency).}
 
-\item{prior_sigma2}{prior distribution for the grand variance parameter. Defaults to \code{NULL}
-which sets Jeffreys prior for the variance in case of no truncation or an exponential prior
-distribution for the variance in case of truncation (which greatly improves sampling efficiency).}
+\item{prior_sigma}{prior distribution for the grand variance parameter. Defaults to \code{NULL}
+which sets Jeffreys prior for the standard deviation in case of no truncation or an exponential prior
+distribution for the standard deviation in case of truncation (which greatly improves sampling efficiency).}
 
 \item{chains}{a number of chains of the MCMC algorithm.}
 

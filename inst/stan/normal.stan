@@ -27,11 +27,11 @@ data {
 
   // range of the parameters
   vector[2] bounds_mu;
-  vector[2] bounds_sigma2;
+  vector[2] bounds_sigma;
   vector[is_d == 1 ? 2 : 0] bounds_d;
   vector[is_r == 1 ? 2 : 0] bounds_r;
   array[2] int bounds_type_mu;
-  array[2] int bounds_type_sigma2;
+  array[2] int bounds_type_sigma;
   array[is_d == 1 ? 2 : 0] int bounds_type_d;
   array[is_r == 1 ? 2 : 0] int bounds_type_r;
 
@@ -39,17 +39,17 @@ data {
   vector[is_d == 0 ? 1 : 0] fixed_d;
   vector[is_r == 0 ? 1 : 0] fixed_r;
   vector[3] prior_parameters_mu;
-  vector[3] prior_parameters_sigma2;
+  vector[3] prior_parameters_sigma;
   vector[is_d == 1 ? 3 : 0] prior_parameters_d;
   vector[is_r == 1 ? 3 : 0] prior_parameters_r;
   int prior_type_mu;
-  int prior_type_sigma2;
+  int prior_type_sigma;
   int prior_type_d;
   int prior_type_r;
 }
 parameters{
-  real<lower = coefs_lb(bounds_type_mu, bounds_mu),         upper = coefs_ub(bounds_type_mu, bounds_mu)>  mu;
-  real<lower = coefs_lb(bounds_type_sigma2, bounds_sigma2), upper = coefs_ub(bounds_type_sigma2, bounds_sigma2)> sigma2;
+  real<lower = coefs_lb(bounds_type_mu, bounds_mu),       upper = coefs_ub(bounds_type_mu, bounds_mu)>  mu;
+  real<lower = coefs_lb(bounds_type_sigma, bounds_sigma), upper = coefs_ub(bounds_type_sigma, bounds_sigma)> sigma;
   array[is_d] real<lower = coefs_lb(bounds_type_d, bounds_d), upper = coefs_ub(bounds_type_d, bounds_d)> delta;
   array[is_r] real<lower = coefs_lb(bounds_type_r, bounds_r), upper = coefs_ub(bounds_type_r, bounds_r)> rho;
 }
@@ -57,6 +57,7 @@ transformed parameters {
   real pooled_sigma;
   vector[2] sigma_i;
   vector[2] mu_i;
+  real sigma2 = pow(sigma, 2);
 
   // compute means and sigmas for each group
   if(is_r == 1){
@@ -78,8 +79,8 @@ transformed parameters {
 }
 model {
   // priors for mu and sigma2
-  target += set_prior(mu,     prior_type_mu,     prior_parameters_mu,     bounds_type_mu,     bounds_mu);
-  target += set_prior(sigma2, prior_type_sigma2, prior_parameters_sigma2, bounds_type_sigma2, bounds_sigma2);  
+  target += set_prior(mu,    prior_type_mu,    prior_parameters_mu,    bounds_type_mu,    bounds_mu);
+  target += set_prior(sigma, prior_type_sigma, prior_parameters_sigma, bounds_type_sigma, bounds_sigma);  
   
   // priors on d and r
   if(is_d == 1){
