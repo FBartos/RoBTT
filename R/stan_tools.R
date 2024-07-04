@@ -51,7 +51,7 @@
   out <- list()
   
   # special handling of the Jeffreys priors pseudo-distributions
-  if(parameter %in% c("mu", "sigma2") && is.character(prior) && prior %in% c("Jeffreys_mu", "Jeffreys_sigma2")){
+  if(parameter %in% c("mu", "sigma") && is.character(prior) && prior %in% c("Jeffreys_mu", "Jeffreys_sigma")){
     
     out[[paste0("prior_type_", parameter)]] <- switch(
       prior,
