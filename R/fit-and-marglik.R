@@ -52,9 +52,9 @@
   model_call$init <- lapply(1:control[["chains"]], function(i) {
 
     if(fit_data[["is_ss"]] == 1){
-      mean_x <- (fit_data[["mean_1"]] + fit_data[["mean_2"]]) / 2
-      var_x  <- (fit_data[["sd_1"]]^2 + fit_data[["sd_2"]]^2) / 2
-      n_x    <- fit_data[["n1"]] + fit_data[["n2"]]
+      mean_x <- sum(fit_data[["mean_i"]]) / 2
+      var_x  <- sum(fit_data[["sd_i"]]^2) / 2
+      n_x    <- fit_data[["N1"]] + fit_data[["N2"]]
     } else {
       mean_x <- (mean(fit_data[["x1"]]) + mean(fit_data[["x2"]])) / 2
       var_x  <- (var(fit_data[["x1"]])  + var(fit_data[["x2"]]))  / 2
