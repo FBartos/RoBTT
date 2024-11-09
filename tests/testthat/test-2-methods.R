@@ -6,7 +6,7 @@ skip_on_cran()
 saved_files <- paste0("fit_", 1:4, ".RDS")
 saved_fits  <- list()
 for(i in seq_along(saved_files)){
-  saved_fits[[i]] <- readRDS(file = file.path(testthat::test_path("results/fits"), saved_files[i]))
+  saved_fits[[i]] <- readRDS(file = file.path(testthat::test_path("../results/fits"), saved_files[i]))
 }
 
 test_that("Print functions work", {
