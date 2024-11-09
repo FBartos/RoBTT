@@ -3,7 +3,6 @@
 \docType{package}
 \name{RoBTT-package}
 \alias{RoBTT-package}
-\alias{_PACKAGE}
 \alias{RoBTT_package}
 \alias{RoBTT.package}
 \title{RoBTT: Robust Bayesian t-test}

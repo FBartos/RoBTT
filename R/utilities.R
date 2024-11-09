@@ -85,6 +85,7 @@ assign("max_cores",       parallel::detectCores(logical = TRUE) - 1,  envir = Ro
     "1.2.1" = c("0.2.15", "999.999.999"),
     "1.2.2" = c("0.2.15", "999.999.999"),
     "1.3.0" = c("0.2.15", "999.999.999"),
+    "1.3.1" = c("0.2.15", "999.999.999"),
     stop("New RoBTT version needs to be defined in '.check_BayesTools' function!")
   )
   

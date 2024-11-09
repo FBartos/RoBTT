@@ -272,7 +272,7 @@ summary(fit_3, type = "models")
 
 ## Conclusions
 
-This vignette showcased the applications of the RoBTT R package. For methodological background see @maier2022bayesian (https://doi.org/10.31234/osf.io/d5zwc). 
+This vignette showcased the applications of the RoBTT R package. For methodological background see @maier2022bayesian (https://doi.org/10.3758/s13423-024-02590-5). 
 
 
 ### References
