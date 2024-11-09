@@ -3,5 +3,5 @@
 "    N2 = N2, prior_nu = NULL, parallel = FALSE, seed = 1)"
 ""
 "Estimates:"
-"      delta         rho "
-"-0.05644425  0.53074635 "
+"     delta        rho "
+"-0.0513758  0.5309513 "

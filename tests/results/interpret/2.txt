@@ -1,4 +1,4 @@
 "Robust Bayesian t-test found weak evidence against the effect, BF_10 = 0.424, wi
-th mean model-averaged estimate delta = -0.056, 95% CI [-0.664,  0.263]. Robust 
+th mean model-averaged estimate delta = -0.051, 95% CI [-0.667,  0.306]. Robust 
 Bayesian t-test found weak evidence against the heterogeneity, BF^rho = 0.479, w
-ith mean model-averaged estimate rho = 0.531, 95% CI [0.402, 0.770]."
+ith mean model-averaged estimate rho = 0.531, 95% CI [0.403, 0.765]."
