@@ -84,7 +84,7 @@ fit2_trunc <- readRDS(file = "../models/Truncated/fit2_trunc.RDS")
 # Truncated Bayesian Model-Averaged T-Test
 
 ## Introduction
-This vignettes accompanies our recent manuscript ''Truncating the Likelihood Allows Outlier Exclusion Without Overestimating the Evidence in the Bayes Factor t-Test'' [@godmann2024TruncLikelihood] and shows how to use the `RoBTT` R package to estimate a truncated Bayesian model-averaged independent samples $t$-test (TrBTT). TrBTT adapts the t-test to researchers' outlier handling and thus mitigates the unwanted side effects of outlier exclusion on the inferences. For a general introduction to the RoBTT package, see the [Introduction to RoBTT](https://fbartos.github.io/RoBTT/articles/Introduction_to_RoBTT.html) vignette.
+This vignettes accompanies our recent manuscript ''Truncating the Likelihood Allows Outlier Exclusion Without Overestimating the Evidence in the Bayes Factor t-Test'' [@godmann2024how] and shows how to use the `RoBTT` R package to estimate a truncated Bayesian model-averaged independent samples $t$-test (TrBTT). TrBTT adapts the t-test to researchers' outlier handling and thus mitigates the unwanted side effects of outlier exclusion on the inferences. For a general introduction to the RoBTT package, see the [Introduction to RoBTT](https://fbartos.github.io/RoBTT/articles/Introduction_to_RoBTT.html) vignette.
 
 ## Background
 Outliers can lead to biased analysis results. However, the widely applied approach of simply excluding extreme observations without changing the analysis is also not appropriate, as it often leads to inflated evidence. This vignette introduces a truncated version of the Bayesian model-averaged independent samples $t$-test and demonstrates an alternative way of handling outliers in a Bayesian hypothesis testing framework. TrBTT incorporates the Bayesian model-averaging approach with a truncated likelihood. As such, TrBTT offers a robust solution for conducting independent samples $t$-tests that are less susceptible to the influence of outlier. 
@@ -220,6 +220,6 @@ Just like before, the results can be obtained using the `summary()` function.
 
 ## Conclusions
 
-This vignette demonstrated outlier handling with truncated Bayesian model-averaged t-test implemented in the `RoBTT` R package. For methodological background see @godmann2024TruncLikelihood. 
+This vignette demonstrated outlier handling with truncated Bayesian model-averaged t-test implemented in the `RoBTT` R package. For methodological background see @godmann2024how. 
 
 ### References
