@@ -5,7 +5,8 @@ note <- sprintf("R package version %s", meta$Version)
 bibentry(bibtype = "misc",
          title = "RoBTT: An R Package for Robust Bayesian T-Test",
          author = c(person("František",  "Bartoš"),
-                    person("Maximilian", "Maier")),
+                    person("Maximilian", "Maier"),
+                    person("Henrik R", "Godmann")),
          year = 2022,
          note = note,
          url = "https://CRAN.R-project.org/package=RoBTT")

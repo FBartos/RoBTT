@@ -1,3 +1,6 @@
+## version 1.3.1
+- vignette and references updates 
+
 ## version 1.3.0
 - adds `truncation` argument to `RoBTT()` function to allow for truncation of the normal/t-distribution models
 

@@ -31,7 +31,7 @@ diagnostics.
 
 See our manuscripts for more information about the methodology:
 
-- Maier et al. (2022) introduces a robust Bayesian t-test that
+- Maier et al. (2024) introduces a robust Bayesian t-test that
   model-averages over normal and t-distributions to account for the
   uncertainty about potential outliers,
 - Godmann et al. (2024) introduces a truncated Bayesian t-test that
@@ -61,20 +61,22 @@ devtools::install_github("FBartos/RoBTT")
 ### References
 
 <div id="refs" class="references csl-bib-body hanging-indent"
-line-spacing="2">
+entry-spacing="0" line-spacing="2">
 
 <div id="ref-godmann2024how" class="csl-entry">
 
-Godmann, H. R., Bartoš, F., & Wagenmakers, E.-J. (2024). *A truncated
-t-test: Excluding outliers without biasing the Bayes factor*.
+Godmann, H. R., Bartoš, F., & Wagenmakers, E.-J. (2024). *Truncating the
+likelihood allows outlier exclusion without overestimating the evidence
+in the Bayes factor t-test*. <https://doi.org/10.31234/osf.io/j9f3s>
 
 </div>
 
 <div id="ref-maier2022bayesian" class="csl-entry">
 
 Maier, M., Bartoš, F., Quintana, D. S., Bergh, D. van den, Marsman, M.,
-Ly, A., & Wagenmakers, E.-J. (2022). *Model-averaged Bayesian t-tests*.
-<https://doi.org/10.31234/osf.io/d5zwc>
+Ly, A., & Wagenmakers, E.-J. (2024). Model-averaged Bayesian t-tests.
+*Psychonomic Bulletin & Review*.
+<https://doi.org/10.3758/s13423-024-02590-5>
 
 </div>
 
