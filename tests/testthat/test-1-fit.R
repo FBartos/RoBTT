@@ -18,6 +18,14 @@ clean_all  <- function(fit, only_samples = TRUE){
   }
   return(fit)
 }
+# the saved fits are reproduced exactly only by the optimised build; covr
+# compiles the Stan models without optimisation, which changes the draws
+expect_saved_fit <- function(saved_fit, fit){
+  if(identical(Sys.getenv("R_COVR"), "true")){
+    return(invisible())
+  }
+  expect_equal(clean_all(saved_fit), clean_all(fit))
+}
 try_parallel <- function(x, rep = 3){
   temp_fit <- NULL
   i        <- 0
@@ -45,18 +53,18 @@ test_that("Default model works", {
   set.seed(1)
   
   fit1 <- suppressWarnings(RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = FALSE))
-  expect_equal(clean_all(saved_fits[[1]]), clean_all(fit1))
+  expect_saved_fit(saved_fits[[1]], fit1)
   
   
   fit2 <- suppressWarnings(RoBTT(mean1 = mean1, mean2 = mean2, sd1 = sd1, sd2 = sd2, N1 = N1, N2 = N2, prior_nu = NULL, seed = 1, parallel = FALSE))
-  expect_equal(clean_all(saved_fits[[2]]), clean_all(fit2))
+  expect_saved_fit(saved_fits[[2]], fit2)
   
   fit3 <- suppressWarnings(RoBTT(x1 = x1, x2 = x2, seed = 1, parallel = FALSE, 
                                  prior_delta      = prior("cauchy", list(0, 1/sqrt(2)), list(0, Inf)),
                                  prior_rho        = prior("beta",   list(3, 3)),
                                  prior_nu         = prior("exp",    list(1)),
                                  prior_delta_null = prior("normal", list(0, 0.15), list(0, Inf))))
-  expect_equal(clean_all(saved_fits[[3]]), clean_all(fit3))
+  expect_saved_fit(saved_fits[[3]], fit3)
   
   # update prior model probs
   fit2u <- update(fit2, prior_weights = c(2, 1, 2, 2))
@@ -65,7 +73,7 @@ test_that("Default model works", {
   
   # fit a truncated t-test
   fit4 <- suppressWarnings(RoBTT(x1 = x1, x2 = x2, seed = 1, truncation = list(x1 = c(-4, 6), x2 = c(-1, 10)),parallel = FALSE))
-  expect_equal(clean_all(saved_fits[[4]]), clean_all(fit4))
+  expect_saved_fit(saved_fits[[4]], fit4)
 })
 
 
