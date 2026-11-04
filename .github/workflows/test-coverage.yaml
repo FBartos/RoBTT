@@ -57,11 +57,11 @@ jobs:
 
       - name: Set JAGS environment variables (Windows)
         if: runner.os == 'Windows'
-        shell: cmd
+        shell: pwsh
         run: |
-          echo JAGS_ROOT=/c/progra~1/JAGS/JAGS-4.3.1>> %GITHUB_ENV%
-          echo JAGS_MAJOR_VERSION=4>> %GITHUB_ENV%
-          echo C:\Program Files\JAGS\JAGS-4.3.1\bin>> %GITHUB_PATH%
+          "JAGS_ROOT=/c/progra~1/JAGS/JAGS-4.3.1" >> $env:GITHUB_ENV
+          "JAGS_MAJOR_VERSION=4" >> $env:GITHUB_ENV
+          "C:\Program Files\JAGS\JAGS-4.3.1\bin" >> $env:GITHUB_PATH
 
       - name: Resolve BayesTools source
         id: bayestools
@@ -77,6 +77,16 @@ jobs:
             ${{ steps.bayestools.outputs.pak_spec }}
             any::covr
             any::posterior
+
+      # covr compiles without optimisation, so the Stan model objects exceed the
+      # default section limit of Windows object files
+      - name: Enable big object files (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $makevars = Join-Path $env:RUNNER_TEMP "Makevars.win"
+          "CXX17FLAGS += -Wa,-mbig-obj" | Out-File -Encoding ascii $makevars
+          "R_MAKEVARS_USER=$makevars" >> $env:GITHUB_ENV
 
       - name: Test coverage
         env:
