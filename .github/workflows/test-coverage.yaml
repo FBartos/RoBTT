@@ -46,5 +46,16 @@ jobs:
           cache-version: 2
 
       - name: Test coverage
-        run: covr::codecov()
+        run: |
+          covr::codecov(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+          )
         shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
