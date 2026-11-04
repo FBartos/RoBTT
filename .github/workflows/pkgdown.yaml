@@ -33,7 +33,7 @@ jobs:
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get install libharfbuzz-dev libfribidi-dev
+        run: sudo apt-get install libharfbuzz-dev libfribidi-dev jags
 
       - name: Query dependencies
         run: |
@@ -61,6 +61,7 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
+          remotes::install_github("FBartos/BayesTools")
           install.packages("pkgdown")
         shell: Rscript {0}
 

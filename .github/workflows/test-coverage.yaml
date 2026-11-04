@@ -31,9 +31,18 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
+      # BayesTools compiles a JAGS module, so installing it from source needs JAGS
+      - name: Install JAGS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jags
+
+      # BayesTools from its GitHub master branch
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: covr
+          extra-packages: |
+            github::FBartos/BayesTools
+            any::covr
           cache-version: 2
 
       - name: Test coverage

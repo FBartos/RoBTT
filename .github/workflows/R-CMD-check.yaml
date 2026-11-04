@@ -34,9 +34,78 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      # BayesTools compiles a JAGS module, so installing it from source needs
+      # JAGS 4.x (Homebrew's jags formula installs JAGS 5, so macOS uses the
+      # official universal package)
+      - name: Cache JAGS (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: C:\Program Files\JAGS
+          key: ${{ runner.os }}-jags-4.3.1
+          restore-keys: |
+            ${{ runner.os }}-jags-
+
+      - name: Cache JAGS installer (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/cache@v4
+        with:
+          path: ~/jags-installer
+          key: ${{ runner.os }}-jags-pkg-4.3.2
+
+      - name: Install JAGS (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jags
+
+      - name: Install JAGS (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          if not exist "C:\Program Files\JAGS\JAGS-4.3.1\bin\jags-terminal.exe" (
+            echo "JAGS not found in cache, downloading and installing..."
+            curl -o jags-installer.exe -L https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/JAGS-4.3.1.exe/download
+            jags-installer.exe /S
+            del jags-installer.exe
+          ) else (
+            echo "JAGS found in cache, skipping installation"
+          )
+
+      - name: Set JAGS environment variables (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          echo JAGS_ROOT=/c/progra~1/JAGS/JAGS-4.3.1>> %GITHUB_ENV%
+          echo JAGS_MAJOR_VERSION=4>> %GITHUB_ENV%
+          echo C:\Program Files\JAGS\JAGS-4.3.1\bin>> %GITHUB_PATH%
+
+      - name: Install JAGS (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          if brew list --formula jags > /dev/null 2>&1; then
+            brew uninstall --ignore-dependencies jags
+          fi
+          mkdir -p ~/jags-installer
+          if [ ! -f ~/jags-installer/JAGS-4.3.2.pkg ]; then
+            echo "JAGS installer not found in cache, downloading..."
+            curl --retry 3 --fail -L -o ~/jags-installer/JAGS-4.3.2.pkg \
+              https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/JAGS-4.3.2.pkg/download
+          fi
+          sudo installer -pkg ~/jags-installer/JAGS-4.3.2.pkg -target /
+
+      - name: Set JAGS environment variables (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig" >> $GITHUB_ENV
+          echo "DYLD_FALLBACK_LIBRARY_PATH=/usr/local/lib${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}" >> $GITHUB_ENV
+
+      # BayesTools from its GitHub master branch
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
+          extra-packages: |
+            github::FBartos/BayesTools
+            any::rcmdcheck
           cache-version: 2  # Uses built-in caching for dependencies
 
       - uses: r-lib/actions/check-r-package@v2
