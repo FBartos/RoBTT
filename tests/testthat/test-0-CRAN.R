@@ -104,3 +104,16 @@ test_that("Basic functionality works", {
     ))
   
 })
+
+test_that("BayesTools version check accepts development versions", {
+
+  expect_true(RoBTT:::.check_BayesTools(package_version("1.4.0"),      package_version("0.4.0")))
+  expect_true(RoBTT:::.check_BayesTools(package_version("1.4.0.9001"), package_version("0.4.0.9001")))
+  expect_true(RoBTT:::.check_BayesTools(package_version("1.4.0"),      package_version("0.10.0")))
+
+  expect_warning(
+    ok <- RoBTT:::.check_BayesTools(package_version("1.4.0.9001"), package_version("0.2.15")),
+    "RoBTT version 1.4.0.9001 requires BayesTools version higher or equal 0.4.0"
+  )
+  expect_false(ok)
+})
