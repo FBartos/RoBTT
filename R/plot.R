@@ -96,19 +96,8 @@ plot.RoBTT  <- function(x, parameter = "mu", transform_rho = FALSE,
     )
   }
   
-  # pretend that infinite degrees of freedom are 0 to make plotting possible for nu
-  if(parameter == "nu"){
-
-    samples[["nu"]][is.infinite(samples[["nu"]])] <- 0
-    samples[["nu"]]                               <- samples[["nu"]] - 2 
-
-    for(i in seq_along(x[["models"]])){
-      if(x[["models"]][[i]][["likelihood"]] == "normal"){
-        attr(samples[["nu"]], "prior_list")[[i]][["parameters"]][["location"]] <- -2
-      }
-    }
-  }
-  
+  # nu is stored on the nu - 2 scale with the normal models (infinite degrees of freedom)
+  # as a spike at -2, the transformation below plots them at 0
   dots       <- .set_dots_plot(...)
   dots_prior <- .set_dots_prior(dots_prior)
   
@@ -221,5 +210,5 @@ plot.RoBTT  <- function(x, parameter = "mu", transform_rho = FALSE,
 rho2logsdr <- list(
   fun = function(x) log(sqrt(x/(1-x))),
   inv = function(x) exp(2*x) / (exp(2*x) + 1),
-  jac = function(x) 2*exp(2*x) / (exp(2*x) + 1)^2
+  jac = function(x) 1 / (2*x*(1-x))
 )

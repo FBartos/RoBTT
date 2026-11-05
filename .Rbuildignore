@@ -7,6 +7,7 @@
 tests/testthat/test-1-fit.R
 tests/testthat/test-2-methods.R
 tests/testthat/test-3-plots.R
+tests/testthat/test-4-diagnostics.R
 ^..Rcheck
 ^.*\.o
 ^docs$

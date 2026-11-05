@@ -115,6 +115,9 @@
     errors      <- c(errors, "not enough iterations")
     marglik     <- .marglik_fail()
     converged   <- FALSE
+  }else{
+
+    marglik     <- BayesTools::bridgesampling_object(marglik$logml)
   }
   
   return(list(
@@ -141,10 +144,7 @@
   return(data)
 }
 .marglik_fail          <- function(){
-  marglik        <- NULL
-  marglik$logml  <- -Inf
-  class(marglik) <- "bridge"
-  return(marglik)
+  return(BayesTools::bridgesampling_object(-Inf))
 }
 .fitting_priority      <- function(models){
   

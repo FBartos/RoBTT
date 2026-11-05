@@ -111,7 +111,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
     
     # obtain estimates tables
     estimates <- BayesTools::ensemble_estimates_table(
-      samples    = object$RoBTT[["posteriors"]],
+      samples    = .nu_samples(object$RoBTT[["posteriors"]]),
       parameters = names(object$RoBTT[["posteriors"]]),
       probs      = probs,
       title      = "Model-averaged estimates:",
@@ -142,7 +142,7 @@ summary.RoBTT       <- function(object, type = "ensemble", conditional = FALSE,
       attr(estimates_conditional, "warnings")  <- .collect_errors_and_warnings(object)
     }else{
       estimates_conditional <- BayesTools::ensemble_estimates_table(
-        samples    = object$RoBTT[["posteriors_conditional"]],
+        samples    = .nu_samples(object$RoBTT[["posteriors_conditional"]]),
         parameters = names(object$RoBTT[["posteriors_conditional"]]),
         probs      = probs,
         title      = "Conditional estimates:",
@@ -395,7 +395,8 @@ interpret           <- function(object){
       samples             = "nu",
       inference_name      = "outliers",
       inference_BF_name   = "BF^nu",
-      samples_name        = "nu"
+      samples_name        = "nu",
+      samples_conditional = TRUE
     )[]
   )
   specification <- specification[c(
@@ -404,9 +405,14 @@ interpret           <- function(object){
     any(names(object$RoBTT[["inference"]]) == "Outliers")
   )]
   
+  # the model-averaged degrees of freedom are infinite under the normal models,
+  # the conditional estimate is reported instead
+  samples    <- lapply(object$RoBTT[["posteriors"]], as.numeric)
+  samples$nu <- .nu_samples(object$RoBTT[["posteriors_conditional"]])[["nu"]]
+
   text <- BayesTools::interpret(
     inference     = object$RoBTT[["inference"]],
-    samples       = object$RoBTT[["posteriors"]],
+    samples       = samples,
     specification = specification,
     method        = "Robust Bayesian t-test"
   )

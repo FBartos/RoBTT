@@ -40,3 +40,6 @@ src/Makevars.win
 *.cpp
 *.h
 *.cc
+/covr
+*.gcno
+*.gcda
