@@ -1,13 +1,18 @@
 .ensemble_inference  <- function(object){
   
-  # modify the default null prior distribution to be spike at Inf
+  # the degrees of freedom are averaged on the scale of their prior distribution, nu_p = nu - 2,
+  # with the normal models (nu = Inf) represented by a spike at nu_p = -2 (see .nu_samples())
   for(i in seq_along(object[["models"]])){
+    prior_list <- attr(object[["models"]][[i]][["fit"]], "prior_list")
     if(object[["models"]][[i]]$likelihood == "normal"){
-      attr(object[["models"]][[i]][["fit"]], "prior_list")$nu <- prior(
-        distribution  = "spike", 
-        parameters    = list(location = Inf),
-        prior_weights = attr(object[["models"]][[i]][["fit"]], "prior_list")$nu[["prior_weights"]])
+      prior_list$nu_p <- prior(
+        distribution  = "spike",
+        parameters    = list(location = -2),
+        prior_weights = prior_list$nu[["prior_weights"]])
+    }else{
+      prior_list$nu_p <- prior_list$nu
     }
+    attr(object[["models"]][[i]][["fit"]], "prior_list") <- prior_list
   }
   
   # use only converged models with prior weights > 0 for inference about parameters
@@ -23,7 +28,7 @@
   components_present <- c(sum(effect), sum(heterogeneity), sum(outliers)) > 0
   
   components      <- c("Effect", "Heterogeneity", "Outliers")[components_present]
-  parameters      <- c("delta", "rho", "nu")[components_present]
+  parameters      <- c("delta", "rho", "nu_p")[components_present]
   components_null <- list("Effect" = !effect, "Heterogeneity" = !heterogeneity, "Outliers" = !outliers)[components_present]
   parameters_null <- list("mu"     = !effect, "tau"           = !heterogeneity, "nu"       = !outliers)[components_present]
   
@@ -59,15 +64,19 @@
   if(all(sapply(components_null, all))){
     posteriors_conditional <- NULL
   }else{
-    posteriors_conditional <- BayesTools::mix_posteriors(
+    posteriors_conditional <- .mix_posteriors_conditional(
       model_list   = models,
       parameters   = parameters[!sapply(parameters_null, all)],
       is_null_list = parameters_null[!sapply(parameters_null, all)],
-      seed         = object$control[["seed"]],
-      conditional  = TRUE
+      seed         = object$control[["seed"]]
     )
   }
   
+  names(posteriors)[names(posteriors) == "nu_p"] <- "nu"
+  if(!is.null(posteriors_conditional)){
+    names(posteriors_conditional)[names(posteriors_conditional) == "nu_p"] <- "nu"
+  }
+
   ### get posteriors for the mu and sigma
   parameters_est      <- c("mu_i", "sigma_i")
   parameters_est_null <- list("mu_i" = rep(FALSE, length(models)), "sigma_i" = rep(FALSE, length(models)))
@@ -89,9 +98,11 @@
     conditional  = FALSE
   )
   
-  # remove "_i" from the name
-  colnames(posteriors_est[["mu_i"]])    <- paste0("mu[", 1:2, "]")
-  colnames(posteriors_est[["sigma_i"]]) <- paste0("sigma[", 1:2, "]")
+  # remove "_i" from the name (as plain draws, renaming the mixed posteriors would invalidate their metadata)
+  posteriors_est <- list(
+    "mu_i"    = matrix(as.numeric(posteriors_est[["mu_i"]]),    ncol = 2, dimnames = list(NULL, paste0("mu[", 1:2, "]"))),
+    "sigma_i" = matrix(as.numeric(posteriors_est[["sigma_i"]]), ncol = 2, dimnames = list(NULL, paste0("sigma[", 1:2, "]")))
+  )
 
   
   # return the results
@@ -104,6 +115,33 @@
   )
   
   return(output)
+}
+# conditional posteriors are mixed one parameter at a time since each parameter
+# has its own posterior model probabilities
+.mix_posteriors_conditional <- function(model_list, parameters, is_null_list, seed){
+
+  posteriors_conditional <- lapply(seq_along(parameters), function(i){
+    BayesTools::mix_posteriors(
+      model_list   = model_list,
+      parameters   = parameters[i],
+      is_null_list = is_null_list[i],
+      seed         = seed,
+      conditional  = TRUE
+    )[[parameters[i]]]
+  })
+  names(posteriors_conditional) <- parameters
+  class(posteriors_conditional) <- c(class(posteriors_conditional), "mixed_posteriors")
+
+  return(posteriors_conditional)
+}
+# degrees of freedom on their reported scale (nu = nu_p + 2, Inf for the normal models)
+.nu_samples <- function(samples){
+  if(!is.null(samples[["nu"]])){
+    nu              <- as.numeric(samples[["nu"]]) + 2
+    nu[nu == 0]     <- Inf
+    samples[["nu"]] <- nu
+  }
+  return(samples)
 }
 .compute_coeficients <- function(RoBTT){
   return(c(

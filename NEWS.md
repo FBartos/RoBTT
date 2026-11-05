@@ -1,3 +1,11 @@
+## version 1.4.0
+### Changes
+- update to BayesTools 0.4.0 (seeded results differ from earlier versions and models fitted with earlier versions need to be refitted)
+- `interpret()` reports the conditional estimate of the degrees of freedom
+
+### Fixes
+- prior densities in `plot()` with `transform_rho = TRUE`
+
 ## version 1.3.1
 - vignette and references updates 
 
