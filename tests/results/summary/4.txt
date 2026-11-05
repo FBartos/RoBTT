@@ -10,6 +10,6 @@
 ""
 "Model-averaged estimates:"
 "       Mean Median  0.025 0.975"
-"delta 0.051  0.000 -0.753 1.108"
-"rho   0.662  0.639  0.366 0.974"
+"delta 0.048  0.000 -0.756 1.104"
+"rho   0.664  0.644  0.365 0.974"
 "[0;31mModel (4): There were 80 divergent transitions.[0m"

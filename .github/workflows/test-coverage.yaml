@@ -1,41 +1,122 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+name: test-coverage
+
 on:
   push:
     branches: [main, master, development]
   pull_request:
     branches: [main, master, development]
 
-name: R-CMD-check
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  R-CMD-check:
+  build:
     runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
+    timeout-minutes: 180
+    env:
+      NOT_CRAN: "true"
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-latest, r: 'release'}
-
-    env:
-      R_KEEP_PKG_SOURCE: yes
+          - {os: windows-latest, r: '4.6'}
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: r-lib/actions/setup-r@v2
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Setup Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Cache JAGS (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
         with:
-          extra-packages: covr
-          cache-version: 2
+          path: C:\Program Files\JAGS
+          key: ${{ runner.os }}-jags-4.3.1
+          restore-keys: |
+            ${{ runner.os }}-jags-
+
+      - name: Install JAGS (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          if not exist "C:\Program Files\JAGS\JAGS-4.3.1\bin\jags-terminal.exe" (
+            echo "JAGS not found in cache, downloading and installing..."
+            curl -o jags-installer.exe -L https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/JAGS-4.3.1.exe/download
+            jags-installer.exe /S
+            del jags-installer.exe
+          ) else (
+            echo "JAGS found in cache, skipping installation"
+          )
+
+      - name: Set JAGS environment variables (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          "JAGS_ROOT=/c/progra~1/JAGS/JAGS-4.3.1" >> $env:GITHUB_ENV
+          "JAGS_MAJOR_VERSION=4" >> $env:GITHUB_ENV
+          "C:\Program Files\JAGS\JAGS-4.3.1\bin" >> $env:GITHUB_PATH
+
+      - name: Resolve BayesTools source
+        id: bayestools
+        run: Rscript .github/scripts/resolve-bayestools-source.R
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          dependencies: '"all"'
+          cache-version: 3
+          install-pandoc: false
+          extra-packages: |
+            ${{ steps.bayestools.outputs.pak_spec }}
+            any::covr
+            any::posterior
+
+      # covr compiles without optimisation, so the Stan model objects exceed the
+      # default section limit of Windows object files
+      - name: Enable big object files (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $makevars = Join-Path $env:RUNNER_TEMP "Makevars.win"
+          "CXX17FLAGS += -Wa,-mbig-obj" | Out-File -Encoding ascii $makevars
+          "R_MAKEVARS_USER=$makevars" >> $env:GITHUB_ENV
 
       - name: Test coverage
-        run: covr::codecov()
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          JAGS_ROOT: "/c/progra~1/JAGS/JAGS-4.3.1"
+          JAGS_MAJOR_VERSION: 4
+        run: |
+          repo_path <- normalizePath(".", winslash = "/", mustWork = TRUE)
+          install_path <- normalizePath(file.path(Sys.getenv("RUNNER_TEMP"), "R_LIBS"), winslash = "/", mustWork = FALSE)
+          unlink(install_path, recursive = TRUE, force = TRUE)
+
+          coverage <- covr::package_coverage(
+            path         = repo_path,
+            quiet        = FALSE,
+            clean        = FALSE,
+            install_path = install_path
+          )
+          covr::codecov(coverage = coverage)
         shell: Rscript {0}
+
+      - name: Show testthat output
+        if: failure()
+        shell: pwsh
+        run: |
+          $failFiles = Get-ChildItem -Path $env:RUNNER_TEMP -Recurse -Filter "*.Rout.fail" -ErrorAction SilentlyContinue
+          if ($failFiles) {
+            foreach ($file in $failFiles) {
+              Write-Host "`n=== Contents of $($file.FullName) ===`n"
+              Get-Content $file.FullName
+            }
+          } else {
+            Write-Host "No .Rout.fail files found in $env:RUNNER_TEMP"
+          }
