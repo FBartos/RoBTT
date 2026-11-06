@@ -3,16 +3,12 @@ README
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
-
-[![CRAN
-status](https://www.r-pkg.org/badges/version/RoBTT)](https://CRAN.R-project.org/package=RoBTT)
+[![R-CMD-check](https://github.com/FBartos/RoBTT/actions/workflows/R-CMD-check.yaml/badge.svg?branch=development)](https://github.com/FBartos/RoBTT/actions/workflows/R-CMD-check.yaml)
+[![R-unit-tests](https://github.com/FBartos/RoBTT/actions/workflows/R-CMD-tests.yaml/badge.svg?branch=development)](https://github.com/FBartos/RoBTT/actions/workflows/R-CMD-tests.yaml)
+[![test-coverage](https://github.com/FBartos/RoBTT/actions/workflows/test-coverage.yaml/badge.svg?branch=development)](https://github.com/FBartos/RoBTT/actions/workflows/test-coverage.yaml)
+[![Codecov](https://codecov.io/gh/FBartos/RoBTT/branch/development/graph/badge.svg)](https://app.codecov.io/gh/FBartos/RoBTT?branch=development)
+[![CRAN status](https://www.r-pkg.org/badges/version/RoBTT)](https://CRAN.R-project.org/package=RoBTT)
 <!-- badges: end -->
-
-<!-- 
-#[![R-CRAN-check](https://github.com/FBartos/RoBTT/workflows/R-CMD-check/badge.svg)](https://github.com/FBartos/RoBTT/actions)
-[![R-tests](https://github.com/FBartos/RoBTT/workflows/R-CMD-tests/badge.svg)](https://github.com/FBartos/RoBTT/actions)
-#[![Codecov test coverage](https://codecov.io/gh/FBartos/RoBTT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/FBartos/RoBTT?branch=master)
--->
 
 # Robust Bayesian T-Test (RoBTT)
 

@@ -18,10 +18,11 @@ clean_all  <- function(fit, only_samples = TRUE){
   }
   return(fit)
 }
-# the saved fits are reproduced exactly only by the optimised build; covr
-# compiles the Stan models without optimisation, which changes the draws
+# the saved fits are reproduced exactly only by the optimised Windows build they
+# were saved with; covr compiles the Stan models without optimisation, and other
+# platforms' compilers and math libraries change the draws
 expect_saved_fit <- function(saved_fit, fit){
-  if(identical(Sys.getenv("R_COVR"), "true")){
+  if(identical(Sys.getenv("R_COVR"), "true") || .Platform$OS.type != "windows"){
     return(invisible())
   }
   expect_equal(clean_all(saved_fit), clean_all(fit))
