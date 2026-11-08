@@ -61,21 +61,23 @@ assign("RoBTT_version",   "notset",                       envir = RoBTT.private)
 assign("max_cores",       parallel::detectCores(logical = TRUE) - 1,  envir = RoBTT.private)
 
 # check proper BayesTools package version
-.check_BayesTools <- function(){
-  
-  RoBTT.version      <- try(utils::packageVersion("RoBTT"))
-  BayesTools.version <- try(utils::packageVersion("BayesTools"))
-  
+.check_BayesTools <- function(
+    RoBTT.version      = try(utils::packageVersion("RoBTT")),
+    BayesTools.version = try(utils::packageVersion("BayesTools"))){
+
   if(inherits(RoBTT.version, "try-error") | inherits(BayesTools.version, "try-error")){
     return(invisible(FALSE))
   }
-  
+
   if(is.null(RoBTT.version) | is.null(BayesTools.version)){
     return(invisible(FALSE))
   }
-  
+
+  # a development version (x.y.z.9001) requires what its release requires
+  RoBTT.release <- paste0(unlist(RoBTT.version)[1:3], collapse = ".")
+
   BayesTools_required <- switch(
-    paste0(RoBTT.version, collapse = "."),
+    RoBTT.release,
     "1.0.0" = c("0.2.12", "999.999.999"),
     "1.0.1" = c("0.2.12", "999.999.999"),
     "1.0.2" = c("0.2.12", "999.999.999"),
@@ -90,11 +92,9 @@ assign("max_cores",       parallel::detectCores(logical = TRUE) - 1,  envir = Ro
     stop("New RoBTT version needs to be defined in '.check_BayesTools' function!")
   )
   
-  min_OK <- sum(as.numeric(strsplit(BayesTools_required[1], ".", fixed = TRUE)[[1]]) * c(1e9, 1e6, 1e3)) <=
-    sum(unlist(BayesTools.version) * c(1e9, 1e6, 1e3))
-  max_OK <- sum(as.numeric(strsplit(BayesTools_required[2], ".", fixed = TRUE)[[1]]) * c(1e9, 1e6, 1e3)) >=
-    sum(unlist(BayesTools.version) * c(1e9, 1e6, 1e3))
-  
+  min_OK <- BayesTools.version >= BayesTools_required[1]
+  max_OK <- BayesTools.version <= BayesTools_required[2]
+
   if(min_OK && max_OK){
     return(invisible(TRUE))
   }else{
