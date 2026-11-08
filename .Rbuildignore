@@ -17,3 +17,4 @@ tests/testthat/test-4-diagnostics.R
 README.Rmd
 ^\.github$
 ^codecov\.yml$
+^_pkgdown\.yml$
