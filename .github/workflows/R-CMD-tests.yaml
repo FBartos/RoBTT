@@ -62,6 +62,10 @@ jobs:
       - name: Run Unit Tests
         run: |
           devtools::install(dependencies = FALSE, upgrade = FALSE, build_vignettes = FALSE)
+          dlls <- Sys.glob(file.path(.libPaths()[1], c("RoBTT", "StanHeaders", "RcppParallel", "rstan"), "libs", "x64", "*.dll"))
+          print(unname(tools::md5sum(dlls)))
+          print(basename(dlls))
+          print(names(getLoadedDLLs()))
           setwd("tests")
           source("testthat.R")
         shell: Rscript {0}
