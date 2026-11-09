@@ -8,24 +8,31 @@ for(i in seq_along(saved_files)){
   saved_fits[[i]] <- readRDS(file = file.path(testthat::test_path("../results/fits"), saved_files[i]))
 }
 
-# functions simplifying the comparison
-clean_all  <- function(fit, only_samples = TRUE){
-  if(only_samples){
-    fit$data     <- NULL
-    fit$add_info <- NULL
-    fit$control  <- NULL
-    fit$models   <- NULL
-  }
-  return(fit)
+# A refit matches a saved fit only up to Monte Carlo error: compilers, math libraries
+# and even the state of the R process change the draws. Each bound is about twice the
+# largest difference from seed 1 across 48 seeds of these four fits.
+saved_fit_bounds <- c(log_marglik = 0.08, log_BF = 0.04, post_probs = 0.011, mean = 0.04, nu_mean = 0.11)
+saved_fit_values <- function(fit){
+  fit_summary <- summary(fit, conditional = TRUE)
+  estimates   <- fit_summary$estimates
+  conditional <- fit_summary$estimates_conditional
+  is_nu       <- rownames(estimates) == "nu"
+  values      <- list(
+    log_marglik = vapply(fit$models, function(model) model$marglik$logml, numeric(1)),
+    log_BF      = vapply(fit$RoBTT$inference, attr, numeric(1), "log_BF"),
+    post_probs  = fit$RoBTT$inference[[1]]$post_probs,
+    mean        = c(estimates$Mean[!is_nu], conditional$Mean[!is_nu]),
+    nu_mean     = conditional$Mean[is_nu]
+  )
+  return(values[lengths(values) > 0])
 }
-# the saved fits are reproduced exactly only by the optimised Windows build they
-# were saved with; covr compiles the Stan models without optimisation, and other
-# platforms' compilers and math libraries change the draws
 expect_saved_fit <- function(saved_fit, fit){
-  if(identical(Sys.getenv("R_COVR"), "true") || .Platform$OS.type != "windows"){
-    return(invisible())
+  saved_values <- saved_fit_values(saved_fit)
+  fit_values   <- saved_fit_values(fit)
+  expect_identical(lengths(fit_values), lengths(saved_values))
+  for(value in names(saved_values)){
+    expect_lt(max(abs(fit_values[[value]] - saved_values[[value]])), saved_fit_bounds[[value]], label = value)
   }
-  expect_equal(clean_all(saved_fit), clean_all(fit))
 }
 try_parallel <- function(x, rep = 3){
   temp_fit <- NULL
