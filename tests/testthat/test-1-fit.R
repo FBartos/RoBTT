@@ -9,9 +9,9 @@ for(i in seq_along(saved_files)){
 }
 
 # A refit matches a saved fit only up to Monte Carlo error: compilers, math libraries
-# and even the state of the R process change the draws. Each bound is about three times
-# the largest difference from seed 1 across 48 seeds of these four fits.
-saved_fit_bounds <- c(log_marglik = 0.12, log_BF = 0.06, post_probs = 0.02, mean = 0.06, nu_mean = 0.17)
+# and even the state of the R process change the draws. Each bound is about twice the
+# largest difference from seed 1 across 48 seeds of these four fits.
+saved_fit_bounds <- c(log_marglik = 0.08, log_BF = 0.04, post_probs = 0.011, mean = 0.04, nu_mean = 0.11)
 saved_fit_values <- function(fit){
   fit_summary <- summary(fit, conditional = TRUE)
   estimates   <- fit_summary$estimates
