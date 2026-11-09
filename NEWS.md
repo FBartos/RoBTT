@@ -1,5 +1,6 @@
 ## development version
 ### Fixes
+- `parallel = TRUE` on machines with fewer cores than chains
 - spurious BayesTools version warning with development versions of BayesTools
 
 ## version 1.4.0
