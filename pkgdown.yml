@@ -1,8 +1,10 @@
-pandoc: 2.7.3
-pkgdown: 2.0.7
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   Introduction_to_RoBTT: Introduction_to_RoBTT.html
   Truncated_t_test: Truncated_t_test.html
-last_built: 2024-04-04T13:03Z
-
+last_built: 2026-11-09T01:27Z
+urls:
+  reference: https://fbartos.github.io/RoBTT/reference
+  article: https://fbartos.github.io/RoBTT/articles
