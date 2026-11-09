@@ -85,6 +85,20 @@ test_that("Default model works", {
 })
 
 
+test_that("Parallel fitting works with fewer cores than chains", {
+
+  max_cores <- RoBTT.get_option("max_cores")
+  on.exit(RoBTT.options(max_cores = max_cores))
+  RoBTT.options(max_cores = 1)
+
+  fit <- suppressWarnings(RoBTT(
+    x1 = x1, x2 = x2, prior_nu = NULL,
+    chains = 2, warmup = 200, iter = 400, parallel = TRUE, seed = 1
+  ))
+
+  expect_s3_class(fit, "RoBTT")
+})
+
 #### creating / updating the test settings ####
 if(FALSE){
   saved_fits <- list(fit1, fit2, fit3, fit4)

@@ -185,7 +185,7 @@ RoBTT <- function(
     
     fitting_order <- .fitting_priority(object[["models"]])
     
-    cl <- parallel::makePSOCKcluster(floor(RoBTT.get_option("max_cores") / object$control[["chains"]]))
+    cl <- parallel::makePSOCKcluster(.parallel_workers(RoBTT.get_option("max_cores"), object$control[["chains"]]))
     parallel::clusterEvalQ(cl, {library("RoBTT")})
     parallel::clusterExport(cl, "object", envir = environment())
     object$models <- parallel::parLapplyLB(cl, fitting_order, .fit_RoBTT, object = object)[order(fitting_order)]
@@ -314,7 +314,7 @@ update.RoBTT <- function(object, refit_failed = TRUE, prior_weights = NULL,
       
     }else{
       
-      cl <- parallel::makePSOCKcluster(floor(RoBTT.get_option("max_cores") / object$control[["chains"]]))
+      cl <- parallel::makePSOCKcluster(.parallel_workers(RoBTT.get_option("max_cores"), object$control[["chains"]]))
       parallel::clusterEvalQ(cl, {library("RoBTT")})
       parallel::clusterExport(cl, "object", envir = environment())
       object$models[models_to_update] <- parallel::parLapplyLB(cl, models_to_update, .fit_RoBTT, object = object)
